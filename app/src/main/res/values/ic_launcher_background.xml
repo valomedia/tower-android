@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2024.                                                       ~
+  ~ valo.media GmbH                                                           ~
+  ~ All rights reserved.                                                      ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!--
+  - ic_launcher_background.xml
+  - Tower_Android
+  -
+  - Created by:
+  -     * Jean-Pierre Höhmann
+  -->
+
+<resources>
+    <color name="ic_launcher_background">#FFFFFF</color>
+</resources>

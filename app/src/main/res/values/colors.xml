@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2024.                                                       ~
+  ~ valo.media GmbH                                                           ~
+  ~ All rights reserved.                                                      ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!--
+  - colors.xml
+  - Tower_Android
+  -
+  - Created by:
+  -     * Jean-Pierre Höhmann
+  -->
+
+<resources>
+    <color name="cyan_60">#FF4EACA7</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>

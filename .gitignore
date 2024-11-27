@@ -1,0 +1,32 @@
+################################################################################
+# Copyright (c) 2024.                                                          #
+# valo.media GmbH                                                              #
+# All rights reserved.                                                         #
+################################################################################
+
+##
+##  .gitignore
+##  Tower_Android
+##
+##  Created by:
+##      * Jean-Pierre Höhmann
+##
+
+# Gradle
+.gradle/
+build/
+/gradle/wrapper
+/gradlew
+/gradlew.bat
+
+# Local configuration file (sdk path, etc.)
+local.properties
+
+# Log files
+*.log
+
+# Android Studio
+.idea/
+
+# macOS
+.DS_Store

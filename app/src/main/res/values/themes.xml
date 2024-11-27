@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2024.                                                       ~
+  ~ valo.media GmbH                                                           ~
+  ~ All rights reserved.                                                      ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!--
+  - themes.xml
+  - Tower_Android
+  -
+  - Created by:
+  -     * Jean-Pierre Höhmann
+  -->
+
+<resources>
+
+    <style name="Theme.Tower_Android" parent="android:Theme.Material.Light.NoActionBar" />
+</resources>

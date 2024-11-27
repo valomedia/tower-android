@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2024.                                                       ~
+  ~ valo.media GmbH                                                           ~
+  ~ All rights reserved.                                                      ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!--
+  - data_extraction_rules.xml
+  - Tower_Android
+  -
+  - Created by:
+  -     * Jean-Pierre Höhmann
+  -->
+
+<data-extraction-rules>
+    <cloud-backup />
+</data-extraction-rules>

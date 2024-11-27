@@ -1,0 +1,24 @@
+/******************************************************************************
+ * Copyright (c) 2024.                                                        *
+ * valo.media GmbH                                                            *
+ * All rights reserved.                                                       *
+ ******************************************************************************/
+
+package media.valo.tower_android.data.remote.tower
+
+//
+//  DummyTowerDataSource.kt
+//  Tower_Android
+//
+//  Created by:
+//      * Jean-Pierre Höhmann
+//
+
+/**
+ * A dummy implementation of `TowerDataSource`.
+ *
+ * This implements all api-calls as no-ops.
+ */
+class DummyTowerDataSource : TowerDataSource {
+    override suspend fun index() = Unit
+}
