@@ -32,6 +32,7 @@ hiltNavigationCompose = "1.2.0"
 ktor = "2.3.12"
 slf4jAndroid = "1.7.36"
 coroutines = "1.9.0"
+azureCommunication = "2.6.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -62,6 +63,7 @@ ktor-client-auth = { group = "io.ktor", name = "ktor-client-auth", version.ref =
 slf4j-android = { group = "org.slf4j", name = "slf4j-android", version.ref = "slf4jAndroid" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+azure-communication-calling = { group = "com.azure.android", name = "azure-communication-calling", version.ref = "azureCommunication" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

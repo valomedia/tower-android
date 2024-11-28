@@ -94,6 +94,7 @@ dependencies {
     implementation(libs.slf4j.android)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.azure.communication.calling)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
