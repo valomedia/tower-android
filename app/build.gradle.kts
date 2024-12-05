@@ -92,6 +92,7 @@ dependencies {
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.auth)
     implementation(libs.ktor.client.content.negotiation)
+    implementation(libs.ktor.serialization.kotlinx.json)
     implementation(libs.slf4j.android)
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
