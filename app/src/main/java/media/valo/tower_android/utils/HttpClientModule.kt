@@ -23,9 +23,11 @@ import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
 import io.ktor.client.plugins.auth.providers.basic
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.plugin
 import io.ktor.http.HttpHeaders
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
@@ -55,6 +57,7 @@ class HttpClientModule() {
                 sanitizeHeader { header -> header == HttpHeaders.Authorization }
             }
             install(Auth)
+            install(ContentNegotiation) { json() }
         }
 
         appScope.launch {
