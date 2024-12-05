@@ -20,12 +20,19 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.ui.elements.AppBarPreview
 import media.valo.tower_android.ui.elements.Logo
@@ -48,6 +55,7 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = modifier.verticalScroll(scrollState),
@@ -55,7 +63,17 @@ fun HomeScreen(
         verticalArrangement = Arrangement.Center
     ) {
         Logo()
-        CallButton(snackbarHostState = snackbarHostState)
+        ExtendedFloatingActionButton(
+            onClick = {
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        "Diese Funktion befindet sich noch in Entwicklung und ist nicht verfügbar."
+                    )
+                }
+            },
+            icon = { Icon(Icons.Filled.Call, "Jetzt anrufen") },
+            text = { Text(text = "Jetzt anrufen") },
+        )
     }
 }
 
