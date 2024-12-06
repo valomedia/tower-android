@@ -29,4 +29,6 @@ class DummyTowerDataSource : TowerDataSource {
 
     override suspend fun awaitAssistance() = Unit
 
+    override suspend fun cancelAssistance() = Unit
+
 }

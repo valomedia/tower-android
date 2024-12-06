@@ -46,6 +46,10 @@ class HttpTowerDataSource @Inject constructor(
         request("/awaitAssistance", HttpMethod.Post)
     }
 
+    override suspend fun cancelAssistance() {
+        request("/cancelAssistance", HttpMethod.Post)
+    }
+
     private suspend fun request(
         path: String = "/",
         httpMethod: HttpMethod = HttpMethod.Get

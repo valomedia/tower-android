@@ -51,4 +51,12 @@ class TowerRepository @Inject constructor(
      */
     suspend fun awaitAssistance() = towerDataSource.awaitAssistance()
 
+    /**
+     * Signal to the backend, that the caller has given up on waiting.
+     *
+     * This will inform the backend, that the caller has cancelled the assistance request and no
+     * assistant needs to respond anymore.
+     */
+    suspend fun cancelAssistance() = towerDataSource.cancelAssistance()
+
 }
