@@ -15,10 +15,12 @@ package media.valo.tower_android.data.remote.tower
 //
 
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpMethod
 import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
+import media.valo.tower_android.model.RequestAssistanceResponse
 import media.valo.tower_android.utils.TowerHttpClient
 import javax.inject.Inject
 
@@ -36,6 +38,9 @@ class HttpTowerDataSource @Inject constructor(
     override suspend fun index() {
         request()
     }
+
+    override suspend fun requestAssistance(): RequestAssistanceResponse =
+        request(HttpMethod.Post, "/requestAssistance").body()
 
     private suspend fun request(
         httpMethod: HttpMethod = HttpMethod.Get,

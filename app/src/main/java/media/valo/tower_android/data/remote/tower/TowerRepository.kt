@@ -33,4 +33,14 @@ class TowerRepository @Inject constructor(
      */
     suspend fun index() = towerDataSource.index()
 
+    /**
+     * Make a request for an assistance session.
+     *
+     * This will retrieve an access token for Azure Communication Services from the backend and add
+     * the user to the queue of users waiting for an assistant.
+     *
+     * @return The `RequestAssistanceResponse` With the `UserToken`.
+     */
+    suspend fun requestAssistance() = towerDataSource.requestAssistance()
+
 }

@@ -6,6 +6,8 @@
 
 package media.valo.tower_android.data.remote.tower
 
+import media.valo.tower_android.model.RequestAssistanceResponse
+
 //
 //  TowerDataSource.kt
 //  Tower_Android
@@ -26,5 +28,15 @@ interface TowerDataSource {
      * the api is reachable and the credentials are valid), and throwing otherwise.
      */
     suspend fun index()
+
+    /**
+     * Make a request for an assistance session.
+     *
+     * This will retrieve an access token for Azure Communication Services from the backend and add
+     * the user to the queue of users waiting for an assistant.
+     *
+     * @return The `RequestAssistanceResponse` With the `UserToken`.
+     */
+    suspend fun requestAssistance(): RequestAssistanceResponse
 
 }
