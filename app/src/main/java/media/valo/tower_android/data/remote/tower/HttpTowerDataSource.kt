@@ -40,11 +40,11 @@ class HttpTowerDataSource @Inject constructor(
     }
 
     override suspend fun requestAssistance(): RequestAssistanceResponse =
-        request(HttpMethod.Post, "/requestAssistance").body()
+        request("/requestAssistance", HttpMethod.Post).body()
 
     private suspend fun request(
-        httpMethod: HttpMethod = HttpMethod.Get,
-        path: String = "/"
+        path: String = "/",
+        httpMethod: HttpMethod = HttpMethod.Get
     ): HttpResponse =
         httpClient.request(settingsRepository.getApiEndpoint() + path) { method = httpMethod }
 
