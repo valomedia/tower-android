@@ -39,4 +39,12 @@ interface TowerDataSource {
      */
     suspend fun requestAssistance(): RequestAssistanceResponse
 
+    /**
+     * Signal to the backend, that the caller is still waiting.
+     *
+     * This will inform the backend, that the caller is still on the line, so the assistance request
+     * doesn't time out.
+     */
+    suspend fun awaitAssistance()
+
 }

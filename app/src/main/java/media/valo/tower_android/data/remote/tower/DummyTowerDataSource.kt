@@ -27,4 +27,6 @@ class DummyTowerDataSource : TowerDataSource {
 
     override suspend fun requestAssistance() = dummyRequestAssistanceResponse
 
+    override suspend fun awaitAssistance() = Unit
+
 }
