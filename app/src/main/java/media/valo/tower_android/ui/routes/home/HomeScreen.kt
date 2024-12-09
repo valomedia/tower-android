@@ -46,8 +46,8 @@ object HomeScreen
 /**
  * Screen the app starts out on.
  *
- * @param snackbarHostState Global state of the snackbar host, which is used to show a snackbar.
- * @param modifier          `Modifier` for this element.
+ * @param navController Used to navigate to the `CallScreen` when the used starts a call.
+ * @param modifier      `Modifier` for this element.
  */
 @Composable
 fun HomeScreen(

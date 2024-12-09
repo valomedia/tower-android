@@ -43,11 +43,24 @@ import javax.inject.Inject
 
 private const val ASSISTANCE_REQUEST_KEEP_ALIVE_TIMEOUT_MILLIS = 30000L
 
+/**
+ * `ViewModel` for `CallScreen`.
+ *
+ * @param towerRepository   `TowerRepository` dependency.
+ * @param appScope          `AppScope` dependency.
+ */
 @HiltViewModel
 class CallViewModel @Inject constructor(
     private val towerRepository: TowerRepository,
     @AppScope val appScope: CoroutineScope
 ): ViewModel() {
+
+    /**
+     * The state the assistance session is in.
+     *
+     * This gives a high-level overview of the lifecycle of the call.
+     */
+    var sessionState by mutableStateOf(AssistanceSessionState.NONE)
 
     private var callClient: CallClient? = null
 
@@ -65,8 +78,15 @@ class CallViewModel @Inject constructor(
 
     private var onCallError: () -> Unit = {}
 
-    var sessionState by mutableStateOf(AssistanceSessionState.NONE)
-
+    /**
+     * Start the assistance session.
+     *
+     * This will connect to the backend to create a new assistance session, use the token from the
+     * backend to connect to ACS, and register a callback for when the assistant connects.
+     *
+     * @param context       The application context to use for access to things like camera and microphone.
+     * @param onCallError   Callback to invoke if establishing the call fails.
+     */
     fun startSession(context: Context, onCallError: (() -> Unit) = {}) {
         sessionState = AssistanceSessionState.INITIALIZING
         this.onCallError = onCallError
@@ -84,6 +104,12 @@ class CallViewModel @Inject constructor(
         }
     }
 
+    /**
+     * End the assistance session.
+     *
+     * This will hang up the call, if the user is already talking to an assistant, or cancel the
+     * assistance request, if the user is still waiting to be served.
+     */
     fun endSession() {
         val call = this.call
         if (call != null) {
@@ -101,6 +127,12 @@ class CallViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Switch cameras.
+     *
+     * This will switch to the next available camera. If the user isn't on a call, or the camera
+     * isn't active, or no other camera is available, this will do nothing.
+     */
     fun switchSource() {
         currentVideoStream?.switchSource(getNextAvailableCamera())
     }

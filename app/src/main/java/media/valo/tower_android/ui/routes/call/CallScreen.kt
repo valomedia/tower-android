@@ -51,9 +51,19 @@ import media.valo.tower_android.utils.CoroutineScopeModule
 //      * Jean-Pierre Höhmann
 //
 
+/**
+ * Object for the navigation destination for the call screen.
+ */
 @Serializable
 object CallScreen
 
+/**
+ * Screen shown while in a call, or while waiting for the assistant to connect.
+ *
+ * @param viewModel         `CallViewModel` dependency.
+ * @param navController     Used to navigate back to the home screen once the call ends.
+ * @param snackbarHostState Used to show a snackbar if the call fails.
+ */
 @Composable
 fun CallScreen(
     viewModel: CallViewModel = hiltViewModel(),
@@ -99,6 +109,9 @@ fun CallScreen(
     }
 }
 
+/**
+ * `Preview` for `CallScreen`.
+ */
 @Preview(showBackground = true, showSystemUi = true, locale = "de-rDE")
 @Composable
 fun CallScreenPreview() {

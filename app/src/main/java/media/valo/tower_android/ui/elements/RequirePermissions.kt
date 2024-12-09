@@ -30,6 +30,18 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 //      * Jean-Pierre Höhmann
 //
 
+/**
+ * Wrapper for any functionality that requires permissions.
+ *
+ * This is intended to wrap around a composable for something that requires permissions the user
+ * needs to grant. It will ask the user for the necessary permissions and only display the
+ * functionality once all necessary permissions are granted.
+ *
+ * @param permissions   The permissions the user needs to grant in order to proceed.
+ * @param rationale     A text that is shown to the user to explain why the permissions are needed.
+ * @param modifier      `Modifier` to be applied to the message shown when permissions are missing.
+ * @param content       The `Composable` to show once all permissions are granted.
+ */
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun RequirePermissions(
