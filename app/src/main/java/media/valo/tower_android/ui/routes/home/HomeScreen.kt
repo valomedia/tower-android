@@ -31,6 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.serialization.Serializable
@@ -63,13 +64,14 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Logo()
+        Logo(modifier = Modifier.padding(8.dp))
         ExtendedFloatingActionButton(
             onClick = {
                 navController.navigate(route = CallScreen) { popUpTo(navController.graph.id) }
             },
             icon = { Icon(Icons.Filled.Call, "Jetzt anrufen") },
             text = { Text(text = "Jetzt anrufen") },
+            modifier = Modifier.padding(8.dp)
         )
     }
 }

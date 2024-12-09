@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -86,13 +87,14 @@ fun CallScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Logo()
-        Text(viewModel.sessionState.toString())
+        Logo(modifier = Modifier.padding(8.dp))
+        Text(viewModel.sessionState.toString(), modifier = Modifier.padding(8.dp))
         ExtendedFloatingActionButton(
             onClick = { viewModel.endSession() },
             icon = { Icon(Icons.Filled.Phone, "Auflegen") },
             text = { Text(text = "Auflegen") },
-            containerColor = Color.Red
+            containerColor = Color.Red,
+            modifier = Modifier.padding(8.dp)
         )
     }
 }
