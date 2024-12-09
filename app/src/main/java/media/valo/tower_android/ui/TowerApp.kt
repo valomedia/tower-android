@@ -14,6 +14,7 @@ package media.valo.tower_android.ui
 //      * Jean-Pierre Höhmann
 //
 
+import android.Manifest
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DismissibleNavigationDrawer
@@ -34,6 +35,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import media.valo.tower_android.ui.elements.AppBar
 import media.valo.tower_android.ui.elements.Menu
+import media.valo.tower_android.ui.elements.RequirePermissions
 import media.valo.tower_android.ui.routes.about.AboutScreen
 import media.valo.tower_android.ui.routes.call_history.CallHistoryScreen
 import media.valo.tower_android.ui.routes.home.HomeScreen
@@ -88,10 +90,22 @@ fun TowerApp() {
                     )
                 }
                 composable<HomeScreen> {
-                    HomeScreen(
-                        snackbarHostState = snackbarHostState,
+                    RequirePermissions(
+                        permissions = listOf(
+                            Manifest.permission.READ_PHONE_STATE,
+                            Manifest.permission.RECORD_AUDIO,
+                            Manifest.permission.CAMERA
+                        ),
+                        rationale = "Um Dir helfen zu können, benötigen wir Deine Erlaubnis, auf "
+                                + "die Anruffunktionen deines Telefons zuzugreifen und Kamera und "
+                                + "Mikrofon einzuschalten.",
                         modifier = modifier
-                    )
+                    ) {
+                        HomeScreen(
+                            snackbarHostState = snackbarHostState,
+                            modifier = modifier
+                        )
+                    }
                 }
                 composable<CallHistoryScreen> {
                     CallHistoryScreen(
