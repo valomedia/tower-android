@@ -20,12 +20,12 @@ import kotlinx.serialization.Serializable
  * The data returned by the `/requestAssistance`-endpoint.
  *
  * @param userToken         The access token for the upcoming assistance session.
- * @param keepAliveInterval How often to send a request to the `/awaitAssistance`-endpoint.
+ * @param keepaliveInterval How often to send a request to the `/awaitAssistance`-endpoint.
  */
 @Serializable
 data class RequestAssistanceResponse(
     val userToken: UserToken,
-    val keepAliveInterval: Int? = null
+    val keepaliveInterval: Int? = null
 )
 
 /**
