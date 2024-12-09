@@ -104,6 +104,7 @@ fun TowerApp() {
                     ) {
                         HomeScreen(
                             snackbarHostState = snackbarHostState,
+                            navController = navController,
                             modifier = modifier
                         )
                     }

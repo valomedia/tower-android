@@ -28,14 +28,15 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import kotlinx.coroutines.launch
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.ui.elements.AppBarPreview
 import media.valo.tower_android.ui.elements.Logo
+import media.valo.tower_android.ui.routes.call.CallScreen
 
 /**
  * Object for the navigation destination for the home screen.
@@ -52,10 +53,10 @@ object HomeScreen
 @Composable
 fun HomeScreen(
     snackbarHostState: SnackbarHostState,
+    navController: NavController,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
-    val scope = rememberCoroutineScope()
 
     Column(
         modifier = modifier.verticalScroll(scrollState),
@@ -65,11 +66,7 @@ fun HomeScreen(
         Logo()
         ExtendedFloatingActionButton(
             onClick = {
-                scope.launch {
-                    snackbarHostState.showSnackbar(
-                        "Diese Funktion befindet sich noch in Entwicklung und ist nicht verfügbar."
-                    )
-                }
+                navController.navigate(route = CallScreen) { popUpTo(navController.graph.id) }
             },
             icon = { Icon(Icons.Filled.Call, "Jetzt anrufen") },
             text = { Text(text = "Jetzt anrufen") },
@@ -86,6 +83,7 @@ fun HomeScreenPreview() {
     AppBarPreview { innerPadding ->
         HomeScreen(
             snackbarHostState = remember { SnackbarHostState() },
+            navController = rememberNavController(),
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
