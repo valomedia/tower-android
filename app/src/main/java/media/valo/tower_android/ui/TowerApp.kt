@@ -37,6 +37,7 @@ import media.valo.tower_android.ui.elements.AppBar
 import media.valo.tower_android.ui.elements.Menu
 import media.valo.tower_android.ui.elements.RequirePermissions
 import media.valo.tower_android.ui.routes.about.AboutScreen
+import media.valo.tower_android.ui.routes.call.CallScreen
 import media.valo.tower_android.ui.routes.call_history.CallHistoryScreen
 import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
@@ -106,6 +107,13 @@ fun TowerApp() {
                             modifier = modifier
                         )
                     }
+                }
+                composable<CallScreen> {
+                    CallScreen(
+                        navController = navController,
+                        snackbarHostState = snackbarHostState,
+                        modifier = modifier
+                    )
                 }
                 composable<CallHistoryScreen> {
                     CallHistoryScreen(
