@@ -125,6 +125,7 @@ fun CallScreenPreview() {
             snackbarHostState = remember { SnackbarHostState() },
             modifier = Modifier
                 .padding(innerPadding)
+                .padding(8.dp)
                 .fillMaxSize()
         )
     }

@@ -170,6 +170,7 @@ fun ProfileScreenPreview() {
             viewModel = ProfileViewModel(ProfileRepository(DummyProfileDataSource())),
             modifier = Modifier
                 .padding(innerPadding)
+                .padding(8.dp)
                 .fillMaxSize()
         )
     }

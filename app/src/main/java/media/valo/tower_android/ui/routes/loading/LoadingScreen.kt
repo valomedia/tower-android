@@ -89,6 +89,7 @@ fun LoadingScreenPreview() {
             ),
             modifier = Modifier
                 .padding(innerPadding)
+                .padding(8.dp)
                 .fillMaxSize(),
             navController = rememberNavController()
         )

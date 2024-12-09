@@ -84,6 +84,7 @@ fun HomeScreenPreview() {
             navController = rememberNavController(),
             modifier = Modifier
                 .padding(innerPadding)
+                .padding(8.dp)
                 .fillMaxSize()
         )
     }

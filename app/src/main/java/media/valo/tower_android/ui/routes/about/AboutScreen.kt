@@ -91,6 +91,7 @@ fun AboutScreenPreview() {
         AboutScreen(
             modifier = Modifier
                 .padding(innerPadding)
+                .padding(8.dp)
                 .fillMaxSize()
         )
     }

@@ -55,6 +55,7 @@ fun CallHistoryScreenPreview() {
         CallHistoryScreen(
             modifier = Modifier
                 .padding(innerPadding)
+                .padding(8.dp)
                 .fillMaxSize()
         )
     }

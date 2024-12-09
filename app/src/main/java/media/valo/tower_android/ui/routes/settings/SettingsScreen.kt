@@ -101,6 +101,7 @@ fun SettingsScreenPreview() {
             viewModel = SettingsViewModel(SettingsRepository(DummySettingsDataSource())),
             modifier = Modifier
                 .padding(innerPadding)
+                .padding(8.dp)
                 .fillMaxSize()
         )
     }
