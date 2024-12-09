@@ -55,6 +55,7 @@ import kotlinx.coroutines.launch
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.credentials.DummyCredentialDataSource
 import media.valo.tower_android.ui.routes.about.AboutScreen
+import media.valo.tower_android.ui.routes.call.CallScreen
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
 import media.valo.tower_android.ui.routes.settings.SettingsScreen
@@ -108,8 +109,10 @@ fun AppBar(
             )
         },
         navigationIcon = {
-            if (currentDestination?.hasRoute<LoginScreen>() != true
+            if (currentDestination != null
+                && currentDestination?.hasRoute<LoginScreen>() != true
                 && currentDestination?.hasRoute<LoadingScreen>() != true
+                && currentDestination?.hasRoute<CallScreen>() != true
             ) {
                 if (currentDestination?.hasRoute<SettingsScreen>() != true
                     && currentDestination?.hasRoute<AboutScreen>() != true
@@ -143,42 +146,46 @@ fun AppBar(
             }
         },
         actions = {
-            IconButton(onClick = { expanded = true }) {
-                Icon(
-                    imageVector = Icons.Filled.MoreVert,
-                    contentDescription = "Mehr"
-                )
-            }
-            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                DropdownMenuItem(
-                    text = { Text("Einstellungen") },
-                    onClick = {
-                        navController.navigate(route = SettingsScreen)
-                        expanded = false
-                    }
-                )
-                DropdownMenuItem(
-                    text = { Text("Über") },
-                    onClick = {
-                        navController.navigate(route = AboutScreen)
-                        expanded = false
-                    }
-                )
-                if (isLoggedIn) {
-                    HorizontalDivider()
+            if (currentDestination != null
+                && currentDestination?.hasRoute<CallScreen>() != true
+            ) {
+                IconButton(onClick = { expanded = true }) {
+                    Icon(
+                        imageVector = Icons.Filled.MoreVert,
+                        contentDescription = "Mehr"
+                    )
+                }
+                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
                     DropdownMenuItem(
-                        text = { Text("Abmelden") },
+                        text = { Text("Einstellungen") },
                         onClick = {
-                            scope.launch {
-                                viewModel.logout()
-                                expanded = false
-                                drawerState.close()
-                                navController.navigate(route = LoginScreen) {
-                                    popUpTo(navController.graph.id)
-                                }
-                            }
+                            navController.navigate(route = SettingsScreen)
+                            expanded = false
                         }
                     )
+                    DropdownMenuItem(
+                        text = { Text("Über") },
+                        onClick = {
+                            navController.navigate(route = AboutScreen)
+                            expanded = false
+                        }
+                    )
+                    if (isLoggedIn) {
+                        HorizontalDivider()
+                        DropdownMenuItem(
+                            text = { Text("Abmelden") },
+                            onClick = {
+                                scope.launch {
+                                    viewModel.logout()
+                                    expanded = false
+                                    drawerState.close()
+                                    navController.navigate(route = LoginScreen) {
+                                        popUpTo(navController.graph.id)
+                                    }
+                                }
+                            }
+                        )
+                    }
                 }
             }
         },
