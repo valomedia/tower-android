@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.ui.elements.AppBarPreview
 
@@ -40,7 +41,7 @@ fun CallHistoryScreen(
 ) {
     Text(
         text = "Diese Funktion befindet sich noch in Entwicklung und ist nicht verfügbar.",
-        modifier = modifier
+        modifier = modifier.padding(8.dp)
     )
 }
 
@@ -54,6 +55,7 @@ fun CallHistoryScreenPreview() {
         CallHistoryScreen(
             modifier = Modifier
                 .padding(innerPadding)
+                .padding(8.dp)
                 .fillMaxSize()
         )
     }

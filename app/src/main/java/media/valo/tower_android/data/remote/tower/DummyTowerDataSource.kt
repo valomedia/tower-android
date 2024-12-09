@@ -6,6 +6,8 @@
 
 package media.valo.tower_android.data.remote.tower
 
+import media.valo.tower_android.model.dummyRequestAssistanceResponse
+
 //
 //  DummyTowerDataSource.kt
 //  Tower_Android
@@ -20,5 +22,13 @@ package media.valo.tower_android.data.remote.tower
  * This implements all api-calls as no-ops.
  */
 class DummyTowerDataSource : TowerDataSource {
+
     override suspend fun index() = Unit
+
+    override suspend fun requestAssistance() = dummyRequestAssistanceResponse
+
+    override suspend fun awaitAssistance() = Unit
+
+    override suspend fun cancelAssistance() = Unit
+
 }

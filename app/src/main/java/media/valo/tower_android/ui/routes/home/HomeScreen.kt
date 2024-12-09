@@ -20,15 +20,22 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.ui.elements.AppBarPreview
 import media.valo.tower_android.ui.elements.Logo
+import media.valo.tower_android.ui.routes.call.CallScreen
 
 /**
  * Object for the navigation destination for the home screen.
@@ -39,12 +46,12 @@ object HomeScreen
 /**
  * Screen the app starts out on.
  *
- * @param snackbarHostState Global state of the snackbar host, which is used to show a snackbar.
- * @param modifier          `Modifier` for this element.
+ * @param navController Used to navigate to the `CallScreen` when the used starts a call.
+ * @param modifier      `Modifier` for this element.
  */
 @Composable
 fun HomeScreen(
-    snackbarHostState: SnackbarHostState,
+    navController: NavController,
     modifier: Modifier = Modifier,
 ) {
     val scrollState = rememberScrollState()
@@ -54,8 +61,15 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Logo()
-        CallButton(snackbarHostState = snackbarHostState)
+        Logo(modifier = Modifier.padding(8.dp))
+        ExtendedFloatingActionButton(
+            onClick = {
+                navController.navigate(route = CallScreen) { popUpTo(navController.graph.id) }
+            },
+            icon = { Icon(Icons.Filled.Call, "Jetzt anrufen") },
+            text = { Text(text = "Jetzt anrufen") },
+            modifier = Modifier.padding(8.dp)
+        )
     }
 }
 
@@ -67,9 +81,10 @@ fun HomeScreen(
 fun HomeScreenPreview() {
     AppBarPreview { innerPadding ->
         HomeScreen(
-            snackbarHostState = remember { SnackbarHostState() },
+            navController = rememberNavController(),
             modifier = Modifier
                 .padding(innerPadding)
+                .padding(8.dp)
                 .fillMaxSize()
         )
     }

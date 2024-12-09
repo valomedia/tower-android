@@ -41,6 +41,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -95,7 +96,7 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Column(modifier = Modifier.semantics { isTraversalGroup = true }) {
+        Column(modifier = Modifier.padding(8.dp).semantics { isTraversalGroup = true }) {
             Text(text = "TOWER", style = towerTextStyle)
             if (loginFailed) {
                 Text("Anmeldung fehlgeschlagen, bitte erneut versuchen.", color = Color.Red)
@@ -107,7 +108,7 @@ fun LoginScreen(
             label = { Text("Benutzername") },
             singleLine = true,
             enabled = !isLoading,
-            modifier = Modifier.focusRequester(focusRequester)
+            modifier = Modifier.padding(8.dp).focusRequester(focusRequester)
         )
         OutlinedTextField(
             value = password,
@@ -116,7 +117,8 @@ fun LoginScreen(
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             singleLine = true,
-            enabled = !isLoading
+            enabled = !isLoading,
+            modifier = Modifier.padding(8.dp)
         )
         Button(
             enabled = username.isNotBlank() && password.isNotBlank() && !isLoading,
@@ -127,7 +129,8 @@ fun LoginScreen(
                     viewModel.setPassword(password)
                     navController.navigate(route = LoadingScreen)
                 }
-            }
+            },
+            modifier = Modifier.padding(8.dp)
         ) {
             Text("Anmelden")
         }
@@ -145,6 +148,7 @@ fun LoginScreenPreview() {
             viewModel = LoginViewModel(CredentialRepository(DummyCredentialDataSource())),
             modifier = Modifier
                 .padding(innerPadding)
+                .padding(8.dp)
                 .fillMaxSize(),
             navController = rememberNavController()
         )

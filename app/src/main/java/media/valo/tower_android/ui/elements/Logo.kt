@@ -44,12 +44,12 @@ fun Logo(
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = null,
-            modifier = Modifier.padding(top = 48.dp, bottom = 12.dp)
+            modifier = Modifier.padding(top = 32.dp, bottom = 8.dp)
         )
         Text(
             text = "TOWER",
             style = towerTextStyle,
-            modifier = Modifier.padding(top = 12.dp, bottom = 48.dp)
+            modifier = Modifier.padding(top = 8.dp, bottom = 32.dp)
         )
     }
 }

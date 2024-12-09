@@ -24,6 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
@@ -69,8 +70,8 @@ fun LoadingScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Logo()
-        CircularProgressIndicator()
+        Logo(modifier = Modifier.padding(8.dp))
+        CircularProgressIndicator(modifier = Modifier.padding(8.dp))
     }
 }
 
@@ -88,6 +89,7 @@ fun LoadingScreenPreview() {
             ),
             modifier = Modifier
                 .padding(innerPadding)
+                .padding(8.dp)
                 .fillMaxSize(),
             navController = rememberNavController()
         )

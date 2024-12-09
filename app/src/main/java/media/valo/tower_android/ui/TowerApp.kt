@@ -14,6 +14,7 @@ package media.valo.tower_android.ui
 //      * Jean-Pierre Höhmann
 //
 
+import android.Manifest
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DismissibleNavigationDrawer
@@ -29,12 +30,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import media.valo.tower_android.ui.elements.AppBar
 import media.valo.tower_android.ui.elements.Menu
+import media.valo.tower_android.ui.elements.RequirePermissions
 import media.valo.tower_android.ui.routes.about.AboutScreen
+import media.valo.tower_android.ui.routes.call.CallScreen
 import media.valo.tower_android.ui.routes.call_history.CallHistoryScreen
 import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
@@ -72,6 +76,7 @@ fun TowerApp() {
         ) { innerPadding ->
             val modifier = Modifier
                 .padding(innerPadding)
+                .padding(8.dp)
                 .fillMaxSize()
 
             NavHost(navController = navController, startDestination = LoadingScreen) {
@@ -88,7 +93,26 @@ fun TowerApp() {
                     )
                 }
                 composable<HomeScreen> {
-                    HomeScreen(
+                    RequirePermissions(
+                        permissions = listOf(
+                            Manifest.permission.READ_PHONE_STATE,
+                            Manifest.permission.RECORD_AUDIO,
+                            Manifest.permission.CAMERA
+                        ),
+                        rationale = "Um Dir helfen zu können, benötigen wir Deine Erlaubnis, auf "
+                                + "die Anruffunktionen deines Telefons zuzugreifen und Kamera und "
+                                + "Mikrofon einzuschalten.",
+                        modifier = modifier
+                    ) {
+                        HomeScreen(
+                            navController = navController,
+                            modifier = modifier
+                        )
+                    }
+                }
+                composable<CallScreen> {
+                    CallScreen(
+                        navController = navController,
                         snackbarHostState = snackbarHostState,
                         modifier = modifier
                     )

@@ -100,8 +100,12 @@ fun ProfileScreen(
             .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Benutzerprofil", style = MaterialTheme.typography.titleLarge)
-        Row {
+        Text(
+            "Benutzerprofil",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(8.dp)
+        )
+        Row(modifier = Modifier.padding(8.dp)) {
             OutlinedTextField(
                 value = firstName,
                 onValueChange = { firstName = it },
@@ -127,14 +131,14 @@ fun ProfileScreen(
             onValueChange = { gender = it },
             label = { Text("Geschlecht") },
             enabled = !isLoading,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.padding(8.dp).fillMaxWidth(),
         )
         DatePickerField(
             value = birthdate,
             onValueChange = { birthdate = it },
             label = { Text("Geburtsdatum") },
             enabled = !isLoading,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.padding(8.dp).fillMaxWidth()
         )
         OutlinedTextField(
             value = phone,
@@ -143,14 +147,14 @@ fun ProfileScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             singleLine = true,
             enabled = !isLoading,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.padding(8.dp).fillMaxWidth()
         )
         OutlinedTextField(
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.padding(8.dp).fillMaxWidth()
         )
     }
 }
@@ -166,6 +170,7 @@ fun ProfileScreenPreview() {
             viewModel = ProfileViewModel(ProfileRepository(DummyProfileDataSource())),
             modifier = Modifier
                 .padding(innerPadding)
+                .padding(8.dp)
                 .fillMaxSize()
         )
     }

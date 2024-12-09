@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.data.local.preferences.settings.DummySettingsDataSource
@@ -73,14 +74,18 @@ fun SettingsScreen(
         modifier = modifier.verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text("Einstellungen", style = MaterialTheme.typography.titleLarge)
+        Text(
+            "Einstellungen",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(8.dp)
+        )
         OutlinedTextField(
             value = apiEndpoint,
             onValueChange = { apiEndpoint = it },
             label = { Text("Server") },
             singleLine = true,
             enabled = !isLoading,
-            modifier = Modifier.focusRequester(focusRequester)
+            modifier = Modifier.padding(8.dp).focusRequester(focusRequester)
         )
     }
 }
@@ -96,6 +101,7 @@ fun SettingsScreenPreview() {
             viewModel = SettingsViewModel(SettingsRepository(DummySettingsDataSource())),
             modifier = Modifier
                 .padding(innerPadding)
+                .padding(8.dp)
                 .fillMaxSize()
         )
     }

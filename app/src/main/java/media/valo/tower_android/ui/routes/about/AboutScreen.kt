@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.BuildConfig
 import media.valo.tower_android.ui.elements.AppBarPreview
@@ -51,24 +52,31 @@ fun AboutScreen(
         modifier = modifier.verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("App Info", style = MaterialTheme.typography.titleLarge)
+        Text(
+            "App Info",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(8.dp)
+        )
         OutlinedTextField(
             value = BuildConfig.APPLICATION_ID,
             onValueChange = {},
             label = { Text("Identifier") },
-            readOnly = true
+            readOnly = true,
+            modifier = Modifier.padding(8.dp)
         )
         OutlinedTextField(
             value = BuildConfig.VERSION_NAME,
             onValueChange = {},
             label = { Text("Version") },
-            readOnly = true
+            readOnly = true,
+            modifier = Modifier.padding(8.dp)
         )
         OutlinedTextField(
             value = BuildConfig.VERSION_CODE.toString(),
             onValueChange = {},
             label = { Text("Build") },
-            readOnly = true
+            readOnly = true,
+            modifier = Modifier.padding(8.dp)
         )
     }
 }
@@ -83,6 +91,7 @@ fun AboutScreenPreview() {
         AboutScreen(
             modifier = Modifier
                 .padding(innerPadding)
+                .padding(8.dp)
                 .fillMaxSize()
         )
     }
