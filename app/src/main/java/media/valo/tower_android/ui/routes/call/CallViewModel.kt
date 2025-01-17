@@ -9,6 +9,7 @@ package media.valo.tower_android.ui.routes.call
 import android.content.Context
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
+import android.provider.CallLog.Calls
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -30,6 +31,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
+import media.valo.tower_android.ui.routes.call_sounds.CallSounds
 import media.valo.tower_android.utils.AppScope
 import javax.inject.Inject
 
@@ -95,10 +97,12 @@ class CallViewModel @Inject constructor(
             try {
                 createAgent(context, createSession()).addOnIncomingCallListener { incomingCall ->
                     appScope.launch { handleIncomingCall(context, incomingCall) }
+                    CallSounds(context, "start")
                 }
             } catch (_: Exception) {
                 onCallError()
                 disposeSession()
+                CallSounds(context, "error").play()
             }
             sessionState = AssistanceSessionState.WAITING
         }
@@ -122,8 +126,8 @@ class CallViewModel @Inject constructor(
                     try { towerRepository.cancelAssistance() } catch (_: Exception) { }
                 }
             }
-
             disposeSession()
+            //CallSounds(context, "end").play()
         }
     }
 
@@ -190,6 +194,7 @@ class CallViewModel @Inject constructor(
         val outgoingVideoOptions = OutgoingVideoOptions()
         outgoingVideoOptions.setOutgoingVideoStreams(listOf(currentVideoStream))
         acceptCallOptions.outgoingVideoOptions = outgoingVideoOptions
+        CallSounds(context, "ringback").play()
         try {
             call = incomingCall.accept(context, acceptCallOptions).get()
         } catch (_: Exception) {
@@ -206,13 +211,19 @@ class CallViewModel @Inject constructor(
             audioManager?.setCommunicationDevice(speakerDevice)
         }
 
-        call?.addOnStateChangedListener { handleCallOnStateChanged() }
+        call?.addOnStateChangedListener { handleCallOnStateChanged(context) }
     }
 
-    private fun handleCallOnStateChanged() {
+    private fun handleCallOnStateChanged(context: Context) {
         when (call?.state) {
-            CallState.CONNECTED -> handleCallConnected()
-            CallState.DISCONNECTED -> handleCallDisconnected()
+            CallState.CONNECTED -> {
+                handleCallConnected()
+                CallSounds(context, "start").play()
+            }
+            CallState.DISCONNECTED -> {
+                handleCallDisconnected()
+                CallSounds(context, "end").play()
+            }
             else -> {}
         }
     }
