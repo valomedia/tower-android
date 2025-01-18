@@ -6,6 +6,9 @@
 
 package media.valo.tower_android.ui.routes.call
 
+import android.content.Context
+import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityManager
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -49,6 +52,7 @@ import media.valo.tower_android.utils.CoroutineScopeModule
 //
 //  Created by:
 //      * Jean-Pierre Höhmann
+//      * mvlexs
 //
 
 /**
@@ -73,6 +77,7 @@ fun CallScreen(
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
+    val accessibilityManager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
 
     LaunchedEffect(Unit) {
         viewModel.startSession(context, onCallError = {
@@ -90,6 +95,7 @@ fun CallScreen(
         if (viewModel.sessionState == AssistanceSessionState.DISCONNECTED) {
             navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
         }
+        announceStateChange(context, accessibilityManager, viewModel.sessionState.toString())
     }
 
     Column(
@@ -106,6 +112,25 @@ fun CallScreen(
             containerColor = Color.Red,
             modifier = Modifier.padding(8.dp)
         )
+    }
+}
+/**
+ * Announce a change of the Assistance Sessions State to the user, using the accessibility manager.
+ *
+ * @param context               The application context.
+ * @param accessibilityManager  The accessibility manager.
+ * @param message               The State change to announce.
+ */
+fun announceStateChange(context: Context, accessibilityManager: AccessibilityManager?, message: String) {
+    accessibilityManager?.let {
+        if (it.isEnabled) {
+            it.sendAccessibilityEvent(AccessibilityEvent.obtain().apply {
+                eventType = AccessibilityEvent.TYPE_ANNOUNCEMENT
+                className = context.javaClass.name
+                packageName = context.packageName
+                text.add(message)
+            })
+        }
     }
 }
 
