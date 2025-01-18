@@ -13,6 +13,7 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.net.Uri
+import android.util.Log
 import media.valo.tower_android.R
 
 //
@@ -30,7 +31,7 @@ class CallSounds(context: Context,requestedSound: String){
     private val requestedUri: Uri =  Uri.Builder()
         .scheme(ContentResolver.SCHEME_ANDROID_RESOURCE)
         .authority(context.packageName)
-        .appendPath("${R.raw.call_ringback_tone}")
+        .appendPath(resourceId.toString())
         .build()
 
     private val mediaPlayer = MediaPlayer().apply {
@@ -40,9 +41,13 @@ class CallSounds(context: Context,requestedSound: String){
                 .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION_SIGNALLING)
                 .build()
         )
-        setDataSource(context, requestedUri)
-        prepareAsync()
-        play()
+        try {
+            setDataSource(context, requestedUri)
+            prepare()
+            Log.d("CallSounds", "MediaPlayer prepared successfully")
+        } catch (e: Exception) {
+            Log.e("CallSounds", "Error preparing MediaPlayer", e)
+        }
     }
 
     private fun identifyRequest(requestedSound: String): Int {
@@ -56,6 +61,11 @@ class CallSounds(context: Context,requestedSound: String){
     }
 
     fun play() {
-        mediaPlayer.start()
+        try {
+            mediaPlayer.start()
+            Log.d("CallSounds", "MediaPlayer started")
+        } catch (e: Exception) {
+            Log.e("CallSounds", "Error starting MediaPlayer", e)
+        }
     }
 }

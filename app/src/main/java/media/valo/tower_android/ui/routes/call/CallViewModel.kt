@@ -41,6 +41,7 @@ import javax.inject.Inject
 //
 //  Created by:
 //      * Jean-Pierre Höhmann
+//      * mvlexs
 //
 
 private const val ASSISTANCE_REQUEST_KEEP_ALIVE_TIMEOUT_MILLIS = 30000L
@@ -97,7 +98,7 @@ class CallViewModel @Inject constructor(
             try {
                 createAgent(context, createSession()).addOnIncomingCallListener { incomingCall ->
                     appScope.launch { handleIncomingCall(context, incomingCall) }
-                    CallSounds(context, "start")
+                    CallSounds(context, "start").play()
                 }
             } catch (_: Exception) {
                 onCallError()
