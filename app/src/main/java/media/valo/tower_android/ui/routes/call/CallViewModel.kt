@@ -185,7 +185,7 @@ class CallViewModel @Inject constructor(
         incomingCall: IncomingCall
     ) {
         sessionState = AssistanceSessionState.CONNECTING
-        currentCamera = getNextAvailableCamera()
+        currentCamera = getCameraFacing(CameraFacing.BACK)
         currentVideoStream = LocalVideoStream(currentCamera, context)
         val acceptCallOptions = AcceptCallOptions()
         val outgoingVideoOptions = OutgoingVideoOptions()
