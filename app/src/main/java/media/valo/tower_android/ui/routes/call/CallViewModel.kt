@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -18,6 +18,7 @@ import com.azure.android.communication.calling.Call
 import com.azure.android.communication.calling.CallAgent
 import com.azure.android.communication.calling.CallClient
 import com.azure.android.communication.calling.CallState
+import com.azure.android.communication.calling.CameraFacing
 import com.azure.android.communication.calling.DeviceManager
 import com.azure.android.communication.calling.IncomingCall
 import com.azure.android.communication.calling.LocalVideoStream
@@ -251,6 +252,10 @@ class CallViewModel @Inject constructor(
             }
         }
         return availableCameras[0]
+    }
+
+    private fun getCameraFacing(@Suppress("SameParameterValue") cameraFacing: CameraFacing): VideoDeviceInfo? {
+        return deviceManager?.cameras?.first { it.cameraFacing == cameraFacing }
     }
 
 }
