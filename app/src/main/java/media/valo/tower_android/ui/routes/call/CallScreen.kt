@@ -78,6 +78,7 @@ fun CallScreen(
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val accessibilityManager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
+    var isFirstAnnouncement = true
 
     LaunchedEffect(Unit) {
         viewModel.startSession(context, onCallError = {
@@ -95,7 +96,10 @@ fun CallScreen(
         if (viewModel.sessionState == AssistanceSessionState.DISCONNECTED) {
             navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
         }
-        announceStateChange(context, accessibilityManager, viewModel.sessionState.toString())
+        if (!isFirstAnnouncement) {
+            announceStateChange(context, accessibilityManager, viewModel.sessionState.toString())
+        }
+        isFirstAnnouncement = false
     }
 
     Column(
@@ -114,6 +118,7 @@ fun CallScreen(
         )
     }
 }
+
 /**
  * Announce a change of the Assistance Sessions State to the user, using the accessibility manager.
  *
@@ -121,7 +126,7 @@ fun CallScreen(
  * @param accessibilityManager  The accessibility manager.
  * @param message               The State change to announce.
  */
-fun announceStateChange(context: Context, accessibilityManager: AccessibilityManager?, message: String) {
+private fun announceStateChange(context: Context, accessibilityManager: AccessibilityManager?, message: String) {
     accessibilityManager?.let {
         if (it.isEnabled) {
             it.sendAccessibilityEvent(AccessibilityEvent.obtain().apply {
