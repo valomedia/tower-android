@@ -61,7 +61,7 @@ class CallViewModel @Inject constructor(
      *
      * This gives a high-level overview of the lifecycle of the call.
      */
-    var sessionState by mutableStateOf(AssistanceSessionState.NONE)
+    var sessionState by mutableStateOf(AssistanceSessionState.DISCONNECTED)
 
     private var callClient: CallClient? = null
 
@@ -97,11 +97,11 @@ class CallViewModel @Inject constructor(
                 createAgent(context, createSession()).addOnIncomingCallListener { incomingCall ->
                     appScope.launch { handleIncomingCall(context, incomingCall) }
                 }
+                sessionState = AssistanceSessionState.WAITING
             } catch (_: Exception) {
                 onCallError()
                 disposeSession()
             }
-            sessionState = AssistanceSessionState.WAITING
         }
     }
 
