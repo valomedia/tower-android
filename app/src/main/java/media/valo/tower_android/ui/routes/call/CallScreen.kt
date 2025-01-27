@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -81,11 +81,13 @@ fun CallScreen(
     var isFirstAnnouncement = true
 
     LaunchedEffect(Unit) {
-        viewModel.startSession(context, onCallError = {
-            viewModel.appScope.launch {
-                snackbarHostState.showSnackbar("Anruf fehlgeschlagen, bitte erneut versuchen.")
-            }
-        })
+        if (viewModel.sessionState == AssistanceSessionState.DISCONNECTED) {
+            viewModel.startSession(context, onCallError = {
+                viewModel.appScope.launch {
+                    snackbarHostState.showSnackbar("Anruf fehlgeschlagen, bitte erneut versuchen.")
+                }
+            })
+        }
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onStop(owner: LifecycleOwner) = viewModel.endSession()
