@@ -34,6 +34,7 @@ import media.valo.tower_android.model.AssistanceSessionState
 import media.valo.tower_android.utils.AppScope
 import javax.inject.Inject
 
+
 //
 //  CallViewModel.kt
 //  Tower_Android
@@ -143,6 +144,7 @@ class CallViewModel @Inject constructor(
         if (requestAssistanceResponse.keepaliveInterval != null) {
             this.appScope.launch { sendKeepalives(requestAssistanceResponse.keepaliveInterval) }
         }
+
         return CommunicationTokenCredential(requestAssistanceResponse.userToken.token)
     }
 
@@ -220,6 +222,7 @@ class CallViewModel @Inject constructor(
 
     private fun handleCallConnected() {
         sessionState = AssistanceSessionState.CONNECTED
+
     }
 
     private fun handleCallDisconnected() {
