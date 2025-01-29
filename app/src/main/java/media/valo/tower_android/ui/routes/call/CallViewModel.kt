@@ -9,7 +9,6 @@ package media.valo.tower_android.ui.routes.call
 import android.content.Context
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
-import android.provider.CallLog.Calls
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -31,7 +30,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
-import media.valo.tower_android.ui.routes.call_sounds.CallSounds
 import media.valo.tower_android.utils.AppScope
 import javax.inject.Inject
 
@@ -98,12 +96,11 @@ class CallViewModel @Inject constructor(
             try {
                 createAgent(context, createSession()).addOnIncomingCallListener { incomingCall ->
                     appScope.launch { handleIncomingCall(context, incomingCall) }
-                    CallSounds(context, "start").play()
                 }
             } catch (_: Exception) {
                 onCallError()
                 disposeSession()
-                CallSounds(context, "error").play()
+                CallSounds(context).play("error")
             }
             sessionState = AssistanceSessionState.WAITING
         }
@@ -128,7 +125,6 @@ class CallViewModel @Inject constructor(
                 }
             }
             disposeSession()
-            //CallSounds(context, "end").play()
         }
     }
 
@@ -195,13 +191,13 @@ class CallViewModel @Inject constructor(
         val outgoingVideoOptions = OutgoingVideoOptions()
         outgoingVideoOptions.setOutgoingVideoStreams(listOf(currentVideoStream))
         acceptCallOptions.outgoingVideoOptions = outgoingVideoOptions
-        CallSounds(context, "ringback").play()
         try {
             call = incomingCall.accept(context, acceptCallOptions).get()
         } catch (_: Exception) {
             incomingCall.reject()
             disposeSession()
             onCallError()
+            CallSounds(context).play("error")
         }
 
         // Switch to speakerphone if possible.
@@ -218,23 +214,25 @@ class CallViewModel @Inject constructor(
     private fun handleCallOnStateChanged(context: Context) {
         when (call?.state) {
             CallState.CONNECTED -> {
-                handleCallConnected()
-                CallSounds(context, "start").play()
+                handleCallConnected(context)
             }
             CallState.DISCONNECTED -> {
-                handleCallDisconnected()
-                CallSounds(context, "end").play()
+                handleCallDisconnected(context)
             }
             else -> {}
         }
     }
 
-    private fun handleCallConnected() {
+    private fun handleCallConnected(context: Context) {
         sessionState = AssistanceSessionState.CONNECTED
+        CallSounds(context).stop()
+        CallSounds(context).play("start")
     }
 
-    private fun handleCallDisconnected() {
+    private fun handleCallDisconnected(context: Context) {
         disposeSession()
+        CallSounds(context).stop()
+        CallSounds(context).play("end")
     }
 
     private fun disposeSession() {
