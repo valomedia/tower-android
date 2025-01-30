@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -37,5 +37,5 @@ tasks.wrapper {
     //
     // This task is pulled in as a dependency by :app:preBuild, to ensure the wrapper is always
     // up-to-date with the desired version of gradle.
-    gradleVersion = "8.9"
+    gradleVersion = "8.10.2"
 }
