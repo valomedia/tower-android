@@ -79,6 +79,9 @@ class CallViewModel @Inject constructor(
 
     private var onCallError: () -> Unit = {}
 
+    private var ringback: CallSounds? = null
+
+
     /**
      * Start the assistance session.
      *
@@ -91,7 +94,8 @@ class CallViewModel @Inject constructor(
     fun startSession(context: Context, onCallError: (() -> Unit) = {}) {
         sessionState = AssistanceSessionState.INITIALIZING
         this.onCallError = onCallError
-
+        ringback = CallSounds(context)
+        ringback!!.play("ringback")
         appScope.launch {
             try {
                 createAgent(context, createSession()).addOnIncomingCallListener { incomingCall ->
@@ -125,6 +129,7 @@ class CallViewModel @Inject constructor(
                 }
             }
             disposeSession()
+            ringback?.stop()
         }
     }
 
@@ -225,7 +230,7 @@ class CallViewModel @Inject constructor(
 
     private fun handleCallConnected(context: Context) {
         sessionState = AssistanceSessionState.CONNECTED
-        CallSounds(context).stop()
+        ringback?.stop()
         CallSounds(context).play("start")
     }
 

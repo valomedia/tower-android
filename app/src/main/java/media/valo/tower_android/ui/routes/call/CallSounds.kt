@@ -37,16 +37,19 @@ class CallSounds(val context: Context) {
     private val loopingSound = listOf("ringback")
 
     /**
+     *
      * Plays the requested sound.
      * @param soundName The name of the sound to play.
+     *
      */
     fun play(soundName: String) {
+
+        releaseMediaPlayer()
 
         val soundId = soundResources[soundName] ?: run {
             Log.e("CallSounds", "Sound not found: $soundName")
             return
         }
-
 
         mediaPlayer = MediaPlayer.create(context, soundId).apply {
 
@@ -54,15 +57,17 @@ class CallSounds(val context: Context) {
 
             setOnCompletionListener {
                 releaseMediaPlayer()
+                Log.e("CallSounds", "Sound completed: $soundName")
             }
-
             // Start playback
             start()
         }
     }
 
     /**
+     *
      * Stops the currently playing sound and releases the MediaPlayer.
+     *
      */
     fun stop() {
         mediaPlayer?.let {
@@ -75,7 +80,9 @@ class CallSounds(val context: Context) {
     }
 
     /**
+     *
      * Releases the MediaPlayer resources.
+     *
      */
     private fun releaseMediaPlayer() {
         mediaPlayer?.release()
