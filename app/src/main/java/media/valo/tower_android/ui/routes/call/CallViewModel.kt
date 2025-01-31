@@ -96,6 +96,7 @@ class CallViewModel @Inject constructor(
         this.onCallError = onCallError
         ringback = CallSounds(context)
         ringback!!.play("ringback")
+
         appScope.launch {
             try {
                 createAgent(context, createSession()).addOnIncomingCallListener { incomingCall ->
@@ -106,6 +107,7 @@ class CallViewModel @Inject constructor(
                 disposeSession()
                 CallSounds(context).play("error")
             }
+
             sessionState = AssistanceSessionState.WAITING
         }
     }
@@ -128,6 +130,7 @@ class CallViewModel @Inject constructor(
                     try { towerRepository.cancelAssistance() } catch (_: Exception) { }
                 }
             }
+
             disposeSession()
             ringback?.stop()
         }
@@ -218,12 +221,8 @@ class CallViewModel @Inject constructor(
 
     private fun handleCallOnStateChanged(context: Context) {
         when (call?.state) {
-            CallState.CONNECTED -> {
-                handleCallConnected(context)
-            }
-            CallState.DISCONNECTED -> {
-                handleCallDisconnected(context)
-            }
+            CallState.CONNECTED -> handleCallConnected(context)
+            CallState.DISCONNECTED -> handleCallDisconnected(context)
             else -> {}
         }
     }
