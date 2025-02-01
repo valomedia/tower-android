@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                        *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -105,7 +105,7 @@ fun CallScreen(
         isFirstAnnouncement = false
     }
 
-    CameraPreview(
+    CameraViewFinder(
         modifier = Modifier.fillMaxSize()
     )
     Column(
@@ -122,30 +122,6 @@ fun CallScreen(
             modifier = Modifier.padding(8.dp)
         )
     }
-}
-
-/**
- * Composable that gets the camera ready to be displayed.
- *
- * @param modifier The `Modifier` for this element, determining its size and position.
- **/
-@Composable
-fun CameraPreview(
-    modifier: Modifier = Modifier
-) {
-
-    val lifecycleOwner = LocalLifecycleOwner.current
-
-    AndroidView(
-        factory = { context ->
-            val previewView = PreviewView(context)
-            val cameraController = LifecycleCameraController(context)
-            cameraController.bindToLifecycle(lifecycleOwner)
-            previewView.controller = cameraController
-            previewView
-        },
-        modifier = modifier
-    )
 }
 
 /**
