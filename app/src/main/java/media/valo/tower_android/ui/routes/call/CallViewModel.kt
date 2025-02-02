@@ -101,12 +101,9 @@ class CallViewModel @Inject constructor(
         sessionState = AssistanceSessionState.INITIALIZING
         this.onCallError = onCallError
 
-        val ringbackSound = CallSound(context)
-        ringbackSound.play(R.raw.call_ringback_tone)
-        this.ringbackSound = ringbackSound
+        ringbackSound = CallSound(context, R.raw.call_ringback_tone, true)
 
-        val errorSound = CallSound(context)
-        this.errorSound = errorSound
+        val viewModel = this
 
         appScope.launch {
             try {
@@ -117,7 +114,7 @@ class CallViewModel @Inject constructor(
                 onCallError()
                 disposeSession()
 
-                errorSound.play(R.raw.call_error_tone)
+                viewModel.errorSound = CallSound(context, R.raw.call_error_tone)
             }
 
             sessionState = AssistanceSessionState.WAITING
@@ -217,9 +214,7 @@ class CallViewModel @Inject constructor(
             incomingCall.reject()
             disposeSession()
             onCallError()
-            val errorSound = CallSound(context)
-            errorSound.play(R.raw.call_error_tone)
-            this.errorSound = errorSound
+            this.errorSound = CallSound(context, R.raw.call_error_tone)
         }
 
         // Switch to speakerphone if possible.
@@ -244,16 +239,12 @@ class CallViewModel @Inject constructor(
     private fun handleCallConnected(context: Context) {
         sessionState = AssistanceSessionState.CONNECTED
         ringbackSound?.stop()
-        val startSound = CallSound(context)
-        startSound.play(R.raw.call_start_tone)
-        this.startSound = startSound
+        this.startSound = CallSound(context, R.raw.call_start_tone)
     }
 
     private fun handleCallDisconnected(context: Context) {
         disposeSession()
-        val endSound = CallSound(context)
-        endSound.play(R.raw.call_end_tone)
-        this.endSound = endSound
+        this.endSound = CallSound(context, R.raw.call_end_tone)
     }
 
     private fun disposeSession() {

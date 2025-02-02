@@ -8,7 +8,6 @@ package media.valo.tower_android.ui.routes.call
 
 import android.content.Context
 import android.media.MediaPlayer
-import media.valo.tower_android.R
 
 //
 //  CallSounds.kt
@@ -18,9 +17,11 @@ import media.valo.tower_android.R
 //      * mvlexs
 //
 
-class CallSound(val context: Context) {
+class CallSound {
 
     private var mediaPlayer: MediaPlayer? = null
+
+    val context: Context
 
     /**
      *
@@ -28,11 +29,10 @@ class CallSound(val context: Context) {
      * @param soundId The id of the sound to play.
      *
      */
-    fun play(soundId: Int) {
-        mediaPlayer = null
-
+    constructor(context: Context, soundId: Int, shouldLoop: Boolean = false) {
+        this.context = context
         mediaPlayer = MediaPlayer.create(context, soundId).apply {
-            isLooping = soundId == R.raw.call_ringback_tone
+            isLooping = shouldLoop
 
             setOnCompletionListener {
                 mediaPlayer = null
