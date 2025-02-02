@@ -19,7 +19,7 @@ import android.media.MediaPlayer
 
 class CallSound {
 
-    private var mediaPlayer: MediaPlayer? = null
+    var mediaPlayer: MediaPlayer? = null
 
     val context: Context
 
@@ -39,15 +39,5 @@ class CallSound {
             }
             start()
         }
-    }
-
-    /**
-     *
-     * Stops the currently playing sound and releases the MediaPlayer.
-     *
-     */
-    fun stop() {
-        mediaPlayer?.stop()
-        mediaPlayer = null
     }
 }

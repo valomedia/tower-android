@@ -141,7 +141,8 @@ class CallViewModel @Inject constructor(
             }
 
             disposeSession()
-            ringbackSound?.stop()
+            ringbackSound?.mediaPlayer?.stop()
+            ringbackSound = null
         }
     }
 
@@ -238,7 +239,8 @@ class CallViewModel @Inject constructor(
 
     private fun handleCallConnected(context: Context) {
         sessionState = AssistanceSessionState.CONNECTED
-        ringbackSound?.stop()
+        ringbackSound?.mediaPlayer?.stop()
+        ringbackSound = null
         this.startSound = CallSound(context, R.raw.call_start_tone)
     }
 
