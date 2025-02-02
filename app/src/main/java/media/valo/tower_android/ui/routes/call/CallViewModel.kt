@@ -102,9 +102,18 @@ class CallViewModel @Inject constructor(
         sessionState = AssistanceSessionState.INITIALIZING
         this.onCallError = onCallError
 
-        ringbackSound = callSound(context, R.raw.call_ringback_tone, true)
+        val ringbackSound = MediaPlayer.create(context, R.raw.call_ringback_tone).apply {
+            isLooping = true
+            start()
+        }
+        val startSound = MediaPlayer.create(context, R.raw.call_start_tone)
+        val endSound = MediaPlayer.create(context, R.raw.call_end_tone)
+        val errorSound = MediaPlayer.create(context, R.raw.call_error_tone)
 
-        val viewModel = this
+        this.ringbackSound = ringbackSound
+        this.startSound = startSound
+        this.endSound = endSound
+        this.errorSound = errorSound
 
         appScope.launch {
             try {
@@ -114,8 +123,7 @@ class CallViewModel @Inject constructor(
             } catch (_: Exception) {
                 onCallError()
                 disposeSession()
-
-                viewModel.errorSound = callSound(context, R.raw.call_error_tone)
+                errorSound.start()
             }
 
             sessionState = AssistanceSessionState.WAITING
@@ -142,8 +150,7 @@ class CallViewModel @Inject constructor(
             }
 
             disposeSession()
-            ringbackSound?.stop()
-            ringbackSound = null
+            ringbackSound?.pause()
         }
     }
 
@@ -216,7 +223,7 @@ class CallViewModel @Inject constructor(
             incomingCall.reject()
             disposeSession()
             onCallError()
-            this.errorSound = callSound(context, R.raw.call_error_tone)
+            this.errorSound?.start()
         }
 
         // Switch to speakerphone if possible.
@@ -240,14 +247,13 @@ class CallViewModel @Inject constructor(
 
     private fun handleCallConnected(context: Context) {
         sessionState = AssistanceSessionState.CONNECTED
-        ringbackSound?.stop()
-        ringbackSound = null
-        this.startSound = callSound(context, R.raw.call_start_tone)
+        ringbackSound?.pause()
+        this.startSound?.start()
     }
 
     private fun handleCallDisconnected(context: Context) {
         disposeSession()
-        this.endSound = callSound(context, R.raw.call_end_tone)
+        this.endSound?.start()
     }
 
     private fun disposeSession() {
@@ -276,13 +282,6 @@ class CallViewModel @Inject constructor(
             }
         }
         return availableCameras[0]
-    }
-
-    private fun callSound(context: Context, soundId: Int, shouldLoop: Boolean = false): MediaPlayer {
-        return MediaPlayer.create(context, soundId).apply {
-            isLooping = shouldLoop
-            start()
-        }
     }
 
 }
