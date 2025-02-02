@@ -28,6 +28,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import media.valo.tower_android.R
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
 import media.valo.tower_android.utils.AppScope
@@ -101,7 +102,7 @@ class CallViewModel @Inject constructor(
         this.onCallError = onCallError
 
         val ringbackSound = CallSound(context)
-        ringbackSound.play("ringback")
+        ringbackSound.play(R.raw.call_ringback_tone)
         this.ringbackSound = ringbackSound
 
         val errorSound = CallSound(context)
@@ -116,7 +117,7 @@ class CallViewModel @Inject constructor(
                 onCallError()
                 disposeSession()
 
-                errorSound.play("error")
+                errorSound.play(R.raw.call_error_tone)
             }
 
             sessionState = AssistanceSessionState.WAITING
@@ -217,7 +218,7 @@ class CallViewModel @Inject constructor(
             disposeSession()
             onCallError()
             val errorSound = CallSound(context)
-            errorSound.play("error")
+            errorSound.play(R.raw.call_error_tone)
             this.errorSound = errorSound
         }
 
@@ -244,14 +245,14 @@ class CallViewModel @Inject constructor(
         sessionState = AssistanceSessionState.CONNECTED
         ringbackSound?.stop()
         val startSound = CallSound(context)
-        startSound.play("start")
+        startSound.play(R.raw.call_start_tone)
         this.startSound = startSound
     }
 
     private fun handleCallDisconnected(context: Context) {
         disposeSession()
         val endSound = CallSound(context)
-        endSound.play("end")
+        endSound.play(R.raw.call_end_tone)
         this.endSound = endSound
     }
 
