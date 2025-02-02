@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -21,7 +21,7 @@ import media.valo.tower_android.R
 //      * mvlexs
 //
 
-class CallSounds(val context: Context) {
+class CallSound(val context: Context) {
 
     private var mediaPlayer: MediaPlayer? = null
 

@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -79,7 +79,7 @@ class CallViewModel @Inject constructor(
 
     private var onCallError: () -> Unit = {}
 
-    private var ringback: CallSounds? = null
+    private var ringback: CallSound? = null
 
 
     /**
@@ -94,7 +94,7 @@ class CallViewModel @Inject constructor(
     fun startSession(context: Context, onCallError: (() -> Unit) = {}) {
         sessionState = AssistanceSessionState.INITIALIZING
         this.onCallError = onCallError
-        ringback = CallSounds(context)
+        ringback = CallSound(context)
         ringback!!.play("ringback")
 
         appScope.launch {
@@ -105,7 +105,7 @@ class CallViewModel @Inject constructor(
             } catch (_: Exception) {
                 onCallError()
                 disposeSession()
-                CallSounds(context).play("error")
+                CallSound(context).play("error")
             }
 
             sessionState = AssistanceSessionState.WAITING
@@ -205,7 +205,7 @@ class CallViewModel @Inject constructor(
             incomingCall.reject()
             disposeSession()
             onCallError()
-            CallSounds(context).play("error")
+            CallSound(context).play("error")
         }
 
         // Switch to speakerphone if possible.
@@ -230,13 +230,13 @@ class CallViewModel @Inject constructor(
     private fun handleCallConnected(context: Context) {
         sessionState = AssistanceSessionState.CONNECTED
         ringback?.stop()
-        CallSounds(context).play("start")
+        CallSound(context).play("start")
     }
 
     private fun handleCallDisconnected(context: Context) {
         disposeSession()
-        CallSounds(context).stop()
-        CallSounds(context).play("end")
+        CallSound(context).stop()
+        CallSound(context).play("end")
     }
 
     private fun disposeSession() {
