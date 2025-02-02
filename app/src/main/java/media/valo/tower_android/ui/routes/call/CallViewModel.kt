@@ -79,8 +79,13 @@ class CallViewModel @Inject constructor(
 
     private var onCallError: () -> Unit = {}
 
-    private var ringback: CallSound? = null
+    private var startSound: CallSound? = null
 
+    private var ringbackSound: CallSound? = null
+
+    private var endSound: CallSound? = null
+
+    private var errorSound: CallSound? = null
 
     /**
      * Start the assistance session.
@@ -94,8 +99,13 @@ class CallViewModel @Inject constructor(
     fun startSession(context: Context, onCallError: (() -> Unit) = {}) {
         sessionState = AssistanceSessionState.INITIALIZING
         this.onCallError = onCallError
-        ringback = CallSound(context)
-        ringback!!.play("ringback")
+
+        val ringbackSound = CallSound(context)
+        ringbackSound.play("ringback")
+        this.ringbackSound = ringbackSound
+
+        val errorSound = CallSound(context)
+        this.errorSound = errorSound
 
         appScope.launch {
             try {
@@ -105,7 +115,8 @@ class CallViewModel @Inject constructor(
             } catch (_: Exception) {
                 onCallError()
                 disposeSession()
-                CallSound(context).play("error")
+
+                errorSound.play("error")
             }
 
             sessionState = AssistanceSessionState.WAITING
@@ -132,7 +143,7 @@ class CallViewModel @Inject constructor(
             }
 
             disposeSession()
-            ringback?.stop()
+            ringbackSound?.stop()
         }
     }
 
@@ -205,7 +216,9 @@ class CallViewModel @Inject constructor(
             incomingCall.reject()
             disposeSession()
             onCallError()
-            CallSound(context).play("error")
+            val errorSound = CallSound(context)
+            errorSound.play("error")
+            this.errorSound = errorSound
         }
 
         // Switch to speakerphone if possible.
@@ -229,14 +242,17 @@ class CallViewModel @Inject constructor(
 
     private fun handleCallConnected(context: Context) {
         sessionState = AssistanceSessionState.CONNECTED
-        ringback?.stop()
-        CallSound(context).play("start")
+        ringbackSound?.stop()
+        val startSound = CallSound(context)
+        startSound.play("start")
+        this.startSound = startSound
     }
 
     private fun handleCallDisconnected(context: Context) {
         disposeSession()
-        CallSound(context).stop()
-        CallSound(context).play("end")
+        val endSound = CallSound(context)
+        endSound.play("end")
+        this.endSound = endSound
     }
 
     private fun disposeSession() {
