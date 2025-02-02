@@ -29,13 +29,13 @@ class CallSound(val context: Context) {
      *
      */
     fun play(soundId: Int) {
-        releaseMediaPlayer()
+        mediaPlayer = null
 
         mediaPlayer = MediaPlayer.create(context, soundId).apply {
             isLooping = soundId == R.raw.call_ringback_tone
 
             setOnCompletionListener {
-                releaseMediaPlayer()
+                mediaPlayer = null
             }
             start()
         }
@@ -47,22 +47,7 @@ class CallSound(val context: Context) {
      *
      */
     fun stop() {
-        mediaPlayer?.let {
-            if (it.isPlaying) {
-                it.stop()
-            }
-            it.release()
-        }
-        mediaPlayer = null
-    }
-
-    /**
-     *
-     * Releases the MediaPlayer resources.
-     *
-     */
-    private fun releaseMediaPlayer() {
-        mediaPlayer?.release()
+        mediaPlayer?.stop()
         mediaPlayer = null
     }
 }
