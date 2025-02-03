@@ -123,6 +123,7 @@ class CallViewModel @Inject constructor(
             } catch (_: Exception) {
                 onCallError()
                 disposeSession()
+                ringbackSound.pause()
                 errorSound.start()
             }
 
@@ -234,24 +235,24 @@ class CallViewModel @Inject constructor(
             audioManager?.setCommunicationDevice(speakerDevice)
         }
 
-        call?.addOnStateChangedListener { handleCallOnStateChanged(context) }
+        call?.addOnStateChangedListener { handleCallOnStateChanged() }
     }
 
-    private fun handleCallOnStateChanged(context: Context) {
+    private fun handleCallOnStateChanged() {
         when (call?.state) {
-            CallState.CONNECTED -> handleCallConnected(context)
-            CallState.DISCONNECTED -> handleCallDisconnected(context)
+            CallState.CONNECTED -> handleCallConnected()
+            CallState.DISCONNECTED -> handleCallDisconnected()
             else -> {}
         }
     }
 
-    private fun handleCallConnected(context: Context) {
+    private fun handleCallConnected() {
         sessionState = AssistanceSessionState.CONNECTED
         ringbackSound?.pause()
         this.startSound?.start()
     }
 
-    private fun handleCallDisconnected(context: Context) {
+    private fun handleCallDisconnected() {
         disposeSession()
         this.endSound?.start()
     }
