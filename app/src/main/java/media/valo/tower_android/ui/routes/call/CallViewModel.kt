@@ -91,7 +91,9 @@ class CallViewModel @Inject constructor(
 
     private var dataChannelSenderOptions: DataChannelSenderOptions? = null
 
-    private var dataChannelReceiver: DataChannelReceiver? = null
+    private var dataChannelReceiverClosedListener: DataChannelReceiverCreatedListener? = null
+
+    private var dataChannelMessageReceivedListener: DataChannelReceiverCreatedListener? = null
 
     private var dataChannelSender: DataChannelSender? = null
 
@@ -288,7 +290,19 @@ class CallViewModel @Inject constructor(
             val senderId = receiver.senderIdentifier
         }
 
+        dataChannelMessageReceivedListener = MessageReceivedListener { messageReceived ->
+            val message = messageReceived.receiver.receiveMessage()
+            val sequence = message.sequenceNumber
+            val data = message.data
+        }
+
+        dataChannelReceiverClosedListener = ReceiverClosedListener { receiverClosed ->
+            val receiver = receiverClosed.receiver
+        }
+
         dataChannelCallFeature?.addOnReceiverCreatedListener(dataChannelReceiverCreatedListener)
+        dataChannelCallFeature?.addOnClosedListener(dataChannelReceiverClosedListener)
+        dataChannelCallFeature?.addOnMessageReceivedListener(dataChannelMessageReceivedListener)
 
         //dataChannelReceiverCreatedListener = dataChannelCallFeature?.addOnReceiverCreatedListener()
 
