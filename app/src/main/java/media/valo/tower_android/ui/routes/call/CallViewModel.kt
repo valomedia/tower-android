@@ -190,6 +190,8 @@ class CallViewModel @Inject constructor(
                     onCallError()
                     disposeSession()
                 }
+                this.ringbackSound?.pause()
+                this.errorSound?.start()
             }
             delay(keepAliveIntervalMillis)
         }
