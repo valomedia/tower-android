@@ -19,6 +19,12 @@ import com.azure.android.communication.calling.CallAgent
 import com.azure.android.communication.calling.CallClient
 import com.azure.android.communication.calling.CallState
 import com.azure.android.communication.calling.CameraFacing
+import com.azure.android.communication.calling.DataChannelCallFeature
+import com.azure.android.communication.calling.DataChannelPriority
+import com.azure.android.communication.calling.DataChannelReceiver
+import com.azure.android.communication.calling.DataChannelReliability
+import com.azure.android.communication.calling.DataChannelSender
+import com.azure.android.communication.calling.DataChannelSenderOptions
 import com.azure.android.communication.calling.DeviceManager
 import com.azure.android.communication.calling.Features
 import com.azure.android.communication.calling.IncomingCall
@@ -79,6 +85,14 @@ class CallViewModel @Inject constructor(
     private var currentVideoStream: LocalVideoStream? = null
 
     private var onCallError: () -> Unit = {}
+
+    private var dataChannelCallFeature: DataChannelCallFeature? = null
+
+    private var dataChannelSenderOptions: DataChannelSenderOptions? = null
+
+    private var dataChannelReceiver: DataChannelReceiver? = null
+
+    private var dataChannelSender: DataChannelSender? = null
 
     /**
      * Start the assistance session.
@@ -209,7 +223,7 @@ class CallViewModel @Inject constructor(
         }
 
         call?.addOnStateChangedListener { handleCallOnStateChanged() }
-        call?.feature(Features.DATA_CHANNEL)
+        initializeDataChannel()
     }
 
     private fun handleCallOnStateChanged() {
@@ -259,5 +273,19 @@ class CallViewModel @Inject constructor(
     private fun getCameraFacing(@Suppress("SameParameterValue") cameraFacing: CameraFacing): VideoDeviceInfo? {
         return deviceManager?.cameras?.first { it.cameraFacing == cameraFacing }
     }
+
+    private fun initializeDataChannel(){
+
+        dataChannelCallFeature = call?.feature(Features.DATA_CHANNEL)
+
+        dataChannelSenderOptions?.setChannelId(1000)
+        dataChannelSenderOptions?.setPriority(DataChannelPriority.HIGH)
+        dataChannelSenderOptions?.setReliability(DataChannelReliability.DURABLE)
+        dataChannelSenderOptions?.setBitrateInKbps(32)
+
+        dataChannelSender = dataChannelCallFeature?.getDataChannelSender(dataChannelSenderOptions)
+        //dataChannelSender?.sendMessage()
+    }
+
 
 }
