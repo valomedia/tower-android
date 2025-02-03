@@ -22,6 +22,7 @@ import com.azure.android.communication.calling.CameraFacing
 import com.azure.android.communication.calling.DataChannelCallFeature
 import com.azure.android.communication.calling.DataChannelPriority
 import com.azure.android.communication.calling.DataChannelReceiver
+import com.azure.android.communication.calling.DataChannelReceiverCreatedListener
 import com.azure.android.communication.calling.DataChannelReliability
 import com.azure.android.communication.calling.DataChannelSender
 import com.azure.android.communication.calling.DataChannelSenderOptions
@@ -93,6 +94,8 @@ class CallViewModel @Inject constructor(
     private var dataChannelReceiver: DataChannelReceiver? = null
 
     private var dataChannelSender: DataChannelSender? = null
+
+    private var dataChannelReceiverCreatedListener: DataChannelReceiverCreatedListener? = null
 
     /**
      * Start the assistance session.
@@ -276,15 +279,28 @@ class CallViewModel @Inject constructor(
 
     private fun initializeDataChannel(){
 
+        //enable data channel feature for our current call object
         dataChannelCallFeature = call?.feature(Features.DATA_CHANNEL)
 
+        dataChannelReceiverCreatedListener = DataChannelReceiverCreatedListener { receiverCreated ->
+            val receiver = receiverCreated.receiver
+            val channelId = receiver.channelId
+            val senderId = receiver.senderIdentifier
+        }
+
+        dataChannelCallFeature?.addOnReceiverCreatedListener(dataChannelReceiverCreatedListener)
+
+        //dataChannelReceiverCreatedListener = dataChannelCallFeature?.addOnReceiverCreatedListener()
+
+        //specify the options for the data channel sender
         dataChannelSenderOptions?.setChannelId(1000)
         dataChannelSenderOptions?.setPriority(DataChannelPriority.HIGH)
         dataChannelSenderOptions?.setReliability(DataChannelReliability.DURABLE)
         dataChannelSenderOptions?.setBitrateInKbps(32)
 
+        //create the data channel sender and apply set options
         dataChannelSender = dataChannelCallFeature?.getDataChannelSender(dataChannelSenderOptions)
-        //dataChannelSender?.sendMessage()
+
     }
 
 
