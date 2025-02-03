@@ -189,9 +189,9 @@ class CallViewModel @Inject constructor(
                     // a connection issue.
                     onCallError()
                     disposeSession()
+                    this.ringbackSound?.pause()
+                    this.errorSound?.start()
                 }
-                this.ringbackSound?.pause()
-                this.errorSound?.start()
             }
             delay(keepAliveIntervalMillis)
         }
