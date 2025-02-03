@@ -22,6 +22,7 @@ import com.azure.android.communication.calling.CameraFacing
 import com.azure.android.communication.calling.DataChannelCallFeature
 import com.azure.android.communication.calling.DataChannelPriority
 import com.azure.android.communication.calling.DataChannelReceiver
+import com.azure.android.communication.calling.DataChannelReceiverCreatedEvent
 import com.azure.android.communication.calling.DataChannelReceiverCreatedListener
 import com.azure.android.communication.calling.DataChannelReliability
 import com.azure.android.communication.calling.DataChannelSender
@@ -292,21 +293,21 @@ class CallViewModel @Inject constructor(
         }
 
         //define listener for receiving messages
-        dataChannelMessageReceivedListener = MessageReceivedListener { messageReceived ->
+        dataChannelMessageReceivedListener = DataChannelReceiverCreatedListener { messageReceived ->
             val message = messageReceived.receiver.receiveMessage()
             val sequence = message.sequenceNumber
             val data = message.data
         }
 
         //define listener for closing our receiver
-        dataChannelReceiverClosedListener = ReceiverClosedListener { receiverClosed ->
+        dataChannelReceiverClosedListener = DataChannelReceiverCreatedListener { receiverClosed ->
             val receiver = receiverClosed.receiver
         }
 
         //pass the receivers that have been defined above to our dataChannel object
         dataChannelCallFeature?.addOnReceiverCreatedListener(dataChannelReceiverCreatedListener)
-        dataChannelCallFeature?.addOnClosedListener(dataChannelReceiverClosedListener)
-        dataChannelCallFeature?.addOnMessageReceivedListener(dataChannelMessageReceivedListener)
+        dataChannelCallFeature?.addOnReceiverCreatedListener(dataChannelReceiverClosedListener)
+        dataChannelCallFeature?.addOnReceiverCreatedListener(dataChannelMessageReceivedListener)
 
         //specify the options for the data channel sender
         dataChannelSenderOptions?.setChannelId(1000)
