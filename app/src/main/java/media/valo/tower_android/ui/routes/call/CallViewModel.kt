@@ -284,27 +284,29 @@ class CallViewModel @Inject constructor(
         //enable data channel feature for our current call object
         dataChannelCallFeature = call?.feature(Features.DATA_CHANNEL)
 
+        //define listener for creation of dataChannelReceiver
         dataChannelReceiverCreatedListener = DataChannelReceiverCreatedListener { receiverCreated ->
             val receiver = receiverCreated.receiver
             val channelId = receiver.channelId
             val senderId = receiver.senderIdentifier
         }
 
+        //define listener for receiving messages
         dataChannelMessageReceivedListener = MessageReceivedListener { messageReceived ->
             val message = messageReceived.receiver.receiveMessage()
             val sequence = message.sequenceNumber
             val data = message.data
         }
 
+        //define listener for closing our receiver
         dataChannelReceiverClosedListener = ReceiverClosedListener { receiverClosed ->
             val receiver = receiverClosed.receiver
         }
 
+        //pass the receivers that have been defined above to our dataChannel object
         dataChannelCallFeature?.addOnReceiverCreatedListener(dataChannelReceiverCreatedListener)
         dataChannelCallFeature?.addOnClosedListener(dataChannelReceiverClosedListener)
         dataChannelCallFeature?.addOnMessageReceivedListener(dataChannelMessageReceivedListener)
-
-        //dataChannelReceiverCreatedListener = dataChannelCallFeature?.addOnReceiverCreatedListener()
 
         //specify the options for the data channel sender
         dataChannelSenderOptions?.setChannelId(1000)
