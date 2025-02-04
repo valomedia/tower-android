@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024-2025.                                                   *
+ * Copyright (c) 2024.                                                        *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -18,6 +18,10 @@ package media.valo.tower_android.model
  * An enum representing the lifecycle of an assistance session.
  */
 enum class AssistanceSessionState {
+
+    NONE {
+        override fun toString(): String = ""
+    },
 
     INITIALIZING {
         override fun toString(): String = "Verbindung herstellen…"

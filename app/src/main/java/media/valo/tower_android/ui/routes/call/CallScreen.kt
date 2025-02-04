@@ -1,16 +1,11 @@
 /******************************************************************************
- * Copyright (c) 2024-2025.                                                   *
+ * Copyright (c) 2024.                                                        *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
 
 package media.valo.tower_android.ui.routes.call
 
-import android.content.Context
-import android.view.accessibility.AccessibilityEvent
-import android.view.accessibility.AccessibilityManager
-import androidx.camera.view.LifecycleCameraController
-import androidx.camera.view.PreviewView
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,12 +27,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
@@ -46,6 +39,7 @@ import media.valo.tower_android.data.remote.tower.DummyTowerDataSource
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
 import media.valo.tower_android.ui.elements.AppBarPreview
+import media.valo.tower_android.ui.elements.Logo
 import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.utils.CoroutineScopeModule
 
@@ -55,7 +49,6 @@ import media.valo.tower_android.utils.CoroutineScopeModule
 //
 //  Created by:
 //      * Jean-Pierre Höhmann
-//      * mvlexs
 //
 
 /**
@@ -80,17 +73,13 @@ fun CallScreen(
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
-    val accessibilityManager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
-    var isFirstAnnouncement = true
 
     LaunchedEffect(Unit) {
-        if (viewModel.sessionState == AssistanceSessionState.DISCONNECTED) {
-            viewModel.startSession(context, onCallError = {
-                viewModel.appScope.launch {
-                    snackbarHostState.showSnackbar("Anruf fehlgeschlagen, bitte erneut versuchen.")
-                }
-            })
-        }
+        viewModel.startSession(context, onCallError = {
+            viewModel.appScope.launch {
+                snackbarHostState.showSnackbar("Anruf fehlgeschlagen, bitte erneut versuchen.")
+            }
+        })
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onStop(owner: LifecycleOwner) = viewModel.endSession()
@@ -101,20 +90,14 @@ fun CallScreen(
         if (viewModel.sessionState == AssistanceSessionState.DISCONNECTED) {
             navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
         }
-        if (!isFirstAnnouncement) {
-            announceStateChange(context, accessibilityManager, viewModel.sessionState.toString())
-        }
-        isFirstAnnouncement = false
     }
 
-    CameraViewFinder(
-        modifier = Modifier.fillMaxSize()
-    )
     Column(
         modifier = modifier.verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Bottom
+        verticalArrangement = Arrangement.Center
     ) {
+        Logo(modifier = Modifier.padding(8.dp))
         Text(viewModel.sessionState.toString(), modifier = Modifier.padding(8.dp))
         ExtendedFloatingActionButton(
             onClick = { viewModel.endSession() },
@@ -123,26 +106,6 @@ fun CallScreen(
             containerColor = Color.Red,
             modifier = Modifier.padding(8.dp)
         )
-    }
-}
-
-/**
- * Announce a change of the Assistance Sessions State to the user, using the accessibility manager.
- *
- * @param context               The application context.
- * @param accessibilityManager  The accessibility manager.
- * @param message               The State change to announce.
- */
-private fun announceStateChange(context: Context, accessibilityManager: AccessibilityManager?, message: String) {
-    accessibilityManager?.let {
-        if (it.isEnabled) {
-            it.sendAccessibilityEvent(AccessibilityEvent.obtain().apply {
-                eventType = AccessibilityEvent.TYPE_ANNOUNCEMENT
-                className = context.javaClass.name
-                packageName = context.packageName
-                text.add(message)
-            })
-        }
     }
 }
 
