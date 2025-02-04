@@ -12,6 +12,7 @@ import android.media.AudioManager
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import com.azure.android.communication.calling.AcceptCallOptions
 import com.azure.android.communication.calling.Call
@@ -40,6 +41,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
+import media.valo.tower_android.data.local.preferences.profile.DataStoreProfileDataSource
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
 import media.valo.tower_android.utils.AppScope
@@ -92,17 +98,17 @@ class CallViewModel @Inject constructor(
 
     private var dataChannelCallFeature: DataChannelCallFeature? = null
 
-    private var dataChannelSenderOptions: DataChannelSenderOptions? = null
-
-    private var dataChannelReceiverClosedListener: PropertyChangedListener? = null
-
-    private var dataChannelMessageReceivedListener: PropertyChangedListener? = null
-
     private var dataChannelSender: DataChannelSender? = null
+
+    private var dataChannelSenderOptions: DataChannelSenderOptions? = null
 
     private var dataChannelReceiver: DataChannelReceiver? = null
 
     private var dataChannelReceiverCreatedListener: DataChannelReceiverCreatedListener? = null
+
+    private var dataChannelMessageReceivedListener: PropertyChangedListener? = null
+
+    private var dataChannelReceiverClosedListener: PropertyChangedListener? = null
 
     /**
      * Start the assistance session.
@@ -234,6 +240,7 @@ class CallViewModel @Inject constructor(
 
         call?.addOnStateChangedListener { handleCallOnStateChanged() }
         initializeDataChannel()
+        sendUserHelloEvent()
     }
 
     private fun handleCallOnStateChanged() {
@@ -291,19 +298,21 @@ class CallViewModel @Inject constructor(
 
         //define listener for creation of dataChannelReceiver
         dataChannelReceiverCreatedListener = DataChannelReceiverCreatedListener { receiverCreated ->
-            val receiver = receiverCreated.receiver
-            val channelId = receiver.channelId
-            val senderId = receiver.senderIdentifier
+            dataChannelReceiver = receiverCreated.receiver
+            val channelId = dataChannelReceiver?.channelId
+            val senderId = dataChannelReceiver?.senderIdentifier
         }
 
         //define listener for receiving messages
         dataChannelMessageReceivedListener = PropertyChangedListener { messageReceived ->
-
+            val message = dataChannelReceiver?.receiveMessage()
+            val sequence = message?.sequenceNumber
+            val data = message?.data
         }
 
         //define listener for closing our receiver
         dataChannelReceiverClosedListener = PropertyChangedListener { receiverClosed ->
-
+            val receiver = dataChannelReceiver
         }
 
         //pass the receivers that have been defined above to our dataChannel object
@@ -322,5 +331,11 @@ class CallViewModel @Inject constructor(
 
     }
 
+    private fun sendUserHelloEvent() {
 
+        val userHello: ByteArray? = null
+        val jsonByte = userHello
+
+        dataChannelSender?.sendMessage(userHello)
+    }
 }
