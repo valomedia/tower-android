@@ -220,6 +220,7 @@ class CallViewModel @Inject constructor(
         val outgoingVideoOptions = OutgoingVideoOptions()
         outgoingVideoOptions.setOutgoingVideoStreams(listOf(currentVideoStream))
         acceptCallOptions.outgoingVideoOptions = outgoingVideoOptions
+        ringbackSound?.pause()
         try {
             call = incomingCall.accept(context, acceptCallOptions).get()
         } catch (_: Exception) {
@@ -250,7 +251,6 @@ class CallViewModel @Inject constructor(
 
     private fun handleCallConnected() {
         sessionState = AssistanceSessionState.CONNECTED
-        ringbackSound?.pause()
         this.startSound?.start()
     }
 
