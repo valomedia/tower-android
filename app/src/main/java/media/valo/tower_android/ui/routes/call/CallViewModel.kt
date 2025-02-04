@@ -20,6 +20,7 @@ import com.azure.android.communication.calling.CallClient
 import com.azure.android.communication.calling.CallState
 import com.azure.android.communication.calling.CameraFacing
 import com.azure.android.communication.calling.DataChannelCallFeature
+import com.azure.android.communication.calling.DataChannelMessage
 import com.azure.android.communication.calling.DataChannelPriority
 import com.azure.android.communication.calling.DataChannelReceiver
 import com.azure.android.communication.calling.DataChannelReceiverCreatedEvent
@@ -32,6 +33,7 @@ import com.azure.android.communication.calling.Features
 import com.azure.android.communication.calling.IncomingCall
 import com.azure.android.communication.calling.LocalVideoStream
 import com.azure.android.communication.calling.OutgoingVideoOptions
+import com.azure.android.communication.calling.PropertyChangedListener
 import com.azure.android.communication.calling.VideoDeviceInfo
 import com.azure.android.communication.common.CommunicationTokenCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -92,11 +94,13 @@ class CallViewModel @Inject constructor(
 
     private var dataChannelSenderOptions: DataChannelSenderOptions? = null
 
-    private var dataChannelReceiverClosedListener: DataChannelReceiverCreatedListener? = null
+    private var dataChannelReceiverClosedListener: PropertyChangedListener? = null
 
-    private var dataChannelMessageReceivedListener: DataChannelReceiverCreatedListener? = null
+    private var dataChannelMessageReceivedListener: PropertyChangedListener? = null
 
     private var dataChannelSender: DataChannelSender? = null
+
+    private var dataChannelReceiver: DataChannelReceiver? = null
 
     private var dataChannelReceiverCreatedListener: DataChannelReceiverCreatedListener? = null
 
@@ -293,21 +297,19 @@ class CallViewModel @Inject constructor(
         }
 
         //define listener for receiving messages
-        dataChannelMessageReceivedListener = DataChannelReceiverCreatedListener { messageReceived ->
-            val message = messageReceived.receiver.receiveMessage()
-            val sequence = message.sequenceNumber
-            val data = message.data
+        dataChannelMessageReceivedListener = PropertyChangedListener { messageReceived ->
+
         }
 
         //define listener for closing our receiver
-        dataChannelReceiverClosedListener = DataChannelReceiverCreatedListener { receiverClosed ->
-            val receiver = receiverClosed.receiver
+        dataChannelReceiverClosedListener = PropertyChangedListener { receiverClosed ->
+
         }
 
         //pass the receivers that have been defined above to our dataChannel object
         dataChannelCallFeature?.addOnReceiverCreatedListener(dataChannelReceiverCreatedListener)
-        dataChannelCallFeature?.addOnReceiverCreatedListener(dataChannelReceiverClosedListener)
-        dataChannelCallFeature?.addOnReceiverCreatedListener(dataChannelMessageReceivedListener)
+        dataChannelReceiver?.addOnMessageReceivedListener(dataChannelMessageReceivedListener)
+        dataChannelReceiver?.addOnClosedListener(dataChannelReceiverClosedListener)
 
         //specify the options for the data channel sender
         dataChannelSenderOptions?.setChannelId(1000)
