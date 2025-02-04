@@ -255,8 +255,15 @@ class CallViewModel @Inject constructor(
     }
 
     private fun handleCallDisconnected() {
+        val callEndCode = call?.callEndReason?.code
+        val errorRange = 400..699
         disposeSession()
-        this.endSound?.start()
+        if ( errorRange.contains(callEndCode) ){
+            this.errorSound?.start()
+        }
+        else{
+            this.endSound?.start()
+        }
     }
 
     private fun disposeSession() {
