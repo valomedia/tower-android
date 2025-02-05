@@ -7,12 +7,14 @@
 package media.valo.tower_android.ui.routes.call
 
 import android.content.Context
+import android.media.AudioAttributes
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.MediaPlayer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.app.NotificationCompat.StreamType
 import androidx.lifecycle.ViewModel
 import com.azure.android.communication.calling.AcceptCallOptions
 import com.azure.android.communication.calling.Call
@@ -101,14 +103,23 @@ class CallViewModel @Inject constructor(
     fun startSession(context: Context, onCallError: (() -> Unit) = {}) {
         sessionState = AssistanceSessionState.INITIALIZING
         this.onCallError = onCallError
-
         val ringbackSound = MediaPlayer.create(context, R.raw.call_ringback_tone).apply {
             isLooping = true
-            start()
         }
-        val startSound = MediaPlayer.create(context, R.raw.call_start_tone)
-        val endSound = MediaPlayer.create(context, R.raw.call_end_tone)
-        val errorSound = MediaPlayer.create(context, R.raw.call_error_tone)
+        ringbackSound.setAudioAttributes(AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+            .build())
+        ringbackSound.start()
+        val startSound = MediaPlayer.create(context, R.raw.call_start_tone).apply {
+
+        }
+        val endSound = MediaPlayer.create(context, R.raw.call_end_tone).apply {
+
+        }
+        val errorSound = MediaPlayer.create(context, R.raw.call_error_tone).apply {
+
+        }
 
         this.ringbackSound = ringbackSound
         this.startSound = startSound
