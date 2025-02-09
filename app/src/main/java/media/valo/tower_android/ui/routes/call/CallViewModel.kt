@@ -103,22 +103,23 @@ class CallViewModel @Inject constructor(
     fun startSession(context: Context, onCallError: (() -> Unit) = {}) {
         sessionState = AssistanceSessionState.INITIALIZING
         this.onCallError = onCallError
-        val ringbackSound = MediaPlayer.create(context, R.raw.call_ringback_tone).apply {
-            isLooping = true
-        }
-        ringbackSound.setAudioAttributes(AudioAttributes.Builder()
+        val audioAttributes = AudioAttributes.Builder()
             .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
             .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
-            .build())
+            .build()
+        val ringbackSound = MediaPlayer.create(context, R.raw.call_ringback_tone).apply {
+            isLooping = true
+            setAudioAttributes(audioAttributes)
+        }
         ringbackSound.start()
         val startSound = MediaPlayer.create(context, R.raw.call_start_tone).apply {
-
+            setAudioAttributes(audioAttributes)
         }
         val endSound = MediaPlayer.create(context, R.raw.call_end_tone).apply {
-
+            setAudioAttributes(audioAttributes)
         }
         val errorSound = MediaPlayer.create(context, R.raw.call_error_tone).apply {
-
+            setAudioAttributes(audioAttributes)
         }
 
         this.ringbackSound = ringbackSound
