@@ -9,7 +9,8 @@ package media.valo.tower_android.ui.routes.call
 import android.content.Context
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
-import androidx.compose.foundation.layout.Arrangement
+import android.widget.FrameLayout
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -106,10 +108,24 @@ fun CallScreen(
 
     Column(
         modifier = modifier.verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Logo(modifier = Modifier.padding(8.dp))
+        Box(
+            modifier = Modifier.weight(1f).padding(8.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
+                AndroidView(
+                    factory = { context -> FrameLayout(context) },
+                    update = { view ->
+                        viewModel.sessionState
+                        viewModel.showPreview(context, view)
+                    }
+                )
+            } else {
+                Logo()
+            }
+        }
         Text(viewModel.sessionState.toString(), modifier = Modifier.padding(8.dp))
         ExtendedFloatingActionButton(
             onClick = { viewModel.endSession() },
