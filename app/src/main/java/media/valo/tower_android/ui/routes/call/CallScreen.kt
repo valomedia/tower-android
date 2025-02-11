@@ -10,6 +10,7 @@ import android.content.Context
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import android.widget.FrameLayout
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -78,6 +79,7 @@ fun CallScreen(
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
+    val activity = LocalActivity.current!!
     val accessibilityManager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
     var isFirstAnnouncement = true
 
@@ -114,7 +116,7 @@ fun CallScreen(
                 factory = { context -> FrameLayout(context) },
                 update = { view ->
                     viewModel.sessionState
-                    viewModel.showPreview(context, view)
+                    viewModel.showPreview(activity, view)
                 },
                 modifier = Modifier.weight(1f).padding(8.dp),
             )

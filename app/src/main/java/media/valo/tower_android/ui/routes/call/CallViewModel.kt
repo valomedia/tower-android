@@ -145,16 +145,16 @@ class CallViewModel @Inject constructor(
         currentVideoStream?.switchSource(getNextAvailableCamera())
     }
 
-    fun showPreview(context: Context, layout: FrameLayout) {
+    fun showPreview(activity: Activity, layout: FrameLayout) {
         if (currentVideoStream == null) { return }
         previewRenderer?.dispose()
-        val previewRenderer = VideoStreamRenderer(currentVideoStream, context)
+        val previewRenderer = VideoStreamRenderer(currentVideoStream, activity)
         this.previewRenderer = previewRenderer
 
         val preview = previewRenderer.createView(CreateViewOptions(ScalingMode.FIT))
         preview?.tag = 0
 
-        (context as Activity).runOnUiThread {
+        activity.runOnUiThread {
             layout.addView(preview)
         }
     }
