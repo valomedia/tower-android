@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -15,6 +15,7 @@ package media.valo.tower_android.ui.elements
 //
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -39,6 +40,7 @@ fun Logo(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
         modifier = modifier
     ) {
         Image(
@@ -52,6 +54,7 @@ fun Logo(
             modifier = Modifier.padding(top = 8.dp, bottom = 32.dp)
         )
     }
+
 }
 
 /**

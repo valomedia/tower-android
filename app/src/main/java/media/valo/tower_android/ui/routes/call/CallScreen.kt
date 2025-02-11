@@ -10,7 +10,6 @@ import android.content.Context
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import android.widget.FrameLayout
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -110,21 +109,17 @@ fun CallScreen(
         modifier = modifier.verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = Modifier.weight(1f).padding(8.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
-                AndroidView(
-                    factory = { context -> FrameLayout(context) },
-                    update = { view ->
-                        viewModel.sessionState
-                        viewModel.showPreview(context, view)
-                    }
-                )
-            } else {
-                Logo()
-            }
+        if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
+            AndroidView(
+                factory = { context -> FrameLayout(context) },
+                update = { view ->
+                    viewModel.sessionState
+                    viewModel.showPreview(context, view)
+                },
+                modifier = Modifier.weight(1f).padding(8.dp),
+            )
+        } else {
+            Logo(modifier = Modifier.weight(1f).padding(8.dp))
         }
         Text(viewModel.sessionState.toString(), modifier = Modifier.padding(8.dp))
         ExtendedFloatingActionButton(

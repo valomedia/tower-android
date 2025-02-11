@@ -61,7 +61,7 @@ fun HomeScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Logo(modifier = Modifier.padding(8.dp))
+        Logo(modifier = Modifier.weight(1f).padding(8.dp))
         ExtendedFloatingActionButton(
             onClick = {
                 navController.navigate(route = CallScreen) { popUpTo(navController.graph.id) }
