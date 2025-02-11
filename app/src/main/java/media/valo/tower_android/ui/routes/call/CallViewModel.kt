@@ -145,6 +145,12 @@ class CallViewModel @Inject constructor(
         currentVideoStream?.switchSource(getNextAvailableCamera())
     }
 
+    /**
+     * Start rendering the preview for the video stream.
+     *
+     * @param activity  The current Activity, used to access the ui thread.
+     * @param container The ViewGroup to render the preview into.
+     */
     fun showPreview(activity: Activity, container: ViewGroup) {
         if (currentVideoStream == null) { return }
         previewRenderer?.dispose()
