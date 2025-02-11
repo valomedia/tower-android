@@ -10,7 +10,7 @@ import android.app.Activity
 import android.content.Context
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
-import android.widget.FrameLayout
+import android.view.ViewGroup
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -145,7 +145,7 @@ class CallViewModel @Inject constructor(
         currentVideoStream?.switchSource(getNextAvailableCamera())
     }
 
-    fun showPreview(activity: Activity, layout: FrameLayout) {
+    fun showPreview(activity: Activity, container: ViewGroup) {
         if (currentVideoStream == null) { return }
         previewRenderer?.dispose()
         val previewRenderer = VideoStreamRenderer(currentVideoStream, activity)
@@ -155,7 +155,7 @@ class CallViewModel @Inject constructor(
         preview?.tag = 0
 
         activity.runOnUiThread {
-            layout.addView(preview)
+            container.addView(preview)
         }
     }
 
