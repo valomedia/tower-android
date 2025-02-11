@@ -146,6 +146,7 @@ class CallViewModel @Inject constructor(
     }
 
     fun showPreview(context: Context, layout: FrameLayout) {
+        if (currentVideoStream == null) { return }
         previewRenderer?.dispose()
         val previewRenderer = VideoStreamRenderer(currentVideoStream, context)
         this.previewRenderer = previewRenderer
