@@ -102,18 +102,8 @@ class CallViewModel @Inject constructor(
         sessionState = AssistanceSessionState.INITIALIZING
         this.onCallError = onCallError
 
-        val ringbackSound = MediaPlayer.create(context, R.raw.call_ringback_tone).apply {
-            isLooping = true
-            start()
-        }
-        val startSound = MediaPlayer.create(context, R.raw.call_start_tone)
-        val endSound = MediaPlayer.create(context, R.raw.call_end_tone)
-        val errorSound = MediaPlayer.create(context, R.raw.call_error_tone)
-
-        this.ringbackSound = ringbackSound
-        this.startSound = startSound
-        this.endSound = endSound
-        this.errorSound = errorSound
+        configureAudio(context)
+        ringbackSound?.start()
 
         appScope.launch {
             try {
@@ -123,8 +113,8 @@ class CallViewModel @Inject constructor(
             } catch (_: Exception) {
                 onCallError()
                 disposeSession()
-                ringbackSound.pause()
-                errorSound.start()
+                ringbackSound?.pause()
+                errorSound?.start()
             }
 
             sessionState = AssistanceSessionState.WAITING
@@ -165,6 +155,21 @@ class CallViewModel @Inject constructor(
         currentVideoStream?.switchSource(getNextAvailableCamera())
     }
 
+    private fun configureAudio(context: Context) {
+        val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        this.audioManager = audioManager
+
+        val ringbackSound = MediaPlayer.create(context, R.raw.call_ringback_tone).apply { isLooping = true }
+        val startSound = MediaPlayer.create(context, R.raw.call_start_tone)
+        val endSound = MediaPlayer.create(context, R.raw.call_end_tone)
+        val errorSound = MediaPlayer.create(context, R.raw.call_error_tone)
+
+        this.ringbackSound = ringbackSound
+        this.startSound = startSound
+        this.endSound = endSound
+        this.errorSound = errorSound
+    }
+
     private suspend fun createSession(): CommunicationTokenCredential {
         val requestAssistanceResponse = towerRepository.requestAssistance()
         if (requestAssistanceResponse.keepaliveInterval != null) {
@@ -201,11 +206,9 @@ class CallViewModel @Inject constructor(
         val callClient = CallClient()
         val callAgent = callClient.createCallAgent(context, credential).get()
         val deviceManager = callClient.getDeviceManager(context).get()
-        val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         this.callClient = callClient
         this.callAgent = callAgent
         this.deviceManager = deviceManager
-        this.audioManager = audioManager
         return callAgent
     }
 
