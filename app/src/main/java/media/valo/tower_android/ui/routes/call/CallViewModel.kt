@@ -7,6 +7,7 @@
 package media.valo.tower_android.ui.routes.call
 
 import android.content.Context
+import android.media.AudioAttributes
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.MediaPlayer
@@ -159,10 +160,19 @@ class CallViewModel @Inject constructor(
         val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         this.audioManager = audioManager
 
-        val ringbackSound = MediaPlayer.create(context, R.raw.call_ringback_tone).apply { isLooping = true }
-        val startSound = MediaPlayer.create(context, R.raw.call_start_tone)
-        val endSound = MediaPlayer.create(context, R.raw.call_end_tone)
-        val errorSound = MediaPlayer.create(context, R.raw.call_error_tone)
+        val audioAttributes = AudioAttributes
+            .Builder()
+            .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION_SIGNALLING)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
+        val audioSessionId = audioManager.generateAudioSessionId()
+
+        val ringbackSound = MediaPlayer
+            .create(context, R.raw.call_ringback_tone, audioAttributes, audioSessionId)
+            .apply { isLooping = true }
+        val startSound = MediaPlayer.create(context, R.raw.call_start_tone, audioAttributes, audioSessionId)
+        val endSound = MediaPlayer.create(context, R.raw.call_end_tone, audioAttributes, audioSessionId)
+        val errorSound = MediaPlayer.create(context, R.raw.call_error_tone, audioAttributes, audioSessionId)
 
         this.ringbackSound = ringbackSound
         this.startSound = startSound
