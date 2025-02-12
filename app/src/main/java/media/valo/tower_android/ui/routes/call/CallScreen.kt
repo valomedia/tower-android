@@ -144,7 +144,7 @@ fun CallScreen(
 private fun announceStateChange(context: Context, accessibilityManager: AccessibilityManager?, message: String) {
     accessibilityManager?.let {
         if (it.isEnabled) {
-            it.sendAccessibilityEvent(AccessibilityEvent.obtain().apply {
+            it.sendAccessibilityEvent(AccessibilityEvent().apply {
                 eventType = AccessibilityEvent.TYPE_ANNOUNCEMENT
                 className = context.javaClass.name
                 packageName = context.packageName
