@@ -26,9 +26,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.invisibleToUser
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -70,6 +73,7 @@ object CallScreen
  * @param navController     Used to navigate back to the home screen once the call ends.
  * @param snackbarHostState Used to show a snackbar if the call fails.
  */
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun CallScreen(
     viewModel: CallViewModel = hiltViewModel(),
@@ -81,7 +85,6 @@ fun CallScreen(
     val context = LocalContext.current
     val activity = LocalActivity.current!!
     val accessibilityManager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
-    var isFirstAnnouncement = true
 
     LaunchedEffect(Unit) {
         if (viewModel.sessionState == AssistanceSessionState.DISCONNECTED) {
@@ -101,10 +104,7 @@ fun CallScreen(
         if (viewModel.sessionState == AssistanceSessionState.DISCONNECTED) {
             navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
         }
-        if (!isFirstAnnouncement) {
-            announceStateChange(context, accessibilityManager, viewModel.sessionState.toString())
-        }
-        isFirstAnnouncement = false
+        announceStateChange(context, accessibilityManager, viewModel.sessionState.toString())
     }
 
     Column(
@@ -123,7 +123,7 @@ fun CallScreen(
         } else {
             Logo(modifier = Modifier.weight(1f).padding(8.dp))
         }
-        Text(viewModel.sessionState.toString(), modifier = Modifier.padding(8.dp))
+        Text(viewModel.sessionState.toString(), modifier = Modifier.padding(8.dp).semantics { invisibleToUser() })
         ExtendedFloatingActionButton(
             onClick = { viewModel.endSession() },
             icon = { Icon(Icons.Filled.Phone, "Auflegen") },
@@ -144,7 +144,7 @@ fun CallScreen(
 private fun announceStateChange(context: Context, accessibilityManager: AccessibilityManager?, message: String) {
     accessibilityManager?.let {
         if (it.isEnabled) {
-            it.sendAccessibilityEvent(AccessibilityEvent.obtain().apply {
+            it.sendAccessibilityEvent(AccessibilityEvent().apply {
                 eventType = AccessibilityEvent.TYPE_ANNOUNCEMENT
                 className = context.javaClass.name
                 packageName = context.packageName
