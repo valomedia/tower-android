@@ -9,7 +9,8 @@ package media.valo.tower_android.ui.routes.call
 import android.content.Context
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
-import androidx.compose.foundation.layout.Arrangement
+import android.widget.FrameLayout
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -77,6 +79,7 @@ fun CallScreen(
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
+    val activity = LocalActivity.current!!
     val accessibilityManager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
     var isFirstAnnouncement = true
 
@@ -106,10 +109,20 @@ fun CallScreen(
 
     Column(
         modifier = modifier.verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Logo(modifier = Modifier.padding(8.dp))
+        if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
+            AndroidView(
+                factory = { context -> FrameLayout(context) },
+                update = { view ->
+                    viewModel.sessionState
+                    viewModel.showPreview(activity, view)
+                },
+                modifier = Modifier.weight(1f).padding(8.dp),
+            )
+        } else {
+            Logo(modifier = Modifier.weight(1f).padding(8.dp))
+        }
         Text(viewModel.sessionState.toString(), modifier = Modifier.padding(8.dp))
         ExtendedFloatingActionButton(
             onClick = { viewModel.endSession() },

@@ -25,7 +25,7 @@ plugins {
 
 android {
     namespace = "media.valo.tower_android"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "media.valo.tower_android"

@@ -6,11 +6,13 @@
 
 package media.valo.tower_android.ui.routes.call
 
+import android.app.Activity
 import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.view.ViewGroup
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -21,11 +23,14 @@ import com.azure.android.communication.calling.CallAgent
 import com.azure.android.communication.calling.CallClient
 import com.azure.android.communication.calling.CallState
 import com.azure.android.communication.calling.CameraFacing
+import com.azure.android.communication.calling.CreateViewOptions
 import com.azure.android.communication.calling.DeviceManager
 import com.azure.android.communication.calling.IncomingCall
 import com.azure.android.communication.calling.LocalVideoStream
 import com.azure.android.communication.calling.OutgoingVideoOptions
+import com.azure.android.communication.calling.ScalingMode
 import com.azure.android.communication.calling.VideoDeviceInfo
+import com.azure.android.communication.calling.VideoStreamRenderer
 import com.azure.android.communication.common.CommunicationTokenCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -80,6 +85,8 @@ class CallViewModel @Inject constructor(
     private var currentCamera: VideoDeviceInfo? = null
 
     private var currentVideoStream: LocalVideoStream? = null
+
+    private var previewRenderer: VideoStreamRenderer? = null
 
     private var onCallError: () -> Unit = {}
 
@@ -154,6 +161,26 @@ class CallViewModel @Inject constructor(
      */
     fun switchSource() {
         currentVideoStream?.switchSource(getNextAvailableCamera())
+    }
+
+    /**
+     * Start rendering the preview for the video stream.
+     *
+     * @param activity  The current Activity, used to access the ui thread.
+     * @param container The ViewGroup to render the preview into.
+     */
+    fun showPreview(activity: Activity, container: ViewGroup) {
+        if (currentVideoStream == null) { return }
+        previewRenderer?.dispose()
+        val previewRenderer = VideoStreamRenderer(currentVideoStream, activity)
+        this.previewRenderer = previewRenderer
+
+        val preview = previewRenderer.createView(CreateViewOptions(ScalingMode.FIT))
+        preview?.tag = 0
+
+        activity.runOnUiThread {
+            container.addView(preview)
+        }
     }
 
     private fun configureAudio(context: Context) {
@@ -282,6 +309,7 @@ class CallViewModel @Inject constructor(
     private fun disposeSession() {
         callClient?.dispose()
         callAgent?.dispose()
+        previewRenderer?.dispose()
 
         callClient = null
         callAgent = null
@@ -290,6 +318,7 @@ class CallViewModel @Inject constructor(
         call = null
         currentCamera = null
         currentVideoStream = null
+        previewRenderer = null
 
         sessionState = AssistanceSessionState.DISCONNECTED
     }
