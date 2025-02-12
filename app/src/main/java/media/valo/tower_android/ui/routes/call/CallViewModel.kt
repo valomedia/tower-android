@@ -20,6 +20,7 @@ import com.azure.android.communication.calling.Call
 import com.azure.android.communication.calling.CallAgent
 import com.azure.android.communication.calling.CallClient
 import com.azure.android.communication.calling.CallState
+import com.azure.android.communication.calling.CameraFacing
 import com.azure.android.communication.calling.DeviceManager
 import com.azure.android.communication.calling.IncomingCall
 import com.azure.android.communication.calling.LocalVideoStream
@@ -64,7 +65,7 @@ class CallViewModel @Inject constructor(
      *
      * This gives a high-level overview of the lifecycle of the call.
      */
-    var sessionState by mutableStateOf(AssistanceSessionState.NONE)
+    var sessionState by mutableStateOf(AssistanceSessionState.DISCONNECTED)
 
     private var callClient: CallClient? = null
 
@@ -111,14 +112,13 @@ class CallViewModel @Inject constructor(
                 createAgent(context, createSession()).addOnIncomingCallListener { incomingCall ->
                     appScope.launch { handleIncomingCall(context, incomingCall) }
                 }
+                sessionState = AssistanceSessionState.WAITING
             } catch (_: Exception) {
                 onCallError()
                 disposeSession()
                 ringbackSound?.pause()
                 errorSound?.start()
             }
-
-            sessionState = AssistanceSessionState.WAITING
         }
     }
 
@@ -227,7 +227,7 @@ class CallViewModel @Inject constructor(
         incomingCall: IncomingCall
     ) {
         sessionState = AssistanceSessionState.CONNECTING
-        currentCamera = getNextAvailableCamera()
+        currentCamera = getCameraFacing(CameraFacing.BACK)
         currentVideoStream = LocalVideoStream(currentCamera, context)
         val acceptCallOptions = AcceptCallOptions()
         val outgoingVideoOptions = OutgoingVideoOptions()
@@ -305,6 +305,10 @@ class CallViewModel @Inject constructor(
             }
         }
         return availableCameras[0]
+    }
+
+    private fun getCameraFacing(@Suppress("SameParameterValue") cameraFacing: CameraFacing): VideoDeviceInfo? {
+        return deviceManager?.cameras?.first { it.cameraFacing == cameraFacing }
     }
 
 }
