@@ -30,7 +30,7 @@ android {
     defaultConfig {
         applicationId = "media.valo.tower_android"
         minSdk = 31
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 3
         versionName = "0.0.3"
 
