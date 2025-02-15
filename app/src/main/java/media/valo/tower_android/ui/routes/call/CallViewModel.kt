@@ -12,7 +12,6 @@ import android.media.AudioManager
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import com.azure.android.communication.calling.AcceptCallOptions
 import com.azure.android.communication.calling.Call
@@ -21,10 +20,8 @@ import com.azure.android.communication.calling.CallClient
 import com.azure.android.communication.calling.CallState
 import com.azure.android.communication.calling.CameraFacing
 import com.azure.android.communication.calling.DataChannelCallFeature
-import com.azure.android.communication.calling.DataChannelMessage
 import com.azure.android.communication.calling.DataChannelPriority
 import com.azure.android.communication.calling.DataChannelReceiver
-import com.azure.android.communication.calling.DataChannelReceiverCreatedEvent
 import com.azure.android.communication.calling.DataChannelReceiverCreatedListener
 import com.azure.android.communication.calling.DataChannelReliability
 import com.azure.android.communication.calling.DataChannelSender
@@ -41,11 +38,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
-import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
-import media.valo.tower_android.data.local.preferences.profile.DataStoreProfileDataSource
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
 import media.valo.tower_android.utils.AppScope
@@ -57,6 +49,7 @@ import javax.inject.Inject
 //
 //  Created by:
 //      * Jean-Pierre Höhmann
+//      * mvlexs
 //
 
 private const val ASSISTANCE_REQUEST_KEEP_ALIVE_TIMEOUT_MILLIS = 30000L
@@ -334,8 +327,8 @@ class CallViewModel @Inject constructor(
     private fun sendUserHelloEvent() {
 
         val userHello: ByteArray? = null
-        val jsonByte = userHello
-
+        serializeUserHello()
+        //TODO UserHello -> Byte Array to send to Backend
         dataChannelSender?.sendMessage(userHello)
     }
 }
