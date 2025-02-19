@@ -303,7 +303,6 @@ class CallViewModel @Inject constructor(
 
         call?.addOnStateChangedListener { handleCallOnStateChanged() }
         initializeDataChannel()
-        sendUserHelloEvent()
     }
 
     private fun handleCallOnStateChanged() {
@@ -405,10 +404,4 @@ class CallViewModel @Inject constructor(
 
     }
 
-    private fun sendUserHelloEvent() {
-
-        val userHello: ByteArray? = null
-        //TODO UserHello -> Byte Array to send to Backend
-        dataChannelSender?.sendMessage(userHello)
-    }
 }
