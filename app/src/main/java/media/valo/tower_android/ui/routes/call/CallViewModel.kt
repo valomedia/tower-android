@@ -47,6 +47,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import media.valo.tower_android.R
+import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
 import media.valo.tower_android.model.Message
@@ -106,11 +107,13 @@ private const val DATA_CHANNEL_MESSAGE_BURST_DELAY_MILLIS = 1000L
  * `ViewModel` for `CallScreen`.
  *
  * @param towerRepository   `TowerRepository` dependency.
+ * @param profileRepository `ProfileRepository` dependency.
  * @param appScope          `AppScope` dependency.
  */
 @HiltViewModel
 class CallViewModel @Inject constructor(
     private val towerRepository: TowerRepository,
+    private val profileRepository: ProfileRepository,
     @AppScope val appScope: CoroutineScope
 ): ViewModel() {
 
