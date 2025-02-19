@@ -302,7 +302,7 @@ class CallViewModel @Inject constructor(
         }
 
         call?.addOnStateChangedListener { handleCallOnStateChanged() }
-        initializeDataChannel()
+        establishDataChannel()
     }
 
     private fun handleCallOnStateChanged() {
@@ -364,7 +364,7 @@ class CallViewModel @Inject constructor(
         return deviceManager?.cameras?.first { it.cameraFacing == cameraFacing }
     }
 
-    private fun initializeDataChannel(){
+    private fun establishDataChannel(){
 
         //enable data channel feature for our current call object
         dataChannelCallFeature = call?.feature(Features.DATA_CHANNEL)
