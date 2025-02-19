@@ -151,15 +151,7 @@ class CallViewModel @Inject constructor(
 
     private var dataChannelSender: DataChannelSender? = null
 
-    private var dataChannelSenderOptions: DataChannelSenderOptions? = null
-
     private var dataChannelReceiver: DataChannelReceiver? = null
-
-    private var dataChannelReceiverCreatedListener: DataChannelReceiverCreatedListener? = null
-
-    private var dataChannelMessageReceivedListener: PropertyChangedListener? = null
-
-    private var dataChannelReceiverClosedListener: PropertyChangedListener? = null
 
     /**
      * Start the assistance session.
@@ -407,24 +399,27 @@ class CallViewModel @Inject constructor(
     private fun establishDataChannel(){
 
         //enable data channel feature for our current call object
-        dataChannelCallFeature = call?.feature(Features.DATA_CHANNEL)
+        val dataChannelCallFeature = call?.feature(Features.DATA_CHANNEL)
+        this.dataChannelCallFeature = dataChannelCallFeature
 
         //define listener for creation of dataChannelReceiver
-        dataChannelReceiverCreatedListener = DataChannelReceiverCreatedListener { receiverCreated ->
-            dataChannelReceiver = receiverCreated.receiver
+        val dataChannelReceiverCreatedListener = DataChannelReceiverCreatedListener { receiverCreated ->
+            val dataChannelReceiver = receiverCreated.receiver
             val channelId = dataChannelReceiver?.channelId
             val senderId = dataChannelReceiver?.senderIdentifier
+
+            this.dataChannelReceiver = dataChannelReceiver
         }
 
         //define listener for receiving messages
-        dataChannelMessageReceivedListener = PropertyChangedListener { messageReceived ->
+        val dataChannelMessageReceivedListener = PropertyChangedListener { messageReceived ->
             val message = dataChannelReceiver?.receiveMessage()
             val sequence = message?.sequenceNumber
             val data = message?.data
         }
 
         //define listener for closing our receiver
-        dataChannelReceiverClosedListener = PropertyChangedListener { receiverClosed ->
+        val dataChannelReceiverClosedListener = PropertyChangedListener { receiverClosed ->
             val receiver = dataChannelReceiver
         }
 
@@ -434,14 +429,15 @@ class CallViewModel @Inject constructor(
         dataChannelReceiver?.addOnClosedListener(dataChannelReceiverClosedListener)
 
         //specify the options for the data channel sender
-        dataChannelSenderOptions?.channelId = DURABLE_DATA_CHANNEL_ID
-        dataChannelSenderOptions?.setPriority(DataChannelPriority.HIGH)
-        dataChannelSenderOptions?.setReliability(DataChannelReliability.DURABLE)
-        dataChannelSenderOptions?.bitrateInKbps = DURABLE_DATA_CHANNEL_BANDWIDTH_KBPS
+        val dataChannelSenderOptions = DataChannelSenderOptions()
+        dataChannelSenderOptions.channelId = DURABLE_DATA_CHANNEL_ID
+        dataChannelSenderOptions.setPriority(DataChannelPriority.HIGH)
+        dataChannelSenderOptions.setReliability(DataChannelReliability.DURABLE)
+        dataChannelSenderOptions.bitrateInKbps = DURABLE_DATA_CHANNEL_BANDWIDTH_KBPS
 
         //create the data channel sender and apply set options
-        dataChannelSender = dataChannelCallFeature?.getDataChannelSender(dataChannelSenderOptions)
-
+        val dataChannelSender = dataChannelCallFeature?.getDataChannelSender(dataChannelSenderOptions)
+        this.dataChannelSender = dataChannelSender
     }
 
 }
