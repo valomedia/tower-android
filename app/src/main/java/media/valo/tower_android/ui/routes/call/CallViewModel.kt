@@ -397,9 +397,11 @@ class CallViewModel @Inject constructor(
     }
 
     private fun establishDataChannel(){
+        val call = call
+        if (call == null) { return }
 
         //enable data channel feature for our current call object
-        val dataChannelCallFeature = call?.feature(Features.DATA_CHANNEL)
+        val dataChannelCallFeature = call.feature(Features.DATA_CHANNEL)
         this.dataChannelCallFeature = dataChannelCallFeature
 
         //define listener for receiving messages
@@ -415,9 +417,7 @@ class CallViewModel @Inject constructor(
             this.dataChannelReceiver = dataChannelReceiver
             dataChannelReceiver.addOnMessageReceivedListener(dataChannelMessageReceivedListener)
         }
-
-        //pass the receivers that have been defined above to our dataChannel object
-        dataChannelCallFeature?.addOnReceiverCreatedListener(dataChannelReceiverCreatedListener)
+        dataChannelCallFeature.addOnReceiverCreatedListener(dataChannelReceiverCreatedListener)
 
         //specify the options for the data channel sender
         val dataChannelSenderOptions = DataChannelSenderOptions()
@@ -427,7 +427,7 @@ class CallViewModel @Inject constructor(
         dataChannelSenderOptions.bitrateInKbps = DURABLE_DATA_CHANNEL_BANDWIDTH_KBPS
 
         //create the data channel sender and apply set options
-        val dataChannelSender = dataChannelCallFeature?.getDataChannelSender(dataChannelSenderOptions)
+        val dataChannelSender = dataChannelCallFeature.getDataChannelSender(dataChannelSenderOptions)
         this.dataChannelSender = dataChannelSender
     }
 
