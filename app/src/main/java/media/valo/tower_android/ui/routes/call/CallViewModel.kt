@@ -6,9 +6,13 @@
 
 package media.valo.tower_android.ui.routes.call
 
+import android.app.Activity
 import android.content.Context
+import android.media.AudioAttributes
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
+import android.media.MediaPlayer
+import android.view.ViewGroup
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -19,6 +23,7 @@ import com.azure.android.communication.calling.CallAgent
 import com.azure.android.communication.calling.CallClient
 import com.azure.android.communication.calling.CallState
 import com.azure.android.communication.calling.CameraFacing
+import com.azure.android.communication.calling.CreateViewOptions
 import com.azure.android.communication.calling.DataChannelCallFeature
 import com.azure.android.communication.calling.DataChannelPriority
 import com.azure.android.communication.calling.DataChannelReceiver
@@ -32,12 +37,15 @@ import com.azure.android.communication.calling.IncomingCall
 import com.azure.android.communication.calling.LocalVideoStream
 import com.azure.android.communication.calling.OutgoingVideoOptions
 import com.azure.android.communication.calling.PropertyChangedListener
+import com.azure.android.communication.calling.ScalingMode
 import com.azure.android.communication.calling.VideoDeviceInfo
+import com.azure.android.communication.calling.VideoStreamRenderer
 import com.azure.android.communication.common.CommunicationTokenCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import media.valo.tower_android.R
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
 import media.valo.tower_android.utils.AppScope
@@ -87,7 +95,17 @@ class CallViewModel @Inject constructor(
 
     private var currentVideoStream: LocalVideoStream? = null
 
+    private var previewRenderer: VideoStreamRenderer? = null
+
     private var onCallError: () -> Unit = {}
+
+    private var startSound: MediaPlayer? = null
+
+    private var ringbackSound: MediaPlayer? = null
+
+    private var endSound: MediaPlayer? = null
+
+    private var errorSound: MediaPlayer? = null
 
     private var dataChannelCallFeature: DataChannelCallFeature? = null
 
@@ -116,6 +134,9 @@ class CallViewModel @Inject constructor(
         sessionState = AssistanceSessionState.INITIALIZING
         this.onCallError = onCallError
 
+        configureAudio(context)
+        ringbackSound?.start()
+
         appScope.launch {
             try {
                 createAgent(context, createSession()).addOnIncomingCallListener { incomingCall ->
@@ -125,6 +146,8 @@ class CallViewModel @Inject constructor(
             } catch (_: Exception) {
                 onCallError()
                 disposeSession()
+                ringbackSound?.pause()
+                errorSound?.start()
             }
         }
     }
@@ -149,6 +172,7 @@ class CallViewModel @Inject constructor(
             }
 
             disposeSession()
+            ringbackSound?.pause()
         }
     }
 
@@ -160,6 +184,50 @@ class CallViewModel @Inject constructor(
      */
     fun switchSource() {
         currentVideoStream?.switchSource(getNextAvailableCamera())
+    }
+
+    /**
+     * Start rendering the preview for the video stream.
+     *
+     * @param activity  The current Activity, used to access the ui thread.
+     * @param container The ViewGroup to render the preview into.
+     */
+    fun showPreview(activity: Activity, container: ViewGroup) {
+        if (currentVideoStream == null) { return }
+        previewRenderer?.dispose()
+        val previewRenderer = VideoStreamRenderer(currentVideoStream, activity)
+        this.previewRenderer = previewRenderer
+
+        val preview = previewRenderer.createView(CreateViewOptions(ScalingMode.FIT))
+        preview?.tag = 0
+
+        activity.runOnUiThread {
+            container.addView(preview)
+        }
+    }
+
+    private fun configureAudio(context: Context) {
+        val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        this.audioManager = audioManager
+
+        val audioAttributes = AudioAttributes
+            .Builder()
+            .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION_SIGNALLING)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build()
+        val audioSessionId = audioManager.generateAudioSessionId()
+
+        val ringbackSound = MediaPlayer
+            .create(context, R.raw.call_ringback_tone, audioAttributes, audioSessionId)
+            .apply { isLooping = true }
+        val startSound = MediaPlayer.create(context, R.raw.call_start_tone, audioAttributes, audioSessionId)
+        val endSound = MediaPlayer.create(context, R.raw.call_end_tone, audioAttributes, audioSessionId)
+        val errorSound = MediaPlayer.create(context, R.raw.call_error_tone, audioAttributes, audioSessionId)
+
+        this.ringbackSound = ringbackSound
+        this.startSound = startSound
+        this.endSound = endSound
+        this.errorSound = errorSound
     }
 
     private suspend fun createSession(): CommunicationTokenCredential {
@@ -186,6 +254,8 @@ class CallViewModel @Inject constructor(
                     // a connection issue.
                     onCallError()
                     disposeSession()
+                    this.ringbackSound?.pause()
+                    this.errorSound?.start()
                 }
             }
             delay(keepAliveIntervalMillis)
@@ -196,11 +266,9 @@ class CallViewModel @Inject constructor(
         val callClient = CallClient()
         val callAgent = callClient.createCallAgent(context, credential).get()
         val deviceManager = callClient.getDeviceManager(context).get()
-        val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         this.callClient = callClient
         this.callAgent = callAgent
         this.deviceManager = deviceManager
-        this.audioManager = audioManager
         return callAgent
     }
 
@@ -215,12 +283,14 @@ class CallViewModel @Inject constructor(
         val outgoingVideoOptions = OutgoingVideoOptions()
         outgoingVideoOptions.setOutgoingVideoStreams(listOf(currentVideoStream))
         acceptCallOptions.outgoingVideoOptions = outgoingVideoOptions
+        ringbackSound?.pause()
         try {
             call = incomingCall.accept(context, acceptCallOptions).get()
         } catch (_: Exception) {
             incomingCall.reject()
             disposeSession()
             onCallError()
+            this.errorSound?.start()
         }
 
         // Switch to speakerphone if possible.
@@ -246,15 +316,25 @@ class CallViewModel @Inject constructor(
 
     private fun handleCallConnected() {
         sessionState = AssistanceSessionState.CONNECTED
+        this.startSound?.start()
     }
 
     private fun handleCallDisconnected() {
+        val callEndCode = call?.callEndReason?.code
+        val errorRange = 400..699
         disposeSession()
+        if ( errorRange.contains(callEndCode) ){
+            this.errorSound?.start()
+        }
+        else{
+            this.endSound?.start()
+        }
     }
 
     private fun disposeSession() {
         callClient?.dispose()
         callAgent?.dispose()
+        previewRenderer?.dispose()
 
         callClient = null
         callAgent = null
@@ -263,6 +343,7 @@ class CallViewModel @Inject constructor(
         call = null
         currentCamera = null
         currentVideoStream = null
+        previewRenderer = null
 
         sessionState = AssistanceSessionState.DISCONNECTED
     }

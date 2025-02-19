@@ -13,19 +13,18 @@
 ##
 
 [versions]
-agp = "8.7.2"
-cameraCore = "1.4.1"
+agp = "8.8.0"
 kotlin = "2.0.20"
-coreKtx = "1.13.1"
+coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycle = "2.8.6"
-activityCompose = "1.9.2"
-composeBom = "2024.09.03"
-navigationCompose = "2.8.2"
+lifecycle = "2.8.7"
+activityCompose = "1.10.0"
+composeBom = "2025.01.01"
+navigationCompose = "2.8.6"
 kotlinxSerializationJson = "1.7.3"
-datastorePreferences = "1.1.1"
+datastorePreferences = "1.1.2"
 hilt = "2.51.1"
 ksp = "2.0.20-1.0.25"
 hiltNavigationCompose = "1.2.0"
@@ -35,12 +34,8 @@ coroutines = "1.9.0"
 azureCommunication = "2.12.0"
 kotlinxDatetime = "0.6.1"
 accompanist = "0.36.0"
-cameraView = "1.4.1"
 
 [libraries]
-androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCore" }
-androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraCore" }
-androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraCore" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -76,7 +71,6 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 azure-communication-calling = { group = "com.azure.android", name = "azure-communication-calling", version.ref = "azureCommunication" }
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
-androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "cameraView" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

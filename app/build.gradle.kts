@@ -25,14 +25,14 @@ plugins {
 
 android {
     namespace = "media.valo.tower_android"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "media.valo.tower_android"
         minSdk = 31
-        targetSdk = 34
-        versionCode = 2
-        versionName = "0.0.2"
+        targetSdk = 35
+        versionCode = 4
+        versionName = "0.1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -101,10 +101,6 @@ dependencies {
     implementation(libs.azure.communication.calling)
     implementation(libs.kotlinx.datetime)
     implementation(libs.accompanist.permissions)
-    implementation(libs.androidx.camera.view)
-    implementation(libs.androidx.camera.core)
-    implementation(libs.androidx.camera.camera2)
-    implementation(libs.androidx.camera.lifecycle)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
