@@ -396,7 +396,7 @@ class CallViewModel @Inject constructor(
         return deviceManager?.cameras?.first { it.cameraFacing == cameraFacing }
     }
 
-    private fun establishDataChannel(){
+    private fun establishDataChannel() {
         val call = call
         if (call == null) { return }
 
