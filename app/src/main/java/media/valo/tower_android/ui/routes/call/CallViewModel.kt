@@ -334,7 +334,6 @@ class CallViewModel @Inject constructor(
         }
 
         call?.addOnStateChangedListener { handleCallOnStateChanged() }
-        establishDataChannel()
     }
 
     private fun handleCallOnStateChanged() {
@@ -348,6 +347,7 @@ class CallViewModel @Inject constructor(
     private fun handleCallConnected() {
         sessionState = AssistanceSessionState.CONNECTED
         this.startSound?.start()
+        establishDataChannel()
     }
 
     private fun handleCallDisconnected() {
