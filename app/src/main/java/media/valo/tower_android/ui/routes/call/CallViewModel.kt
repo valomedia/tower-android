@@ -345,7 +345,7 @@ class CallViewModel @Inject constructor(
     private fun handleCallConnected() {
         sessionState = AssistanceSessionState.CONNECTED
         this.startSound?.start()
-        establishDataChannel()
+        this.appScope.launch { establishDataChannel() }
     }
 
     private fun handleCallDisconnected() {
@@ -394,9 +394,10 @@ class CallViewModel @Inject constructor(
         return deviceManager?.cameras?.first { it.cameraFacing == cameraFacing }
     }
 
-    private fun establishDataChannel() {
+    private suspend fun establishDataChannel() {
         val call = call
         if (call == null) { return }
+        delay(DATA_CHANNEL_ESTABLISH_DELAY_MILLIS)
 
         // Enable data channel feature for our current call object.
         val dataChannelCallFeature = call.feature(Features.DATA_CHANNEL)
