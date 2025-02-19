@@ -434,10 +434,10 @@ class CallViewModel @Inject constructor(
         dataChannelReceiver?.addOnClosedListener(dataChannelReceiverClosedListener)
 
         //specify the options for the data channel sender
-        dataChannelSenderOptions?.channelId = 1000
+        dataChannelSenderOptions?.channelId = DURABLE_DATA_CHANNEL_ID
         dataChannelSenderOptions?.setPriority(DataChannelPriority.HIGH)
         dataChannelSenderOptions?.setReliability(DataChannelReliability.DURABLE)
-        dataChannelSenderOptions?.bitrateInKbps = 32
+        dataChannelSenderOptions?.bitrateInKbps = DURABLE_DATA_CHANNEL_BANDWIDTH_KBPS
 
         //create the data channel sender and apply set options
         dataChannelSender = dataChannelCallFeature?.getDataChannelSender(dataChannelSenderOptions)
