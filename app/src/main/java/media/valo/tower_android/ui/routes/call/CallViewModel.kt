@@ -45,9 +45,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import media.valo.tower_android.R
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
+import media.valo.tower_android.model.Message
 import media.valo.tower_android.utils.AppScope
 import javax.inject.Inject
 
@@ -405,9 +407,14 @@ class CallViewModel @Inject constructor(
 
         // Define listener for receiving messages.
         val dataChannelMessageReceivedListener = PropertyChangedListener { messageReceived ->
-            val message = dataChannelReceiver?.receiveMessage()
-            val sequence = message?.sequenceNumber
-            val data = message?.data
+            val data = dataChannelReceiver?.receiveMessage()?.data
+            if (data == null) {
+                return@PropertyChangedListener
+            }
+
+            try {
+                Json.decodeFromString<Message>(String(data))
+            } catch (_: Exception) { }
         }
 
         // Define listener for creation of dataChannelReceiver.
