@@ -63,6 +63,46 @@ import javax.inject.Inject
 private const val ASSISTANCE_REQUEST_KEEP_ALIVE_TIMEOUT_MILLIS = 30000L
 
 /**
+ * The id for the data channel everything except photos is transmitted over
+ */
+private const val DURABLE_DATA_CHANNEL_ID = 1000
+
+/**
+ * The bandwidth for the data channel everything except photos is transmitted over.
+ */
+private const val DURABLE_DATA_CHANNEL_BANDWIDTH_KBPS = 32
+
+/**
+ * How long to wait before resending a message that failed to send.
+ *
+ * We will only retry sending messages on the durable data channel. Those will be resent on a loop
+ * until it finally works. Since the messages are small, it's unlikely the resends would ever
+ * accumulate to the point where that becomes a problem, and if they do, other issues will have
+ * rendered the call unrecoverably broken before then anyways.
+ */
+private const val DATA_CHANNEL_RETRY_SEND_DELAY = 2.0
+
+/**
+ * How many seconds to wait before establishing the data channel after the call connects.
+ *
+ * Data channels are a new feature in Azure Communication Services and are still quite brittle. To
+ * reduce the likelihood of data channel establishment failing, we add a little bit of a delay
+ * between the call connecting and the data channel being established.
+ */
+private const val DATA_CHANNEL_ESTABLISH_DELAY = 1.0
+
+/**
+ * How long to wait between messages when sending multiple messages through the durable channel.
+ *
+ * There are situations where multiple data channel messages might need to be sent out in response
+ * to a single event (such as the call connecting). Because the data channel implementation in
+ * Azure Communication Services is new and still a little bit brittle, we add a small delay between
+ * messages (and before the first message send after establishing the data channel), to reduce the
+ * likelihood of ACS freaking out and starting to hurl exceptions our way.
+ */
+private const val DATA_CHANNEL_MESSAGE_BURST_DELAY = 1.0
+
+/**
  * `ViewModel` for `CallScreen`.
  *
  * @param towerRepository   `TowerRepository` dependency.
