@@ -408,7 +408,6 @@ class CallViewModel @Inject constructor(
     private fun sendUserHelloEvent() {
 
         val userHello: ByteArray? = null
-        serializeUserHello()
         //TODO UserHello -> Byte Array to send to Backend
         dataChannelSender?.sendMessage(userHello)
     }
