@@ -60,8 +60,6 @@ import javax.inject.Inject
 //      * mvlexs
 //
 
-private const val ASSISTANCE_REQUEST_KEEP_ALIVE_TIMEOUT_MILLIS = 30000L
-
 /**
  * The id for the data channel everything except photos is transmitted over
  */
