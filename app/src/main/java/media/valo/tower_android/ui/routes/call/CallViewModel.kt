@@ -80,7 +80,7 @@ private const val DURABLE_DATA_CHANNEL_BANDWIDTH_KBPS = 32
  * accumulate to the point where that becomes a problem, and if they do, other issues will have
  * rendered the call unrecoverably broken before then anyways.
  */
-private const val DATA_CHANNEL_RETRY_SEND_DELAY = 2.0
+private const val DATA_CHANNEL_RETRY_SEND_DELAY_MILLIS = 2000L
 
 /**
  * How many seconds to wait before establishing the data channel after the call connects.
@@ -89,7 +89,7 @@ private const val DATA_CHANNEL_RETRY_SEND_DELAY = 2.0
  * reduce the likelihood of data channel establishment failing, we add a little bit of a delay
  * between the call connecting and the data channel being established.
  */
-private const val DATA_CHANNEL_ESTABLISH_DELAY = 1.0
+private const val DATA_CHANNEL_ESTABLISH_DELAY_MILLIS = 1000L
 
 /**
  * How long to wait between messages when sending multiple messages through the durable channel.
@@ -100,7 +100,7 @@ private const val DATA_CHANNEL_ESTABLISH_DELAY = 1.0
  * messages (and before the first message send after establishing the data channel), to reduce the
  * likelihood of ACS freaking out and starting to hurl exceptions our way.
  */
-private const val DATA_CHANNEL_MESSAGE_BURST_DELAY = 1.0
+private const val DATA_CHANNEL_MESSAGE_BURST_DELAY_MILLIS = 1000L
 
 /**
  * `ViewModel` for `CallScreen`.
