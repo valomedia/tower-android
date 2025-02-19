@@ -402,12 +402,6 @@ class CallViewModel @Inject constructor(
         val dataChannelCallFeature = call?.feature(Features.DATA_CHANNEL)
         this.dataChannelCallFeature = dataChannelCallFeature
 
-        //define listener for creation of dataChannelReceiver
-        val dataChannelReceiverCreatedListener = DataChannelReceiverCreatedListener { receiverCreated ->
-            val dataChannelReceiver = receiverCreated.receiver
-            this.dataChannelReceiver = dataChannelReceiver
-        }
-
         //define listener for receiving messages
         val dataChannelMessageReceivedListener = PropertyChangedListener { messageReceived ->
             val message = dataChannelReceiver?.receiveMessage()
@@ -415,9 +409,15 @@ class CallViewModel @Inject constructor(
             val data = message?.data
         }
 
+        //define listener for creation of dataChannelReceiver
+        val dataChannelReceiverCreatedListener = DataChannelReceiverCreatedListener { receiverCreated ->
+            val dataChannelReceiver = receiverCreated.receiver
+            this.dataChannelReceiver = dataChannelReceiver
+            dataChannelReceiver.addOnMessageReceivedListener(dataChannelMessageReceivedListener)
+        }
+
         //pass the receivers that have been defined above to our dataChannel object
         dataChannelCallFeature?.addOnReceiverCreatedListener(dataChannelReceiverCreatedListener)
-        dataChannelReceiver?.addOnMessageReceivedListener(dataChannelMessageReceivedListener)
 
         //specify the options for the data channel sender
         val dataChannelSenderOptions = DataChannelSenderOptions()
