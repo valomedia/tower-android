@@ -400,18 +400,18 @@ class CallViewModel @Inject constructor(
         val call = call
         if (call == null) { return }
 
-        //enable data channel feature for our current call object
+        // Enable data channel feature for our current call object.
         val dataChannelCallFeature = call.feature(Features.DATA_CHANNEL)
         this.dataChannelCallFeature = dataChannelCallFeature
 
-        //define listener for receiving messages
+        // Define listener for receiving messages.
         val dataChannelMessageReceivedListener = PropertyChangedListener { messageReceived ->
             val message = dataChannelReceiver?.receiveMessage()
             val sequence = message?.sequenceNumber
             val data = message?.data
         }
 
-        //define listener for creation of dataChannelReceiver
+        // Define listener for creation of dataChannelReceiver.
         val dataChannelReceiverCreatedListener = DataChannelReceiverCreatedListener { receiverCreated ->
             val dataChannelReceiver = receiverCreated.receiver
             this.dataChannelReceiver = dataChannelReceiver
@@ -419,14 +419,14 @@ class CallViewModel @Inject constructor(
         }
         dataChannelCallFeature.addOnReceiverCreatedListener(dataChannelReceiverCreatedListener)
 
-        //specify the options for the data channel sender
+        // Specify the options for the data channel sender.
         val dataChannelSenderOptions = DataChannelSenderOptions()
         dataChannelSenderOptions.channelId = DURABLE_DATA_CHANNEL_ID
         dataChannelSenderOptions.setPriority(DataChannelPriority.HIGH)
         dataChannelSenderOptions.setReliability(DataChannelReliability.DURABLE)
         dataChannelSenderOptions.bitrateInKbps = DURABLE_DATA_CHANNEL_BANDWIDTH_KBPS
 
-        //create the data channel sender and apply set options
+        // Create the data channel sender and apply set options.
         val dataChannelSender = dataChannelCallFeature.getDataChannelSender(dataChannelSenderOptions)
         this.dataChannelSender = dataChannelSender
     }
