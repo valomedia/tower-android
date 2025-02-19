@@ -59,7 +59,7 @@ sealed class DataMessage: Message() {
     data class UserHelloEvent(
         val clientInfo: ClientInfo,
         val userProfile: UserProfile
-    )
+    ): DataMessage()
 
 }
 
@@ -80,6 +80,6 @@ sealed class ErrorMessage: Message() {
     data class ErrorEvent(
         val error: String,
         val localizedError: String?
-    )
+    ): ErrorMessage()
 
 }
