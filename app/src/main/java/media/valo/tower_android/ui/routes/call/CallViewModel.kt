@@ -401,38 +401,30 @@ class CallViewModel @Inject constructor(
         if (call == null) { return }
         delay(DATA_CHANNEL_ESTABLISH_DELAY_MILLIS)
 
-        // Enable data channel feature for our current call object.
         val dataChannelCallFeature = call.feature(Features.DATA_CHANNEL)
         this.dataChannelCallFeature = dataChannelCallFeature
 
-        // Define listener for receiving messages.
-        val dataChannelMessageReceivedListener = PropertyChangedListener { messageReceived ->
-            val data = dataChannelReceiver?.receiveMessage()?.data
-            if (data == null) {
-                return@PropertyChangedListener
-            }
+        val dataChannelReceiverCreatedListener = DataChannelReceiverCreatedListener {
+            this.dataChannelReceiver = it.receiver
+            it.receiver.addOnMessageReceivedListener(PropertyChangedListener {
+                val data = dataChannelReceiver?.receiveMessage()?.data
+                if (data == null) {
+                    return@PropertyChangedListener
+                }
 
-            try {
-                Json.decodeFromString<Message>(String(data))
-            } catch (_: Exception) { }
-        }
-
-        // Define listener for creation of dataChannelReceiver.
-        val dataChannelReceiverCreatedListener = DataChannelReceiverCreatedListener { receiverCreated ->
-            val dataChannelReceiver = receiverCreated.receiver
-            this.dataChannelReceiver = dataChannelReceiver
-            dataChannelReceiver.addOnMessageReceivedListener(dataChannelMessageReceivedListener)
+                try {
+                    Json.decodeFromString<Message>(String(data))
+                } catch (_: Exception) { }
+            })
         }
         dataChannelCallFeature.addOnReceiverCreatedListener(dataChannelReceiverCreatedListener)
 
-        // Specify the options for the data channel sender.
         val dataChannelSenderOptions = DataChannelSenderOptions()
         dataChannelSenderOptions.channelId = DURABLE_DATA_CHANNEL_ID
         dataChannelSenderOptions.setPriority(DataChannelPriority.HIGH)
         dataChannelSenderOptions.setReliability(DataChannelReliability.DURABLE)
         dataChannelSenderOptions.bitrateInKbps = DURABLE_DATA_CHANNEL_BANDWIDTH_KBPS
 
-        // Create the data channel sender and apply set options.
         val dataChannelSender = dataChannelCallFeature.getDataChannelSender(dataChannelSenderOptions)
         this.dataChannelSender = dataChannelSender
     }
