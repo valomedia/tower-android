@@ -57,9 +57,10 @@ sealed class DataMessage: Message() {
     @Serializable
     @SerialName("userHelloEvent")
     data class UserHelloEvent(
-        val clientInfo: ClientInfo,
         val userProfile: UserProfile
-    ): DataMessage()
+    ): DataMessage() {
+        val clientInfo = ClientInfo
+    }
 
 }
 
