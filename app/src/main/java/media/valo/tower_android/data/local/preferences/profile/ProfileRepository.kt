@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.datetime.LocalDate
 import media.valo.tower_android.model.Gender
+import media.valo.tower_android.model.UserProfile
 import javax.inject.Inject
 
 /**
@@ -158,5 +159,33 @@ class ProfileRepository @Inject constructor(
      * @param email The new e-mail address to set, or `null` to unset the e-mail address.
      */
     suspend fun setEmail(email: String?) = profileDataSource.setEmail(email)
+
+    /**
+     * Get the full UserProfile.
+     *
+     * @return The contents of the ProfileRepository as a UserProfile.
+     */
+    suspend fun getUserProfile(): UserProfile = UserProfile(
+        firstName = getFirstName(),
+        lastName = getLastName(),
+        gender = getGender(),
+        birthdate = getBirthdate(),
+        phone = getPhone(),
+        email = getEmail()
+    )
+
+    /**
+     * Write a UserProfile to the repository, overwriting all fields.
+     *
+     * @param userProfile The UserProfile to store.
+     */
+    suspend fun setUserProfile(userProfile: UserProfile) {
+        setFirstName(userProfile.firstName)
+        setLastName(userProfile.lastName)
+        setGender(userProfile.gender)
+        setBirthdate(userProfile.birthdate)
+        setPhone(userProfile.phone)
+        setEmail(userProfile.email)
+    }
 
 }
