@@ -43,6 +43,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
+import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.DummyTowerDataSource
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
@@ -164,6 +166,7 @@ fun CallScreenPreview() {
         CallScreen(
             viewModel = CallViewModel(
                 towerRepository = TowerRepository(DummyTowerDataSource()),
+                profileRepository = ProfileRepository(DummyProfileDataSource()),
                 appScope = CoroutineScopeModule().provideCoroutineScope()
             ),
             navController = rememberNavController(),
