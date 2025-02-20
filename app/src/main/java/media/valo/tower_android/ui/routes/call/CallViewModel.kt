@@ -380,6 +380,9 @@ class CallViewModel @Inject constructor(
         currentCamera = null
         currentVideoStream = null
         previewRenderer = null
+        dataChannelCallFeature = null
+        dataChannelSender = null
+        dataChannelReceiver = null
 
         sessionState = AssistanceSessionState.DISCONNECTED
     }
