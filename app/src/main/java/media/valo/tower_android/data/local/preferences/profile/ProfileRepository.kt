@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -16,8 +16,8 @@ package media.valo.tower_android.data.local.preferences.profile
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.datetime.LocalDate
 import media.valo.tower_android.model.Gender
-import java.time.LocalDate
 import javax.inject.Inject
 
 /**
