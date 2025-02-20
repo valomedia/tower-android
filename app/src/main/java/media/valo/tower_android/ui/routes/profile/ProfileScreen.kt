@@ -59,13 +59,13 @@ object ProfileScreen
 /**
  * The screen that allows the user to enter their profile information.
  *
- * @param viewModel `ProfileViewModel` dependency.
  * @param modifier  `Modifier` for this element.
+ * @param viewModel `ProfileViewModel` dependency.
  */
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel = hiltViewModel(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
     val focusRequester = remember { FocusRequester() }
