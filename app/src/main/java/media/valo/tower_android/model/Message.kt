@@ -6,6 +6,7 @@
 
 package media.valo.tower_android.model
 
+import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
@@ -33,8 +34,8 @@ sealed class Message
 object MessageSerializer: JsonContentPolymorphicSerializer<Message>(Message::class) {
 
     override fun selectDeserializer(element: JsonElement) = when {
-        "error" in element.jsonObject -> JsonPropertyClassDiscriminationSerializer(ErrorMessage.serializer())
-        else -> JsonPropertyClassDiscriminationSerializer(DataMessage.serializer())
+        "error" in element.jsonObject -> ErrorMessage.serializer()
+        else -> DataMessage.serializer()
     }
 
 }
@@ -42,7 +43,7 @@ object MessageSerializer: JsonContentPolymorphicSerializer<Message>(Message::cla
 /**
  * A data channel message that is sent during normal operation.
  */
-@Serializable
+@Serializable(with = DataMessageSerializer::class)
 sealed class DataMessage: Message() {
 
     /**
@@ -64,10 +65,13 @@ sealed class DataMessage: Message() {
 
 }
 
+object DataMessageSerializer:
+    JsonPropertyClassDiscriminationSerializer<DataMessage>(PolymorphicSerializer(DataMessage::class))
+
 /**
  * A data channel message sent when something goes wrong.
  */
-@Serializable
+@Serializable(with = ErrorMessageSerializer::class)
 sealed class ErrorMessage: Message() {
 
     /**
@@ -84,3 +88,6 @@ sealed class ErrorMessage: Message() {
     ): ErrorMessage()
 
 }
+
+object ErrorMessageSerializer:
+    JsonPropertyClassDiscriminationSerializer<ErrorMessage>(PolymorphicSerializer(ErrorMessage::class))

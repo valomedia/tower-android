@@ -31,7 +31,7 @@ import kotlinx.serialization.json.jsonPrimitive
  *
  * @param tSerializer The serializer to apply the transformation to.
  */
-class JsonPropertyClassDiscriminationSerializer<T: Any>(
+open class JsonPropertyClassDiscriminationSerializer<T: Any>(
     tSerializer: KSerializer<T>
 ): JsonTransformingSerializer<T>(tSerializer) {
 
