@@ -65,6 +65,9 @@ sealed class DataMessage: Message() {
 
 }
 
+/**
+ * Serializer for data channel messages sent during normal operation.
+ */
 object DataMessageSerializer:
     JsonPropertyClassDiscriminationSerializer<DataMessage>(PolymorphicSerializer(DataMessage::class))
 
@@ -89,5 +92,8 @@ sealed class ErrorMessage: Message() {
 
 }
 
+/**
+ * Serializer for data channel messages sent when something goes wrong.
+ */
 object ErrorMessageSerializer:
     JsonPropertyClassDiscriminationSerializer<ErrorMessage>(PolymorphicSerializer(ErrorMessage::class))
