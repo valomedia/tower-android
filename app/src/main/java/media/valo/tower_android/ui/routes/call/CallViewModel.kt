@@ -108,12 +108,14 @@ private const val DATA_CHANNEL_MESSAGE_BURST_DELAY_MILLIS = 1000L
  *
  * @param towerRepository   `TowerRepository` dependency.
  * @param profileRepository `ProfileRepository` dependency.
+ * @param json              `Json` dependency.
  * @param appScope          `AppScope` dependency.
  */
 @HiltViewModel
 class CallViewModel @Inject constructor(
     private val towerRepository: TowerRepository,
     private val profileRepository: ProfileRepository,
+    private val json: Json,
     @AppScope val appScope: CoroutineScope
 ): ViewModel() {
 

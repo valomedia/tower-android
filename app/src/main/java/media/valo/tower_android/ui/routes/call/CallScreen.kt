@@ -52,6 +52,7 @@ import media.valo.tower_android.ui.elements.AppBarPreview
 import media.valo.tower_android.ui.elements.Logo
 import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.utils.CoroutineScopeModule
+import media.valo.tower_android.utils.JsonModule
 
 //
 //  CallScreen.kt
@@ -167,6 +168,7 @@ fun CallScreenPreview() {
             viewModel = CallViewModel(
                 towerRepository = TowerRepository(DummyTowerDataSource()),
                 profileRepository = ProfileRepository(DummyProfileDataSource()),
+                json = JsonModule().provideJson(),
                 appScope = CoroutineScopeModule().provideCoroutineScope()
             ),
             navController = rememberNavController(),
