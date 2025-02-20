@@ -45,12 +45,15 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import media.valo.tower_android.R
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
+import media.valo.tower_android.model.DataMessage
 import media.valo.tower_android.model.Message
+import media.valo.tower_android.model.UserProfile
 import media.valo.tower_android.utils.AppScope
 import javax.inject.Inject
 
@@ -435,6 +438,19 @@ class CallViewModel @Inject constructor(
 
         val dataChannelSender = dataChannelCallFeature.getDataChannelSender(dataChannelSenderOptions)
         this.dataChannelSender = dataChannelSender
+
+        delay(DATA_CHANNEL_MESSAGE_BURST_DELAY_MILLIS)
+        val userProfile = UserProfile(
+            firstName = profileRepository.getFirstName(),
+            lastName = profileRepository.getLastName(),
+            gender = profileRepository.getGender(),
+            birthdate = profileRepository.getBirthdate(),
+            phone = profileRepository.getPhone(),
+            email = profileRepository.getEmail()
+        )
+        dataChannelSender.sendMessage(
+            json.encodeToString<DataMessage>(DataMessage.UserHelloEvent(userProfile)).toByteArray(Charsets.UTF_8)
+        )
     }
 
 }
