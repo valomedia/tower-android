@@ -7,6 +7,7 @@
 package media.valo.tower_android.model
 
 import kotlinx.serialization.PolymorphicSerializer
+import kotlinx.serialization.Required
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
@@ -58,10 +59,9 @@ sealed class DataMessage: Message() {
     @Serializable
     @SerialName("userHelloEvent")
     data class UserHelloEvent(
-        val userProfile: UserProfile
-    ): DataMessage() {
-        val clientInfo = ClientInfo
-    }
+        val userProfile: UserProfile,
+        @Required val clientInfo: ClientInfo = ClientInfo()
+    ): DataMessage()
 
 }
 

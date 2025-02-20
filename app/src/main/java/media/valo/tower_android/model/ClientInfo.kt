@@ -6,7 +6,7 @@
 
 package media.valo.tower_android.model
 
-import kotlinx.serialization.SerialName
+import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.BuildConfig
 
@@ -20,20 +20,12 @@ import media.valo.tower_android.BuildConfig
 
 /**
  * Information about the app.
+ *
+ * @param identifier    The package identifier of the application.
+ * @param version       The version name of the application.
  */
 @Serializable
-object ClientInfo {
-
-    /**
-     * The package identifier of the application.
-     */
-    @SerialName("identifier")
-    const val IDENTIFIER = BuildConfig.APPLICATION_ID
-
-    /**
-     * The version name of the application.
-     */
-    @SerialName("version")
-    const val VERSION = BuildConfig.VERSION_NAME
-
-}
+data class ClientInfo(
+    @Required val identifier: String = BuildConfig.APPLICATION_ID,
+    @Required val version: String = BuildConfig.VERSION_NAME
+)
