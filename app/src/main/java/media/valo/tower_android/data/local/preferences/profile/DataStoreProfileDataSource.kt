@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -19,11 +19,11 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.datetime.LocalDate
 import media.valo.tower_android.model.Gender
 import media.valo.tower_android.utils.ProfileDataStore
 import media.valo.tower_android.utils.get
 import media.valo.tower_android.utils.set
-import java.time.LocalDate
 import javax.inject.Inject
 
 /**

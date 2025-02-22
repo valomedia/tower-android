@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -16,9 +16,9 @@ package media.valo.tower_android
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.datetime.LocalDate
 import media.valo.tower_android.data.local.preferences.profile.ProfileDataSource
 import media.valo.tower_android.model.Gender
-import java.time.LocalDate
 
 private const val FIRST_NAME = "Theo"
 private const val LAST_NAME = "Test"

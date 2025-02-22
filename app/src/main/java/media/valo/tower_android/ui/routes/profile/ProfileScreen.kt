@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -41,12 +41,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.toJavaLocalDate
+import kotlinx.datetime.toKotlinLocalDate
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.model.Gender
 import media.valo.tower_android.ui.elements.AppBarPreview
-import java.time.LocalDate
 
 /**
  * Object for the navigation destination for the profile screen.
@@ -57,13 +59,13 @@ object ProfileScreen
 /**
  * The screen that allows the user to enter their profile information.
  *
- * @param viewModel `ProfileViewModel` dependency.
  * @param modifier  `Modifier` for this element.
+ * @param viewModel `ProfileViewModel` dependency.
  */
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel = hiltViewModel(),
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: ProfileViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState()
     val focusRequester = remember { FocusRequester() }
@@ -134,8 +136,8 @@ fun ProfileScreen(
             modifier = Modifier.padding(8.dp).fillMaxWidth(),
         )
         DatePickerField(
-            value = birthdate,
-            onValueChange = { birthdate = it },
+            value = birthdate?.toJavaLocalDate(),
+            onValueChange = { birthdate = it?.toKotlinLocalDate() },
             label = { Text("Geburtsdatum") },
             enabled = !isLoading,
             modifier = Modifier.padding(8.dp).fillMaxWidth()

@@ -24,10 +24,19 @@ import com.azure.android.communication.calling.CallClient
 import com.azure.android.communication.calling.CallState
 import com.azure.android.communication.calling.CameraFacing
 import com.azure.android.communication.calling.CreateViewOptions
+import com.azure.android.communication.calling.DataChannelCallFeature
+import com.azure.android.communication.calling.DataChannelPriority
+import com.azure.android.communication.calling.DataChannelReceiver
+import com.azure.android.communication.calling.DataChannelReceiverCreatedListener
+import com.azure.android.communication.calling.DataChannelReliability
+import com.azure.android.communication.calling.DataChannelSender
+import com.azure.android.communication.calling.DataChannelSenderOptions
 import com.azure.android.communication.calling.DeviceManager
+import com.azure.android.communication.calling.Features
 import com.azure.android.communication.calling.IncomingCall
 import com.azure.android.communication.calling.LocalVideoStream
 import com.azure.android.communication.calling.OutgoingVideoOptions
+import com.azure.android.communication.calling.PropertyChangedListener
 import com.azure.android.communication.calling.ScalingMode
 import com.azure.android.communication.calling.VideoDeviceInfo
 import com.azure.android.communication.calling.VideoStreamRenderer
@@ -36,9 +45,14 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import media.valo.tower_android.R
+import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
+import media.valo.tower_android.model.DataMessage
+import media.valo.tower_android.model.Message
 import media.valo.tower_android.utils.AppScope
 import javax.inject.Inject
 
@@ -51,17 +65,59 @@ import javax.inject.Inject
 //      * mvlexs
 //
 
-private const val ASSISTANCE_REQUEST_KEEP_ALIVE_TIMEOUT_MILLIS = 30000L
+/**
+ * The id for the data channel everything except photos is transmitted over
+ */
+private const val DURABLE_DATA_CHANNEL_ID = 1000
+
+/**
+ * The bandwidth for the data channel everything except photos is transmitted over.
+ */
+private const val DURABLE_DATA_CHANNEL_BANDWIDTH_KBPS = 32
+
+/**
+ * How long to wait before resending a message that failed to send.
+ *
+ * We will only retry sending messages on the durable data channel. Those will be resent on a loop
+ * until it finally works. Since the messages are small, it's unlikely the resends would ever
+ * accumulate to the point where that becomes a problem, and if they do, other issues will have
+ * rendered the call unrecoverably broken before then anyways.
+ */
+private const val DATA_CHANNEL_RETRY_SEND_DELAY_MILLIS = 2000L
+
+/**
+ * How many seconds to wait before establishing the data channel after the call connects.
+ *
+ * Data channels are a new feature in Azure Communication Services and are still quite brittle. To
+ * reduce the likelihood of data channel establishment failing, we add a little bit of a delay
+ * between the call connecting and the data channel being established.
+ */
+private const val DATA_CHANNEL_ESTABLISH_DELAY_MILLIS = 1000L
+
+/**
+ * How long to wait between messages when sending multiple messages through the durable channel.
+ *
+ * There are situations where multiple data channel messages might need to be sent out in response
+ * to a single event (such as the call connecting). Because the data channel implementation in
+ * Azure Communication Services is new and still a little bit brittle, we add a small delay between
+ * messages (and before the first message send after establishing the data channel), to reduce the
+ * likelihood of ACS freaking out and starting to hurl exceptions our way.
+ */
+private const val DATA_CHANNEL_MESSAGE_BURST_DELAY_MILLIS = 1000L
 
 /**
  * `ViewModel` for `CallScreen`.
  *
  * @param towerRepository   `TowerRepository` dependency.
+ * @param profileRepository `ProfileRepository` dependency.
+ * @param json              `Json` dependency.
  * @param appScope          `AppScope` dependency.
  */
 @HiltViewModel
 class CallViewModel @Inject constructor(
     private val towerRepository: TowerRepository,
+    private val profileRepository: ProfileRepository,
+    private val json: Json,
     @AppScope val appScope: CoroutineScope
 ): ViewModel() {
 
@@ -97,6 +153,12 @@ class CallViewModel @Inject constructor(
     private var endSound: MediaPlayer? = null
 
     private var errorSound: MediaPlayer? = null
+
+    private var dataChannelCallFeature: DataChannelCallFeature? = null
+
+    private var dataChannelSender: DataChannelSender? = null
+
+    private var dataChannelReceiver: DataChannelReceiver? = null
 
     /**
      * Start the assistance session.
@@ -292,6 +354,7 @@ class CallViewModel @Inject constructor(
     private fun handleCallConnected() {
         sessionState = AssistanceSessionState.CONNECTED
         this.startSound?.start()
+        this.appScope.launch { establishDataChannel() }
     }
 
     private fun handleCallDisconnected() {
@@ -319,6 +382,9 @@ class CallViewModel @Inject constructor(
         currentCamera = null
         currentVideoStream = null
         previewRenderer = null
+        dataChannelCallFeature = null
+        dataChannelSender = null
+        dataChannelReceiver = null
 
         sessionState = AssistanceSessionState.DISCONNECTED
     }
@@ -338,6 +404,46 @@ class CallViewModel @Inject constructor(
 
     private fun getCameraFacing(@Suppress("SameParameterValue") cameraFacing: CameraFacing): VideoDeviceInfo? {
         return deviceManager?.cameras?.first { it.cameraFacing == cameraFacing }
+    }
+
+    private suspend fun establishDataChannel() {
+        val call = call
+        if (call == null) { return }
+        delay(DATA_CHANNEL_ESTABLISH_DELAY_MILLIS)
+
+        val dataChannelCallFeature = call.feature(Features.DATA_CHANNEL)
+        this.dataChannelCallFeature = dataChannelCallFeature
+
+        val dataChannelReceiverCreatedListener = DataChannelReceiverCreatedListener {
+            this.dataChannelReceiver = it.receiver
+            it.receiver.addOnMessageReceivedListener(PropertyChangedListener {
+                val data = dataChannelReceiver?.receiveMessage()?.data
+                if (data == null) {
+                    return@PropertyChangedListener
+                }
+
+                try {
+                    Json.decodeFromString<Message>(String(data))
+                } catch (_: Exception) { }
+            })
+        }
+        dataChannelCallFeature.addOnReceiverCreatedListener(dataChannelReceiverCreatedListener)
+
+        val dataChannelSenderOptions = DataChannelSenderOptions()
+        dataChannelSenderOptions.channelId = DURABLE_DATA_CHANNEL_ID
+        dataChannelSenderOptions.setPriority(DataChannelPriority.HIGH)
+        dataChannelSenderOptions.setReliability(DataChannelReliability.DURABLE)
+        dataChannelSenderOptions.bitrateInKbps = DURABLE_DATA_CHANNEL_BANDWIDTH_KBPS
+
+        val dataChannelSender = dataChannelCallFeature.getDataChannelSender(dataChannelSenderOptions)
+        this.dataChannelSender = dataChannelSender
+
+        delay(DATA_CHANNEL_MESSAGE_BURST_DELAY_MILLIS)
+        dataChannelSender.sendMessage(
+            json
+                .encodeToString<DataMessage>(DataMessage.UserHelloEvent(profileRepository.getUserProfile()))
+                .toByteArray(Charsets.UTF_8)
+        )
     }
 
 }
