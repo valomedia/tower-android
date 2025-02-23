@@ -53,6 +53,7 @@ import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
 import media.valo.tower_android.model.DataMessage
+import media.valo.tower_android.model.ErrorMessage
 import media.valo.tower_android.model.Message
 import media.valo.tower_android.utils.AppScope
 import javax.inject.Inject
@@ -447,11 +448,15 @@ class CallViewModel @Inject constructor(
         this.dataChannelSender = dataChannelSender
 
         delay(DATA_CHANNEL_MESSAGE_BURST_DELAY_MILLIS)
-        dataChannelSender.sendMessage(
-            json
-                .encodeToString<DataMessage>(DataMessage.UserHelloEvent(profileRepository.getUserProfile()))
-                .toByteArray(Charsets.UTF_8)
-        )
+        sendMessage(DataMessage.UserHelloEvent(profileRepository.getUserProfile()))
     }
+
+    private fun sendMessage(message: Message) = dataChannelSender?.sendMessage(
+        when (message) {
+            is DataMessage -> json.encodeToString(message)
+            is ErrorMessage -> json.encodeToString(message)
+        }
+            .toByteArray(Charsets.UTF_8)
+    )
 
 }
