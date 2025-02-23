@@ -253,6 +253,19 @@ class CallViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Send a Message through the durable data channel.
+     *
+     * @param message The Message to send.
+     */
+    fun sendMessage(message: Message) = dataChannelSender?.sendMessage(
+        when (message) {
+            is DataMessage -> json.encodeToString(message)
+            is ErrorMessage -> json.encodeToString(message)
+        }
+            .toByteArray(Charsets.UTF_8)
+    )
+
     private fun configureAudio() {
         val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         this.audioManager = audioManager
@@ -454,14 +467,6 @@ class CallViewModel @Inject constructor(
         delay(DATA_CHANNEL_MESSAGE_BURST_DELAY_MILLIS)
         sendMessage(DataMessage.UserHelloEvent(profileRepository.getUserProfile()))
     }
-
-    private fun sendMessage(message: Message) = dataChannelSender?.sendMessage(
-        when (message) {
-            is DataMessage -> json.encodeToString(message)
-            is ErrorMessage -> json.encodeToString(message)
-        }
-            .toByteArray(Charsets.UTF_8)
-    )
 
     private fun handleLocationRequest() {
         sendMessage(DataMessage.LocationResponse())
