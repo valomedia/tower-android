@@ -101,6 +101,7 @@ dependencies {
     implementation(libs.azure.communication.calling)
     implementation(libs.kotlinx.datetime)
     implementation(libs.accompanist.permissions)
+    implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
