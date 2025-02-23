@@ -429,10 +429,16 @@ class CallViewModel @Inject constructor(
                     return@PropertyChangedListener
                 }
 
-                try {
-                    Json.decodeFromString<Message>(String(data))
+                val message = try {
+                    json.decodeFromString<Message>(String(data))
                 } catch (e: Exception) {
-                    Log.w(TAG, "Got a data channel message that could not be decoded", e)
+                    Log.v(TAG, "Got a data channel message that is not understood by this client", e)
+                    return@PropertyChangedListener
+                }
+
+                when (message) {
+                    is DataMessage.LocationRequest -> handleLocationRequest()
+                    else -> {}
                 }
             })
         }
