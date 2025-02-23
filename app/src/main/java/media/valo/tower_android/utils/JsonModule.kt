@@ -41,8 +41,6 @@ class JsonModule() {
                 subclass(DataMessage.UserHelloEvent::class)
             }
             polymorphic(ErrorMessage::class) {
-                subclass(ErrorMessage.LocationResponse::class)
-                subclass(ErrorMessage.LocationEvent::class)
                 subclass(ErrorMessage.ErrorEvent::class)
             }
         }

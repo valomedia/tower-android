@@ -64,10 +64,10 @@ sealed class DataMessage: Message() {
      * A locationResponse data message.
      *
      * This is sent once in reply to a locationRequest to confirm that the location request has
-     * been executed successfully. This means that the user has either allowed access to the
-     * location already, or is being prompted for it. It does not necessarily mean location data
-     * will be sent, since the user might still deny access when prompted, or the location of the
-     * device might simply not be available.
+     * been received. Since Android does not really allow distinguishing between cases where
+     * location might still come (because the user is being prompted), and cases where location will
+     * never come (because the user has denied access), this is sent regardless of whether any
+     * actual location can be produced.
      */
     @Serializable
     @SerialName("locationResponse")
@@ -158,40 +158,6 @@ object DataMessageSerializer:
  */
 @Serializable(with = ErrorMessageSerializer::class)
 sealed class ErrorMessage: Message() {
-
-    /**
-     * An error response indicating that the location is not available.
-     *
-     * This is sent if the location cannot be determined because the user has previously blocked
-     * access to the location. If the user hasn't made a decision yet (and will this be prompted),
-     * a normal locationResponse is sent instead.
-     *
-     * @param error             A message describing the error that occurred in English.
-     * @param localizedError    A message describing the error that occurred in the language of the user, if available.
-     */
-    @Serializable
-    @SerialName("locationResponse")
-    data class LocationResponse(
-        val error: String,
-        val localizedError: String?
-    ): ErrorMessage()
-
-    /**
-     * An error event indicating that location data isn't available even though it initially seemed like it might be.
-     *
-     * This can happen if the user is prompted for location access and then denies the prompt, of if
-     * determining the location failed.
-     *
-     * @param error             A message describing the error that occurred in English.
-     * @param localizedError    A message describing the error that occurred in the language of the user, if available.
-     */
-    @Serializable
-    @SerialName("locationEvent")
-    data class LocationEvent(
-        val error: String,
-        val localizedError: String?
-    ): ErrorMessage()
-
 
     /**
      * A generic error event for unexpected errors.
