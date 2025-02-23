@@ -12,6 +12,7 @@ import android.media.AudioAttributes
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.util.Log
 import android.view.ViewGroup
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -104,6 +105,11 @@ private const val DATA_CHANNEL_ESTABLISH_DELAY_MILLIS = 1000L
  * likelihood of ACS freaking out and starting to hurl exceptions our way.
  */
 private const val DATA_CHANNEL_MESSAGE_BURST_DELAY_MILLIS = 1000L
+
+/**
+ * Tag added to log messages related to the CallViewModel.
+ */
+private const val TAG = "CallViewModel"
 
 /**
  * `ViewModel` for `CallScreen`.
@@ -424,7 +430,9 @@ class CallViewModel @Inject constructor(
 
                 try {
                     Json.decodeFromString<Message>(String(data))
-                } catch (_: Exception) { }
+                } catch (e: Exception) {
+                    Log.w(TAG, "Got a data channel message that could not be decoded", e)
+                }
             })
         }
         dataChannelCallFeature.addOnReceiverCreatedListener(dataChannelReceiverCreatedListener)
