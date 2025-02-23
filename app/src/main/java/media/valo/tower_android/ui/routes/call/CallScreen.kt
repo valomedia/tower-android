@@ -86,7 +86,7 @@ fun CallScreen(
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
-    val activity = LocalActivity.current!!
+    val activity = LocalActivity.current
     val accessibilityManager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
 
     LaunchedEffect(Unit) {
@@ -119,7 +119,9 @@ fun CallScreen(
                 factory = { context -> FrameLayout(context) },
                 update = { view ->
                     viewModel.sessionState
-                    viewModel.showPreview(activity, view)
+                    if (activity != null) {
+                        viewModel.showPreview(activity, view)
+                    }
                 },
                 modifier = Modifier.weight(1f).padding(8.dp),
             )
