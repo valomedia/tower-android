@@ -43,6 +43,7 @@ import com.azure.android.communication.calling.VideoDeviceInfo
 import com.azure.android.communication.calling.VideoStreamRenderer
 import com.azure.android.communication.common.CommunicationTokenCredential
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -125,6 +126,7 @@ class CallViewModel @Inject constructor(
     private val towerRepository: TowerRepository,
     private val profileRepository: ProfileRepository,
     private val json: Json,
+    @ApplicationContext private val context: Context,
     @AppScope val appScope: CoroutineScope
 ): ViewModel() {
 
@@ -173,20 +175,19 @@ class CallViewModel @Inject constructor(
      * This will connect to the backend to create a new assistance session, use the token from the
      * backend to connect to ACS, and register a callback for when the assistant connects.
      *
-     * @param context       The application context to use for access to things like camera and microphone.
      * @param onCallError   Callback to invoke if establishing the call fails.
      */
-    fun startSession(context: Context, onCallError: (() -> Unit) = {}) {
+    fun startSession(onCallError: (() -> Unit) = {}) {
         sessionState = AssistanceSessionState.INITIALIZING
         this.onCallError = onCallError
 
-        configureAudio(context)
+        configureAudio()
         ringbackSound?.start()
 
         appScope.launch {
             try {
-                createAgent(context, createSession()).addOnIncomingCallListener { incomingCall ->
-                    appScope.launch { handleIncomingCall(context, incomingCall) }
+                createAgent(createSession()).addOnIncomingCallListener { incomingCall ->
+                    appScope.launch { handleIncomingCall(incomingCall) }
                 }
                 sessionState = AssistanceSessionState.WAITING
             } catch (_: Exception) {
@@ -252,7 +253,7 @@ class CallViewModel @Inject constructor(
         }
     }
 
-    private fun configureAudio(context: Context) {
+    private fun configureAudio() {
         val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         this.audioManager = audioManager
 
@@ -308,7 +309,7 @@ class CallViewModel @Inject constructor(
         }
     }
 
-    private fun createAgent(context: Context, credential: CommunicationTokenCredential): CallAgent {
+    private fun createAgent(credential: CommunicationTokenCredential): CallAgent {
         val callClient = CallClient()
         val callAgent = callClient.createCallAgent(context, credential).get()
         val deviceManager = callClient.getDeviceManager(context).get()
@@ -318,10 +319,7 @@ class CallViewModel @Inject constructor(
         return callAgent
     }
 
-    private fun handleIncomingCall(
-        context: Context,
-        incomingCall: IncomingCall
-    ) {
+    private fun handleIncomingCall(incomingCall: IncomingCall) {
         sessionState = AssistanceSessionState.CONNECTING
         currentCamera = getCameraFacing(CameraFacing.BACK)
         currentVideoStream = LocalVideoStream(currentCamera, context)

@@ -91,11 +91,11 @@ fun CallScreen(
 
     LaunchedEffect(Unit) {
         if (viewModel.sessionState == AssistanceSessionState.DISCONNECTED) {
-            viewModel.startSession(context, onCallError = {
+            viewModel.startSession {
                 viewModel.appScope.launch {
                     snackbarHostState.showSnackbar("Anruf fehlgeschlagen, bitte erneut versuchen.")
                 }
-            })
+            }
         }
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
@@ -171,6 +171,7 @@ fun CallScreenPreview() {
                 towerRepository = TowerRepository(DummyTowerDataSource()),
                 profileRepository = ProfileRepository(DummyProfileDataSource()),
                 json = JsonModule().provideJson(),
+                context = LocalContext.current,
                 appScope = CoroutineScopeModule().provideCoroutineScope()
             ),
             navController = rememberNavController(),
