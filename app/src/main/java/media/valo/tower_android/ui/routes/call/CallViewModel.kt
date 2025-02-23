@@ -459,4 +459,8 @@ class CallViewModel @Inject constructor(
             .toByteArray(Charsets.UTF_8)
     )
 
+    private fun handleLocationRequest() {
+        sendMessage(DataMessage.LocationResponse())
+    }
+
 }
