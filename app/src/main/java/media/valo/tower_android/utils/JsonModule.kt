@@ -35,9 +35,14 @@ class JsonModule() {
     fun provideJson(): Json = Json {
         serializersModule = SerializersModule {
             polymorphic(DataMessage::class) {
+                subclass(DataMessage.LocationRequest::class)
+                subclass(DataMessage.LocationResponse::class)
+                subclass(DataMessage.LocationEvent::class)
                 subclass(DataMessage.UserHelloEvent::class)
             }
             polymorphic(ErrorMessage::class) {
+                subclass(ErrorMessage.LocationResponse::class)
+                subclass(ErrorMessage.LocationEvent::class)
                 subclass(ErrorMessage.ErrorEvent::class)
             }
         }
