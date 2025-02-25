@@ -6,16 +6,21 @@
 
 package media.valo.tower_android.ui.routes.call
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.os.Looper
+import android.util.Log
 import android.view.ViewGroup
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import com.azure.android.communication.calling.AcceptCallOptions
 import com.azure.android.communication.calling.Call
@@ -41,7 +46,16 @@ import com.azure.android.communication.calling.ScalingMode
 import com.azure.android.communication.calling.VideoDeviceInfo
 import com.azure.android.communication.calling.VideoStreamRenderer
 import com.azure.android.communication.common.CommunicationTokenCredential
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
+import com.google.android.gms.location.SettingsClient
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -52,6 +66,7 @@ import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
 import media.valo.tower_android.model.DataMessage
+import media.valo.tower_android.model.ErrorMessage
 import media.valo.tower_android.model.Message
 import media.valo.tower_android.utils.AppScope
 import javax.inject.Inject
@@ -106,20 +121,58 @@ private const val DATA_CHANNEL_ESTABLISH_DELAY_MILLIS = 1000L
 private const val DATA_CHANNEL_MESSAGE_BURST_DELAY_MILLIS = 1000L
 
 /**
+ * How often to update the user's location, in milliseconds.
+ *
+ * The system will do its best to provide an update on the location of the user at least this often.
+ */
+private const val LOCATION_UPDATE_INTERVAL_MILLIS = 20000L
+
+/**
+ * How often to update the user's location at most, in milliseconds.
+ *
+ * This is the fastest rate at which the system will update the user's location, if it is deciding
+ * to provide more updates than absolutely necessary, because the system is in a state where the
+ * additional updates will not greatly impact battery life.
+ */
+private const val LOCATION_UPDATE_MIN_INTERVAL_MILLIS = 10000L
+
+/**
+ * Tag added to log messages related to the CallViewModel.
+ */
+private const val TAG = "CallViewModel"
+
+/**
  * `ViewModel` for `CallScreen`.
  *
- * @param towerRepository   `TowerRepository` dependency.
- * @param profileRepository `ProfileRepository` dependency.
- * @param json              `Json` dependency.
- * @param appScope          `AppScope` dependency.
+ * @param towerRepository                   `TowerRepository` dependency.
+ * @param profileRepository                 `ProfileRepository` dependency.
+ * @param json                              `Json` dependency.
+ * @param context                           `Context` dependency.
+ * @param fusedLocationClient               `FusedLocationProviderClient` dependency.
+ * @param locationServicesSettingsClient    `SettingsClient` dependency.
+ * @param looper                            `Looper` dependency.
+ * @param appScope                          `AppScope` dependency.
  */
 @HiltViewModel
 class CallViewModel @Inject constructor(
     private val towerRepository: TowerRepository,
     private val profileRepository: ProfileRepository,
     private val json: Json,
+    @ApplicationContext private val context: Context,
+    private val fusedLocationClient: FusedLocationProviderClient,
+    private val locationServicesSettingsClient: SettingsClient,
+    private val looper: Looper,
     @AppScope val appScope: CoroutineScope
 ): ViewModel() {
+
+    private val locationRequest = LocationRequest
+        .Builder(LOCATION_UPDATE_INTERVAL_MILLIS)
+        .setMinUpdateIntervalMillis(LOCATION_UPDATE_MIN_INTERVAL_MILLIS)
+        .setPriority(PRIORITY_HIGH_ACCURACY)
+        .build()
+
+    private val locationSettingsRequestBuilder: LocationSettingsRequest.Builder =
+        LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
 
     /**
      * The state the assistance session is in.
@@ -127,6 +180,14 @@ class CallViewModel @Inject constructor(
      * This gives a high-level overview of the lifecycle of the call.
      */
     var sessionState by mutableStateOf(AssistanceSessionState.DISCONNECTED)
+
+    /**
+     * Whether the assistant has requested the user's location.
+     *
+     * This is true, if location has been requested by the assistant, but location data is not (yet)
+     * being sent.
+     */
+    var isRequestingLocationUpdates by mutableStateOf(false)
 
     private var callClient: CallClient? = null
 
@@ -166,20 +227,19 @@ class CallViewModel @Inject constructor(
      * This will connect to the backend to create a new assistance session, use the token from the
      * backend to connect to ACS, and register a callback for when the assistant connects.
      *
-     * @param context       The application context to use for access to things like camera and microphone.
      * @param onCallError   Callback to invoke if establishing the call fails.
      */
-    fun startSession(context: Context, onCallError: (() -> Unit) = {}) {
+    fun startSession(onCallError: (() -> Unit) = {}) {
         sessionState = AssistanceSessionState.INITIALIZING
         this.onCallError = onCallError
 
-        configureAudio(context)
+        configureAudio()
         ringbackSound?.start()
 
         appScope.launch {
             try {
-                createAgent(context, createSession()).addOnIncomingCallListener { incomingCall ->
-                    appScope.launch { handleIncomingCall(context, incomingCall) }
+                createAgent(createSession()).addOnIncomingCallListener { incomingCall ->
+                    appScope.launch { handleIncomingCall(incomingCall) }
                 }
                 sessionState = AssistanceSessionState.WAITING
             } catch (_: Exception) {
@@ -245,7 +305,54 @@ class CallViewModel @Inject constructor(
         }
     }
 
-    private fun configureAudio(context: Context) {
+    /**
+     * Send a Message through the durable data channel.
+     *
+     * @param message The Message to send.
+     */
+    fun sendMessage(message: Message) = dataChannelSender?.sendMessage(
+        when (message) {
+            is DataMessage -> json.encodeToString(message)
+            is ErrorMessage -> json.encodeToString(message)
+        }
+            .toByteArray(Charsets.UTF_8)
+    )
+
+    fun startLocationUpdates(onLocationSettingsChangeNeeded: (ResolvableApiException) -> Unit) {
+        val locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                val location = locationResult.lastLocation
+                location ?: return
+                sendMessage(DataMessage.LocationEvent(location))
+            }
+        }
+
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            Log.wtf(TAG, "Function startLocationUpdates called despite missing permissions")
+            return
+        }
+
+        locationServicesSettingsClient
+            .checkLocationSettings(locationSettingsRequestBuilder.build())
+            .addOnFailureListener { exception ->
+                if (exception is ResolvableApiException) {
+                    onLocationSettingsChangeNeeded(exception)
+                }
+            }
+
+        Log.d(TAG, "Starting to send location")
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, looper)
+        isRequestingLocationUpdates = false
+    }
+
+    private fun configureAudio() {
         val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         this.audioManager = audioManager
 
@@ -301,7 +408,7 @@ class CallViewModel @Inject constructor(
         }
     }
 
-    private fun createAgent(context: Context, credential: CommunicationTokenCredential): CallAgent {
+    private fun createAgent(credential: CommunicationTokenCredential): CallAgent {
         val callClient = CallClient()
         val callAgent = callClient.createCallAgent(context, credential).get()
         val deviceManager = callClient.getDeviceManager(context).get()
@@ -311,10 +418,7 @@ class CallViewModel @Inject constructor(
         return callAgent
     }
 
-    private fun handleIncomingCall(
-        context: Context,
-        incomingCall: IncomingCall
-    ) {
+    private fun handleIncomingCall(incomingCall: IncomingCall) {
         sessionState = AssistanceSessionState.CONNECTING
         currentCamera = getCameraFacing(CameraFacing.BACK)
         currentVideoStream = LocalVideoStream(currentCamera, context)
@@ -387,6 +491,7 @@ class CallViewModel @Inject constructor(
         dataChannelReceiver = null
 
         sessionState = AssistanceSessionState.DISCONNECTED
+        isRequestingLocationUpdates = false
     }
 
     private fun getNextAvailableCamera(): VideoDeviceInfo? {
@@ -422,9 +527,17 @@ class CallViewModel @Inject constructor(
                     return@PropertyChangedListener
                 }
 
-                try {
-                    Json.decodeFromString<Message>(String(data))
-                } catch (_: Exception) { }
+                val message = try {
+                    json.decodeFromString<Message>(String(data))
+                } catch (e: Exception) {
+                    Log.v(TAG, "Got a data channel message that is not understood by this client", e)
+                    return@PropertyChangedListener
+                }
+
+                when (message) {
+                    is DataMessage.LocationRequest -> handleLocationRequest()
+                    else -> {}
+                }
             })
         }
         dataChannelCallFeature.addOnReceiverCreatedListener(dataChannelReceiverCreatedListener)
@@ -439,11 +552,21 @@ class CallViewModel @Inject constructor(
         this.dataChannelSender = dataChannelSender
 
         delay(DATA_CHANNEL_MESSAGE_BURST_DELAY_MILLIS)
-        dataChannelSender.sendMessage(
-            json
-                .encodeToString<DataMessage>(DataMessage.UserHelloEvent(profileRepository.getUserProfile()))
-                .toByteArray(Charsets.UTF_8)
-        )
+        sendMessage(DataMessage.UserHelloEvent(profileRepository.getUserProfile()))
+    }
+
+    private fun handleLocationRequest() {
+        isRequestingLocationUpdates = true
+
+        // In Android we can't really know whether the user has denied location permissions. We only
+        // know whether we currently have location permissions, but if we don't, it's completely
+        // impossible to know whether this is because the user has denied location access, or
+        // whether the user has just not been asked yet. Therefore we can't ever confidently say
+        // that location isn't available and will not be available (which would allow us to disable
+        // the button for the assistant). Instead we will always send a normal response, causing the
+        // button to be re-enabled for the assistant, even though we don't know whether there is any
+        // point in pushing it again.
+        sendMessage(DataMessage.LocationResponse())
     }
 
 }

@@ -7,6 +7,7 @@
 package media.valo.tower_android.ui.routes.call
 
 import android.content.Context
+import android.os.Looper
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import android.widget.FrameLayout
@@ -41,6 +42,9 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
@@ -63,6 +67,8 @@ import media.valo.tower_android.utils.JsonModule
 //      * mvlexs
 //
 
+private const val REQUEST_CHECK_SETTINGS = 1
+
 /**
  * Object for the navigation destination for the call screen.
  */
@@ -76,7 +82,7 @@ object CallScreen
  * @param navController     Used to navigate back to the home screen once the call ends.
  * @param snackbarHostState Used to show a snackbar if the call fails.
  */
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalPermissionsApi::class)
 @Composable
 fun CallScreen(
     viewModel: CallViewModel = hiltViewModel(),
@@ -86,16 +92,22 @@ fun CallScreen(
 ) {
     val scrollState = rememberScrollState()
     val context = LocalContext.current
-    val activity = LocalActivity.current!!
+    val activity = LocalActivity.current
     val accessibilityManager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
+    val locationPermissionState = rememberMultiplePermissionsState(
+        listOf(
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+        )
+    )
 
     LaunchedEffect(Unit) {
         if (viewModel.sessionState == AssistanceSessionState.DISCONNECTED) {
-            viewModel.startSession(context, onCallError = {
+            viewModel.startSession {
                 viewModel.appScope.launch {
                     snackbarHostState.showSnackbar("Anruf fehlgeschlagen, bitte erneut versuchen.")
                 }
-            })
+            }
         }
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
@@ -110,6 +122,26 @@ fun CallScreen(
         announceStateChange(context, accessibilityManager, viewModel.sessionState.toString())
     }
 
+    LaunchedEffect(
+        viewModel.isRequestingLocationUpdates,
+        locationPermissionState.revokedPermissions
+    ) {
+        if (viewModel.isRequestingLocationUpdates) {
+            if (!locationPermissionState.allPermissionsGranted) {
+                locationPermissionState.launchMultiplePermissionRequest()
+            } else {
+                viewModel.startLocationUpdates { exception ->
+                    // Location access is granted, but other settings prevent the location from
+                    // being obtained.
+                    try {
+                        // Prompt the user to change the settings.
+                        exception.startResolutionForResult(activity!!, REQUEST_CHECK_SETTINGS)
+                    } catch (_: Exception) { }
+                }
+            }
+        }
+    }
+
     Column(
         modifier = modifier.verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -119,7 +151,9 @@ fun CallScreen(
                 factory = { context -> FrameLayout(context) },
                 update = { view ->
                     viewModel.sessionState
-                    viewModel.showPreview(activity, view)
+                    if (activity != null) {
+                        viewModel.showPreview(activity, view)
+                    }
                 },
                 modifier = Modifier.weight(1f).padding(8.dp),
             )
@@ -169,6 +203,10 @@ fun CallScreenPreview() {
                 towerRepository = TowerRepository(DummyTowerDataSource()),
                 profileRepository = ProfileRepository(DummyProfileDataSource()),
                 json = JsonModule().provideJson(),
+                context = LocalContext.current,
+                fusedLocationClient = LocationServices.getFusedLocationProviderClient(LocalContext.current),
+                locationServicesSettingsClient = LocationServices.getSettingsClient(LocalContext.current),
+                looper = Looper.getMainLooper(),
                 appScope = CoroutineScopeModule().provideCoroutineScope()
             ),
             navController = rememberNavController(),
