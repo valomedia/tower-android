@@ -137,6 +137,14 @@ class CallViewModel @Inject constructor(
      */
     var sessionState by mutableStateOf(AssistanceSessionState.DISCONNECTED)
 
+    /**
+     * Whether the assistant has requested the user's location.
+     *
+     * This is true, if location has been requested by the assistant, but location data is not (yet)
+     * being sent.
+     */
+    var isRequestingLocationUpdates by mutableStateOf(false)
+
     private var callClient: CallClient? = null
 
     private var callAgent: CallAgent? = null
@@ -405,6 +413,7 @@ class CallViewModel @Inject constructor(
         dataChannelReceiver = null
 
         sessionState = AssistanceSessionState.DISCONNECTED
+        isRequestingLocationUpdates = false
     }
 
     private fun getNextAvailableCamera(): VideoDeviceInfo? {
@@ -469,6 +478,16 @@ class CallViewModel @Inject constructor(
     }
 
     private fun handleLocationRequest() {
+        isRequestingLocationUpdates = true
+
+        // In Android we can't really know whether the user has denied location permissions. We only
+        // know whether we currently have location permissions, but if we don't, it's completely
+        // impossible to know whether this is because the user has denied location access, or
+        // whether the user has just not been asked yet. Therefore we can't ever confidently say
+        // that location isn't available and will not be available (which would allow us to disable
+        // the button for the assistant). Instead we will always send a normal response, causing the
+        // button to be re-enabled for the assistant, even though we don't know whether there is any
+        // point in pushing it again.
         sendMessage(DataMessage.LocationResponse())
     }
 
