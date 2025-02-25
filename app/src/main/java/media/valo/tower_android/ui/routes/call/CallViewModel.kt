@@ -12,6 +12,7 @@ import android.media.AudioAttributes
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.os.Looper
 import android.util.Log
 import android.view.ViewGroup
 import androidx.compose.runtime.getValue
@@ -42,6 +43,8 @@ import com.azure.android.communication.calling.ScalingMode
 import com.azure.android.communication.calling.VideoDeviceInfo
 import com.azure.android.communication.calling.VideoStreamRenderer
 import com.azure.android.communication.common.CommunicationTokenCredential
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.SettingsClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
@@ -132,10 +135,14 @@ private const val TAG = "CallViewModel"
 /**
  * `ViewModel` for `CallScreen`.
  *
- * @param towerRepository   `TowerRepository` dependency.
- * @param profileRepository `ProfileRepository` dependency.
- * @param json              `Json` dependency.
- * @param appScope          `AppScope` dependency.
+ * @param towerRepository                   `TowerRepository` dependency.
+ * @param profileRepository                 `ProfileRepository` dependency.
+ * @param json                              `Json` dependency.
+ * @param context                           `Context` dependency.
+ * @param fusedLocationClient               `FusedLocationProviderClient` dependency.
+ * @param locationServicesSettingsClient    `SettingsClient` dependency.
+ * @param looper                            `Looper` dependency.
+ * @param appScope                          `AppScope` dependency.
  */
 @HiltViewModel
 class CallViewModel @Inject constructor(
@@ -143,6 +150,9 @@ class CallViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val json: Json,
     @ApplicationContext private val context: Context,
+    private val fusedLocationClient: FusedLocationProviderClient,
+    private val locationServicesSettingsClient: SettingsClient,
+    private val looper: Looper,
     @AppScope val appScope: CoroutineScope
 ): ViewModel() {
 

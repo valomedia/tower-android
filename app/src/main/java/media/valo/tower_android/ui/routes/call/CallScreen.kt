@@ -7,6 +7,7 @@
 package media.valo.tower_android.ui.routes.call
 
 import android.content.Context
+import android.os.Looper
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import android.widget.FrameLayout
@@ -41,6 +42,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
@@ -172,6 +174,9 @@ fun CallScreenPreview() {
                 profileRepository = ProfileRepository(DummyProfileDataSource()),
                 json = JsonModule().provideJson(),
                 context = LocalContext.current,
+                fusedLocationClient = LocationServices.getFusedLocationProviderClient(LocalContext.current),
+                locationServicesSettingsClient = LocationServices.getSettingsClient(LocalContext.current),
+                looper = Looper.getMainLooper(),
                 appScope = CoroutineScopeModule().provideCoroutineScope()
             ),
             navController = rememberNavController(),
