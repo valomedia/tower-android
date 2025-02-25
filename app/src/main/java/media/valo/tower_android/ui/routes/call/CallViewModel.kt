@@ -44,6 +44,8 @@ import com.azure.android.communication.calling.VideoDeviceInfo
 import com.azure.android.communication.calling.VideoStreamRenderer
 import com.azure.android.communication.common.CommunicationTokenCredential
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.location.SettingsClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -155,6 +157,12 @@ class CallViewModel @Inject constructor(
     private val looper: Looper,
     @AppScope val appScope: CoroutineScope
 ): ViewModel() {
+
+    private val locationRequest = LocationRequest
+        .Builder(LOCATION_UPDATE_INTERVAL_MILLIS)
+        .setMinUpdateIntervalMillis(LOCATION_UPDATE_MIN_INTERVAL_MILLIS)
+        .setPriority(PRIORITY_HIGH_ACCURACY)
+        .build()
 
     /**
      * The state the assistance session is in.
