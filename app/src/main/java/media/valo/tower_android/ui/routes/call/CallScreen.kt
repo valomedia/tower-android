@@ -42,6 +42,8 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -65,6 +67,8 @@ import media.valo.tower_android.utils.JsonModule
 //      * mvlexs
 //
 
+private const val REQUEST_CHECK_SETTINGS = 1
+
 /**
  * Object for the navigation destination for the call screen.
  */
@@ -78,7 +82,7 @@ object CallScreen
  * @param navController     Used to navigate back to the home screen once the call ends.
  * @param snackbarHostState Used to show a snackbar if the call fails.
  */
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, ExperimentalPermissionsApi::class)
 @Composable
 fun CallScreen(
     viewModel: CallViewModel = hiltViewModel(),
@@ -90,6 +94,12 @@ fun CallScreen(
     val context = LocalContext.current
     val activity = LocalActivity.current
     val accessibilityManager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
+    val locationPermissionState = rememberMultiplePermissionsState(
+        listOf(
+            android.Manifest.permission.ACCESS_COARSE_LOCATION,
+            android.Manifest.permission.ACCESS_FINE_LOCATION
+        )
+    )
 
     LaunchedEffect(Unit) {
         if (viewModel.sessionState == AssistanceSessionState.DISCONNECTED) {
@@ -110,6 +120,28 @@ fun CallScreen(
             navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
         }
         announceStateChange(context, accessibilityManager, viewModel.sessionState.toString())
+    }
+
+    LaunchedEffect(
+        viewModel.isRequestingLocationUpdates,
+        locationPermissionState.revokedPermissions
+    ) {
+        if (viewModel.isRequestingLocationUpdates) {
+            if (!locationPermissionState.allPermissionsGranted) {
+                locationPermissionState.launchMultiplePermissionRequest()
+            }
+
+            if (locationPermissionState.revokedPermissions.size < 2) {
+                viewModel.startLocationUpdates { exception ->
+                    // Location access is granted, but other settings prevent the location from
+                    // being obtained.
+                    try {
+                        // Prompt the user to change the settings.
+                        exception.startResolutionForResult(activity!!, REQUEST_CHECK_SETTINGS)
+                    } catch (_: Exception) { }
+                }
+            }
+        }
     }
 
     Column(
