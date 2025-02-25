@@ -109,6 +109,22 @@ private const val DATA_CHANNEL_ESTABLISH_DELAY_MILLIS = 1000L
 private const val DATA_CHANNEL_MESSAGE_BURST_DELAY_MILLIS = 1000L
 
 /**
+ * How often to update the user's location, in milliseconds.
+ *
+ * The system will do its best to provide an update on the location of the user at least this often.
+ */
+private const val LOCATION_UPDATE_INTERVAL_MILLIS = 20000L
+
+/**
+ * How often to update the user's location at most, in milliseconds.
+ *
+ * This is the fastest rate at which the system will update the user's location, if it is deciding
+ * to provide more updates than absolutely necessary, because the system is in a state where the
+ * additional updates will not greatly impact battery life.
+ */
+private const val LOCATION_UPDATE_MIN_INTERVAL_MILLIS = 10000L
+
+/**
  * Tag added to log messages related to the CallViewModel.
  */
 private const val TAG = "CallViewModel"
