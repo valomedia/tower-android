@@ -129,9 +129,7 @@ fun CallScreen(
         if (viewModel.isRequestingLocationUpdates) {
             if (!locationPermissionState.allPermissionsGranted) {
                 locationPermissionState.launchMultiplePermissionRequest()
-            }
-
-            if (locationPermissionState.revokedPermissions.size < 2) {
+            } else {
                 viewModel.startLocationUpdates { exception ->
                     // Location access is granted, but other settings prevent the location from
                     // being obtained.
