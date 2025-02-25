@@ -6,8 +6,10 @@
 
 package media.valo.tower_android.ui.routes.call
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
@@ -18,6 +20,7 @@ import android.view.ViewGroup
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModel
 import com.azure.android.communication.calling.AcceptCallOptions
 import com.azure.android.communication.calling.Call
@@ -43,8 +46,11 @@ import com.azure.android.communication.calling.ScalingMode
 import com.azure.android.communication.calling.VideoDeviceInfo
 import com.azure.android.communication.calling.VideoStreamRenderer
 import com.azure.android.communication.common.CommunicationTokenCredential
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY
 import com.google.android.gms.location.SettingsClient
@@ -311,6 +317,40 @@ class CallViewModel @Inject constructor(
         }
             .toByteArray(Charsets.UTF_8)
     )
+
+    fun startLocationUpdates(onLocationSettingsChangeNeeded: (ResolvableApiException) -> Unit) {
+        val locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                val location = locationResult.lastLocation
+                location ?: return
+                sendMessage(DataMessage.LocationEvent(location))
+            }
+        }
+
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            Log.wtf(TAG, "Function startLocationUpdates called despite missing permissions")
+            return
+        }
+
+        locationServicesSettingsClient
+            .checkLocationSettings(locationSettingsRequestBuilder.build())
+            .addOnFailureListener { exception ->
+                if (exception is ResolvableApiException) {
+                    onLocationSettingsChangeNeeded(exception)
+                }
+            }
+
+        Log.d(TAG, "Starting to send location")
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, looper)
+        isRequestingLocationUpdates = false
+    }
 
     private fun configureAudio() {
         val audioManager: AudioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
