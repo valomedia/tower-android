@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -24,6 +24,10 @@ import media.valo.tower_android.model.Credential
  * This discards anything put into it and will always emit `null` for all fields.
  */
 class DummyCredentialDataSource : CredentialDataSource {
+
+    override val userIdFlow: Flow<String?> = flow { emit(null) }
+
+    override suspend fun setUserId(userId: String?) = Unit
 
     override val usernameFlow: Flow<String?> = flow { emit(null) }
 

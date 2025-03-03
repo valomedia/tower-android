@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -33,6 +33,12 @@ import javax.inject.Inject
 class DataStoreCredentialDataSource @Inject constructor(
     @CredentialsDataStore private val dataStore: DataStore<Preferences>
 ) : CredentialDataSource {
+
+    private val userIdKey: Preferences.Key<String> = stringPreferencesKey("userId")
+
+    override val userIdFlow: Flow<String?> = dataStore.get(userIdKey)
+
+    override suspend fun setUserId(userId: String?) = dataStore.set(userIdKey, userId)
 
     private val usernameKey: Preferences.Key<String> = stringPreferencesKey("username")
 
