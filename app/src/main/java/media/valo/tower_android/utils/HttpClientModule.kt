@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -20,17 +20,11 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
-import io.ktor.client.plugins.auth.Auth
-import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
-import io.ktor.client.plugins.auth.providers.basic
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.plugins.plugin
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.launch
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -49,32 +43,12 @@ class HttpClientModule() {
     fun provideTowerHttpClient(
         credentialRepository: CredentialRepository,
         @AppScope appScope: CoroutineScope
-    ): HttpClient {
-        val httpClient = HttpClient(OkHttp) {
-            expectSuccess = true
-
-            install(Logging) {
-                sanitizeHeader { header -> header == HttpHeaders.Authorization }
-            }
-            install(Auth)
-            install(ContentNegotiation) { json() }
+    ): HttpClient = HttpClient(OkHttp) {
+        expectSuccess = true
+        install(Logging) {
+            sanitizeHeader { header -> header == HttpHeaders.Authorization }
         }
-
-        appScope.launch {
-            credentialRepository.credentialFlow.filterNotNull().collect {
-                httpClient.plugin(Auth).basic {
-                    credentials {
-                        BasicAuthCredentials(
-                            username = credentialRepository.getUsername() ?: "",
-                            password = credentialRepository.getPassword() ?: ""
-                        )
-                    }
-                    sendWithoutRequest { true }
-                }
-            }
-        }
-
-        return httpClient
+        install(ContentNegotiation) { json() }
     }
 
 }
