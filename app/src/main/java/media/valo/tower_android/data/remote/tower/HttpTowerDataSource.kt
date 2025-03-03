@@ -16,6 +16,7 @@ package media.valo.tower_android.data.remote.tower
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpMethod
@@ -41,23 +42,23 @@ class HttpTowerDataSource @Inject constructor(
     }
 
     override suspend fun registerUser(): RegisterUserResponse =
-        request("/registerUser", HttpMethod.Post).body()
+        request("/registerUser") { method = HttpMethod.Post }.body()
 
     override suspend fun requestAssistance(): RequestAssistanceResponse =
-        request("/requestAssistance", HttpMethod.Post).body()
+        request("/requestAssistance") { method = HttpMethod.Post }.body()
 
     override suspend fun awaitAssistance() {
-        request("/awaitAssistance", HttpMethod.Post)
+        request("/awaitAssistance") { method = HttpMethod.Post }
     }
 
     override suspend fun cancelAssistance() {
-        request("/cancelAssistance", HttpMethod.Post)
+        request("/cancelAssistance") { method = HttpMethod.Post }
     }
 
     private suspend fun request(
         path: String = "/",
-        httpMethod: HttpMethod = HttpMethod.Get
+        block: HttpRequestBuilder.() -> Unit = {}
     ): HttpResponse =
-        httpClient.request(settingsRepository.getApiEndpoint() + path) { method = httpMethod }
+        httpClient.request(settingsRepository.getApiEndpoint() + path, block)
 
 }
