@@ -38,7 +38,7 @@ class HttpTowerDataSource @Inject constructor(
 ) : TowerDataSource {
 
     override suspend fun index() {
-        request()
+        request("/")
     }
 
     override suspend fun registerUser(): RegisterUserResponse =
@@ -56,7 +56,7 @@ class HttpTowerDataSource @Inject constructor(
     }
 
     private suspend fun request(
-        path: String = "/",
+        path: String,
         block: HttpRequestBuilder.() -> Unit = {}
     ): HttpResponse =
         httpClient.request(settingsRepository.getApiEndpoint() + path, block)
