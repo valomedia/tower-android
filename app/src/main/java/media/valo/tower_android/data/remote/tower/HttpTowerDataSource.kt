@@ -18,8 +18,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.request
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
+import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
+import io.ktor.http.contentType
 import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
 import media.valo.tower_android.model.RegisterUserResponse
 import media.valo.tower_android.model.RequestAssistanceResponse
@@ -59,6 +62,12 @@ class HttpTowerDataSource @Inject constructor(
 
     private suspend inline fun post(path: String): HttpResponse = request(path) {
         method = HttpMethod.Post
+    }
+
+    private suspend inline fun <reified T> post(path: String, body: T): HttpResponse = request(path) {
+        method = HttpMethod.Post
+        contentType(ContentType.Application.Json)
+        setBody(body)
     }
 
     private suspend fun request(
