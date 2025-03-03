@@ -38,21 +38,27 @@ class HttpTowerDataSource @Inject constructor(
 ) : TowerDataSource {
 
     override suspend fun index() {
-        request("/")
+        get("/")
     }
 
     override suspend fun registerUser(): RegisterUserResponse =
-        request("/registerUser") { method = HttpMethod.Post }.body()
+        post("/registerUser").body()
 
     override suspend fun requestAssistance(): RequestAssistanceResponse =
-        request("/requestAssistance") { method = HttpMethod.Post }.body()
+        post("/requestAssistance").body()
 
     override suspend fun awaitAssistance() {
-        request("/awaitAssistance") { method = HttpMethod.Post }
+        post("/awaitAssistance")
     }
 
     override suspend fun cancelAssistance() {
-        request("/cancelAssistance") { method = HttpMethod.Post }
+        post("/cancelAssistance")
+    }
+
+    private suspend inline fun get(path: String): HttpResponse = request(path)
+
+    private suspend inline fun post(path: String): HttpResponse = request(path) {
+        method = HttpMethod.Post
     }
 
     private suspend fun request(
