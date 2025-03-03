@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -20,6 +20,7 @@ import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpMethod
 import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
+import media.valo.tower_android.model.RegisterUserResponse
 import media.valo.tower_android.model.RequestAssistanceResponse
 import media.valo.tower_android.utils.TowerHttpClient
 import javax.inject.Inject
@@ -38,6 +39,9 @@ class HttpTowerDataSource @Inject constructor(
     override suspend fun index() {
         request()
     }
+
+    override suspend fun registerUser(): RegisterUserResponse =
+        request("/registerUser", HttpMethod.Post).body()
 
     override suspend fun requestAssistance(): RequestAssistanceResponse =
         request("/requestAssistance", HttpMethod.Post).body()

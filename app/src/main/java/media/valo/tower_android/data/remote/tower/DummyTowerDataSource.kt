@@ -1,11 +1,12 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
 
 package media.valo.tower_android.data.remote.tower
 
+import media.valo.tower_android.model.dummyRegisterUserResponse
 import media.valo.tower_android.model.dummyRequestAssistanceResponse
 
 //
@@ -24,6 +25,8 @@ import media.valo.tower_android.model.dummyRequestAssistanceResponse
 class DummyTowerDataSource : TowerDataSource {
 
     override suspend fun index() = Unit
+
+    override suspend fun registerUser() = dummyRegisterUserResponse
 
     override suspend fun requestAssistance() = dummyRequestAssistanceResponse
 
