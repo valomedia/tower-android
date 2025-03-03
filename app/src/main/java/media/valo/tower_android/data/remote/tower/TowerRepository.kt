@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -32,6 +32,18 @@ class TowerRepository @Inject constructor(
      * the api is reachable and the credentials are valid), and throwing otherwise.
      */
     suspend fun index() = towerDataSource.index()
+
+    /**
+     * Make a request to create an identity for this instance of the app.
+     *
+     * This will create an identity on the tower backend under a random UUID, along with an
+     * associated identity in Azure Communication Services. The UUID of this lightweight user will
+     * be supplied with all following requests to allow the backend to associate all requests coming
+     * from the same instance of the app.
+     *
+     * @return The `RegisterUserResponse` with the UUID.
+     */
+    suspend fun registerUser() = towerDataSource.registerUser()
 
     /**
      * Make a request for an assistance session.
