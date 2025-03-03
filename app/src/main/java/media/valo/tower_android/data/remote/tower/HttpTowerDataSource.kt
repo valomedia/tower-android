@@ -23,6 +23,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
+import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
 import media.valo.tower_android.model.RegisterUserResponse
 import media.valo.tower_android.model.RequestAssistanceResponse
@@ -37,7 +38,8 @@ import javax.inject.Inject
  */
 class HttpTowerDataSource @Inject constructor(
     @TowerHttpClient private val httpClient: HttpClient,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val credentialRepository: CredentialRepository
 ) : TowerDataSource {
 
     override suspend fun index() {
@@ -48,14 +50,14 @@ class HttpTowerDataSource @Inject constructor(
         post("/registerUser").body()
 
     override suspend fun requestAssistance(): RequestAssistanceResponse =
-        post("/requestAssistance").body()
+        post("/requestAssistance", mapOf("userId" to credentialRepository.getUserId())).body()
 
     override suspend fun awaitAssistance() {
-        post("/awaitAssistance")
+        post("/awaitAssistance", mapOf("userId" to credentialRepository.getUserId()))
     }
 
     override suspend fun cancelAssistance() {
-        post("/cancelAssistance")
+        post("/cancelAssistance", mapOf("userId" to credentialRepository.getUserId()))
     }
 
     private suspend inline fun get(path: String): HttpResponse = request(path)
