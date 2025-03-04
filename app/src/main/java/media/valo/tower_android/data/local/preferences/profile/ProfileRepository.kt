@@ -177,15 +177,15 @@ class ProfileRepository @Inject constructor(
     /**
      * Write a UserProfile to the repository, overwriting all fields.
      *
-     * @param userProfile The UserProfile to store.
+     * @param userProfile The UserProfile to store, or `null` to clear the user profile.
      */
-    suspend fun setUserProfile(userProfile: UserProfile) {
-        setFirstName(userProfile.firstName)
-        setLastName(userProfile.lastName)
-        setGender(userProfile.gender)
-        setBirthdate(userProfile.birthdate)
-        setPhone(userProfile.phone)
-        setEmail(userProfile.email)
+    suspend fun setUserProfile(userProfile: UserProfile?) {
+        setFirstName(userProfile?.firstName)
+        setLastName(userProfile?.lastName)
+        setGender(userProfile?.gender)
+        setBirthdate(userProfile?.birthdate)
+        setPhone(userProfile?.phone)
+        setEmail(userProfile?.email)
     }
 
 }

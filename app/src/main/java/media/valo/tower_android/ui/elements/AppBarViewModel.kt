@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
+import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.model.Credential
 import javax.inject.Inject
 
@@ -25,10 +26,12 @@ import javax.inject.Inject
  * `ViewModel` for `AppBar`.
  *
  * @param credentialRepository  `CredentialRepository` dependency.
+ * @param profileRepository     `ProfileRepository` dependency.
  */
 @HiltViewModel
 class AppBarViewModel @Inject constructor(
-    private val credentialRepository: CredentialRepository
+    private val credentialRepository: CredentialRepository,
+    private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
     /**
@@ -42,8 +45,12 @@ class AppBarViewModel @Inject constructor(
     /**
      * Log out the user.
      *
-     * This will unset the username and password in the `CredentialRepository`.
+     * This will clear the credentials and profile.
      */
-    suspend fun logout() = credentialRepository.setCredential(null)
+    suspend fun logout() {
+        credentialRepository.setUserId(null)
+        credentialRepository.setCredential(null)
+        profileRepository.setUserProfile(null)
+    }
 
 }

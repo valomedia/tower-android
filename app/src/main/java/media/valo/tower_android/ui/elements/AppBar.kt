@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -54,6 +54,8 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.credentials.DummyCredentialDataSource
+import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
+import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.ui.routes.about.AboutScreen
 import media.valo.tower_android.ui.routes.call.CallScreen
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
@@ -203,7 +205,10 @@ fun AppBar(
 @Preview(locale = "de-rDE")
 @Composable
 fun AppBarPreview(content: @Composable ((PaddingValues) -> Unit) = {}) {
-    val viewModel = AppBarViewModel(CredentialRepository(DummyCredentialDataSource()))
+    val viewModel = AppBarViewModel(
+        CredentialRepository(DummyCredentialDataSource()),
+        ProfileRepository(DummyProfileDataSource())
+    )
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
