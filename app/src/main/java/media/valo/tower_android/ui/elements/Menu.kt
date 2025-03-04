@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -54,28 +54,28 @@ import media.valo.tower_android.ui.theme.TowerTheme
 /**
  * The drawer containing the menu.
  *
+ * @param modifier      `Modifier` for this element.
  * @param viewModel     `MenuViewModel` dependency.
  * @param navController Used to navigate to the various screens.
  * @param drawerState   State for the drawer.
- * @param modifier      `Modifier` for this element.
  */
 @Composable
 fun Menu(
+    modifier: Modifier = Modifier,
     viewModel: MenuViewModel = hiltViewModel(),
     navController: NavController,
-    drawerState: DrawerState,
-    modifier: Modifier = Modifier
+    drawerState: DrawerState
 ) {
     val scope = rememberCoroutineScope()
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
 
-    var username by remember { mutableStateOf("") }
+    var userId by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
         scope.launch {
-            viewModel.usernameFlow.collect { username = it ?: "" }
+            viewModel.userIdFlow.collect { userId = it ?: "" }
         }
         scope.launch {
             viewModel.firstNameFlow.collect { firstName = it ?: "" }
@@ -89,7 +89,7 @@ fun Menu(
         modifier = modifier
     ) {
         ProfileCard(
-            username = username,
+            userId = userId,
             firstName = firstName,
             lastName = lastName,
             modifier = Modifier.padding(16.dp)

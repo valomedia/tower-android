@@ -66,20 +66,20 @@ import media.valo.tower_android.ui.theme.TowerTheme
 /**
  * The bar at the top of the app containing the buttons for back, menu and more.
  *
+ * @param modifier          `Modifier` for this element.
  * @param viewModel         `AppBarViewModel` dependency.
  * @param scrollBehavior    How the bar should behave when the content under it is scrolled.
  * @param drawerState       State of the drawer containing the menu.
  * @param navController     Used to navigate to the various screens.
- * @param modifier          `Modifier` for this element.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(
+    modifier: Modifier = Modifier,
     viewModel: AppBarViewModel = hiltViewModel(),
     scrollBehavior: TopAppBarScrollBehavior,
     drawerState: DrawerState,
-    navController: NavController,
-    modifier: Modifier = Modifier
+    navController: NavController
 ) {
     val scope = rememberCoroutineScope()
 

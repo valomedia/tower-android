@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -39,38 +39,31 @@ import media.valo.tower_android.ui.theme.TowerTheme
  * The main point of this is to make a good-looking display of whatever information is available,
  * even though some (or all) of it might be missing.
  *
- * @param username  The username of the user, if known.
- * @param firstName The first name of the user, if known.
+ * @param userId    The id of the user, if the user has been registered.
+ * @param firstName The first name of the user, if the user has signed up.
  * @param lastName  The last name of the user, if known.
  * @param modifier  `Modifier` for this element.
  */
 @Composable
 fun ProfileCard(
-    username: String?,
+    userId: String?,
     firstName: String?,
     lastName: String?,
     modifier: Modifier = Modifier
 ) {
-    if (!firstName.isNullOrBlank() || !lastName.isNullOrBlank()) {
-        Card(
-            firstLine = listOf(firstName, lastName)
-                .filter { !it.isNullOrBlank() }
-                .joinToString(" "),
-            secondLine = username,
-            modifier = modifier
-        )
-    } else {
-        Card(
-            firstLine = if (!username.isNullOrBlank()) username else "Unbekannter Benutzer",
-            modifier = modifier
-        )
-    }
+    Card(
+        firstLine = listOf(firstName, lastName)
+            .filter { !it.isNullOrBlank() }
+            .joinToString(" "),
+        secondLine = userId ?: "",
+        modifier = modifier
+    )
 }
 
 @Composable
 private fun Card(
     firstLine: String,
-    secondLine: String? = null,
+    secondLine: String,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -89,14 +82,12 @@ private fun Card(
                 color = MaterialTheme.colorScheme.primary,
                 style = MaterialTheme.typography.titleSmall
             )
-            if (!secondLine.isNullOrBlank()) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    secondLine,
-                    color = MaterialTheme.colorScheme.secondary,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                secondLine,
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }
@@ -109,7 +100,7 @@ private fun Card(
 fun ProfileCardPreview() {
     TowerTheme {
         ProfileCard(
-            username = "theo.test",
+            userId = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
             firstName = "Theo",
             lastName = "Test",
             modifier = Modifier.padding(16.dp)

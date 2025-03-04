@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -36,7 +36,7 @@ class MenuViewModel @Inject constructor(
      * This will emit the new username each time the username is set. When the username is unset, it
      * will emit `null`.
      */
-    val usernameFlow: Flow<String?> = preferencesManager.credentialRepository.usernameFlow
+    val userIdFlow: Flow<String?> = preferencesManager.credentialRepository.userIdFlow
 
     /**
      * A `Flow` that emits the first name every time it is updated.
