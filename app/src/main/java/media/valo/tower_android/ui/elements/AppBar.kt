@@ -93,8 +93,8 @@ fun AppBar(
     var isLoggedIn by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        viewModel.credentialFlow.collect { credential ->
-            isLoggedIn = credential != null
+        viewModel.userIdFlow.collect { userId ->
+            isLoggedIn = !userId.isNullOrBlank()
         }
     }
 
