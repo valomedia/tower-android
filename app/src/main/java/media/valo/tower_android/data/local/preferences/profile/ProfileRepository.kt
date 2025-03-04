@@ -188,4 +188,11 @@ class ProfileRepository @Inject constructor(
         setEmail(userProfile?.email)
     }
 
+    /**
+     * Check if the user has provided all profile information required to make a call.
+     *
+     * @return Whether the user is allowed to make a call based on the profile information provided.
+     */
+    suspend fun hasProfile(): Boolean = !getFirstName().isNullOrBlank()
+
 }
