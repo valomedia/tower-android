@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -31,6 +31,8 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.credentials.DummyCredentialDataSource
+import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
+import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.DummyTowerDataSource
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.ui.elements.AppBarPreview
@@ -58,10 +60,10 @@ fun LoadingScreen(
     modifier: Modifier
 ) {
     LaunchedEffect(Unit) {
-        if (!viewModel.hasCredential() || !viewModel.checkCredential()) {
-            navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
-        } else {
+        if (viewModel.connect() && viewModel.hasProfile()) {
             navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
+        } else {
+            navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
         }
     }
 
@@ -85,7 +87,8 @@ fun LoadingScreenPreview() {
         LoadingScreen(
             viewModel = LoadingViewModel(
                 towerRepository = TowerRepository(DummyTowerDataSource()),
-                credentialRepository = CredentialRepository(DummyCredentialDataSource())
+                credentialRepository = CredentialRepository(DummyCredentialDataSource()),
+                profileRepository = ProfileRepository(DummyProfileDataSource())
             ),
             modifier = Modifier
                 .padding(innerPadding)
