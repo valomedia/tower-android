@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -16,7 +16,6 @@ package media.valo.tower_android.data.local.preferences.credentials
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import media.valo.tower_android.model.Credential
 
 /**
  * A dummy implementation of `CredentialDataSource`.
@@ -25,16 +24,8 @@ import media.valo.tower_android.model.Credential
  */
 class DummyCredentialDataSource : CredentialDataSource {
 
-    override val usernameFlow: Flow<String?> = flow { emit(null) }
+    override val userIdFlow: Flow<String?> = flow { emit(null) }
 
-    override suspend fun setUsername(username: String?) = Unit
-
-    override val passwordFlow: Flow<String?> = flow { emit(null) }
-
-    override suspend fun setPassword(password: String?) = Unit
-
-    override val credentialFlow: Flow<Credential?> = flow { emit(null) }
-
-    override suspend fun setCredential(credential: Credential?) = Unit
+    override suspend fun setUserId(userId: String?) = Unit
 
 }

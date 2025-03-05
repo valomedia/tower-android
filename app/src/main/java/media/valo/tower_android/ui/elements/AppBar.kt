@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -54,6 +54,8 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.credentials.DummyCredentialDataSource
+import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
+import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.ui.routes.about.AboutScreen
 import media.valo.tower_android.ui.routes.call.CallScreen
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
@@ -64,20 +66,20 @@ import media.valo.tower_android.ui.theme.TowerTheme
 /**
  * The bar at the top of the app containing the buttons for back, menu and more.
  *
+ * @param modifier          `Modifier` for this element.
  * @param viewModel         `AppBarViewModel` dependency.
  * @param scrollBehavior    How the bar should behave when the content under it is scrolled.
  * @param drawerState       State of the drawer containing the menu.
  * @param navController     Used to navigate to the various screens.
- * @param modifier          `Modifier` for this element.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(
+    modifier: Modifier = Modifier,
     viewModel: AppBarViewModel = hiltViewModel(),
     scrollBehavior: TopAppBarScrollBehavior,
     drawerState: DrawerState,
-    navController: NavController,
-    modifier: Modifier = Modifier
+    navController: NavController
 ) {
     val scope = rememberCoroutineScope()
 
@@ -91,8 +93,8 @@ fun AppBar(
     var isLoggedIn by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        viewModel.credentialFlow.collect { credential ->
-            isLoggedIn = credential != null
+        viewModel.userIdFlow.collect { userId ->
+            isLoggedIn = !userId.isNullOrBlank()
         }
     }
 
@@ -203,7 +205,10 @@ fun AppBar(
 @Preview(locale = "de-rDE")
 @Composable
 fun AppBarPreview(content: @Composable ((PaddingValues) -> Unit) = {}) {
-    val viewModel = AppBarViewModel(CredentialRepository(DummyCredentialDataSource()))
+    val viewModel = AppBarViewModel(
+        CredentialRepository(DummyCredentialDataSource()),
+        ProfileRepository(DummyProfileDataSource())
+    )
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
