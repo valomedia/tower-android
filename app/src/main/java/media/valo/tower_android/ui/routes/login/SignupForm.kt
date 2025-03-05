@@ -113,6 +113,7 @@ fun SignupForm(
             onValueChange = { email = it },
             label = { Text("Email") },
             placeholder = { Text("Optional") },
+            singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.padding(8.dp).fillMaxWidth()
         )
