@@ -7,12 +7,16 @@
 package media.valo.tower_android.ui.routes.call
 
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Looper
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import android.widget.FrameLayout
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -30,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
@@ -93,6 +98,8 @@ fun CallScreen(
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val activity = LocalActivity.current
+    val configuration = LocalConfiguration.current
+    val orientation = configuration.orientation
     val accessibilityManager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
     val locationPermissionState = rememberMultiplePermissionsState(
         listOf(
@@ -142,33 +149,93 @@ fun CallScreen(
         }
     }
 
-    Column(
-        modifier = modifier.verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
         if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
-            AndroidView(
-                factory = { context -> FrameLayout(context) },
-                update = { view ->
-                    viewModel.sessionState
-                    if (activity != null) {
-                        viewModel.showPreview(activity, view)
-                    }
-                },
-                modifier = Modifier.weight(1f).padding(8.dp),
-            )
-        } else {
-            Logo(modifier = Modifier.weight(1f).padding(8.dp))
+            Row (
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Column(
+                    modifier = modifier.verticalScroll(scrollState)
+                        .weight(3f)
+                        .fillMaxHeight()
+                        .padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    AndroidView(
+                        factory = { context -> FrameLayout(context) },
+                        update = { view ->
+                            viewModel.sessionState
+                            if (activity != null) {
+                                viewModel.showPreview(activity, view)
+                            }
+                        },
+                        modifier = Modifier.weight(1f).fillMaxSize(),
+                    )
+                }
+                Column (
+                    modifier = modifier.verticalScroll(scrollState)
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Logo(modifier = Modifier.weight(1f).padding(8.dp))
+                    Text(viewModel.sessionState.toString(), modifier = Modifier.padding(8.dp).semantics { invisibleToUser() })
+                    ExtendedFloatingActionButton(
+                        onClick = { viewModel.endSession() },
+                        icon = { Icon(Icons.Filled.Phone, "Auflegen") },
+                        text = { Text(text = "Auflegen") },
+                        containerColor = Color.Red,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
+            }
+        } else{
+            Column(
+                modifier = modifier.verticalScroll(scrollState),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Logo(modifier = Modifier.weight(1f).padding(8.dp))
+                Text(viewModel.sessionState.toString(), modifier = Modifier.padding(8.dp).semantics { invisibleToUser() })
+                ExtendedFloatingActionButton(
+                    onClick = { viewModel.endSession() },
+                    icon = { Icon(Icons.Filled.Phone, "Auflegen") },
+                    text = { Text(text = "Auflegen") },
+                    containerColor = Color.Red,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
         }
-        Text(viewModel.sessionState.toString(), modifier = Modifier.padding(8.dp).semantics { invisibleToUser() })
-        ExtendedFloatingActionButton(
-            onClick = { viewModel.endSession() },
-            icon = { Icon(Icons.Filled.Phone, "Auflegen") },
-            text = { Text(text = "Auflegen") },
-            containerColor = Color.Red,
-            modifier = Modifier.padding(8.dp)
-        )
+    } else{
+        Column(
+            modifier = modifier.verticalScroll(scrollState),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
+                AndroidView(
+                    factory = { context -> FrameLayout(context) },
+                    update = { view ->
+                        viewModel.sessionState
+                        if (activity != null) {
+                            viewModel.showPreview(activity, view)
+                        }
+                    },
+                    modifier = Modifier.weight(1f).padding(8.dp),
+                )
+            } else {
+                Logo(modifier = Modifier.weight(1f).padding(8.dp))
+            }
+            Text(viewModel.sessionState.toString(), modifier = Modifier.padding(8.dp).semantics { invisibleToUser() })
+            ExtendedFloatingActionButton(
+                onClick = { viewModel.endSession() },
+                icon = { Icon(Icons.Filled.Phone, "Auflegen") },
+                text = { Text(text = "Auflegen") },
+                containerColor = Color.Red,
+                modifier = Modifier.padding(8.dp)
+            )
+        }
     }
+
 }
 
 /**
