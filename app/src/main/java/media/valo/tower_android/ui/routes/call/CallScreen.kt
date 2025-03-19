@@ -6,6 +6,7 @@
 
 package media.valo.tower_android.ui.routes.call
 
+import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Looper
@@ -15,6 +16,7 @@ import android.widget.FrameLayout
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -100,7 +102,8 @@ fun CallScreen(
     val activity = LocalActivity.current
     val configuration = LocalConfiguration.current
     val orientation = configuration.orientation
-    val accessibilityManager = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
+    val accessibilityManager =
+        context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
     val locationPermissionState = rememberMultiplePermissionsState(
         listOf(
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -143,7 +146,8 @@ fun CallScreen(
                     try {
                         // Prompt the user to change the settings.
                         exception.startResolutionForResult(activity!!, REQUEST_CHECK_SETTINGS)
-                    } catch (_: Exception) { }
+                    } catch (_: Exception) {
+                    }
                 }
             }
         }
@@ -151,91 +155,92 @@ fun CallScreen(
 
     if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
         if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
-            Row (
+            Row(
                 modifier = Modifier.fillMaxSize()
             ) {
                 Column(
-                    modifier = modifier.verticalScroll(scrollState)
+                    modifier = modifier
+                        .verticalScroll(scrollState)
                         .weight(3f)
                         .fillMaxHeight()
                         .padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    AndroidView(
-                        factory = { context -> FrameLayout(context) },
-                        update = { view ->
-                            viewModel.sessionState
-                            if (activity != null) {
-                                viewModel.showPreview(activity, view)
-                            }
-                        },
-                        modifier = Modifier.weight(1f).fillMaxSize(),
-                    )
+                    cameraFeed(viewModel, activity)
                 }
-                Column (
-                    modifier = modifier.verticalScroll(scrollState)
+                Column(
+                    modifier = modifier
+                        .verticalScroll(scrollState)
                         .weight(1f)
                         .fillMaxHeight(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Logo(modifier = Modifier.weight(1f).padding(8.dp))
-                    Text(viewModel.sessionState.toString(), modifier = Modifier.padding(8.dp).semantics { invisibleToUser() })
-                    ExtendedFloatingActionButton(
-                        onClick = { viewModel.endSession() },
-                        icon = { Icon(Icons.Filled.Phone, "Auflegen") },
-                        text = { Text(text = "Auflegen") },
-                        containerColor = Color.Red,
-                        modifier = Modifier.padding(8.dp)
-                    )
+                    Logo(modifier = Modifier
+                        .weight(1f)
+                        .padding(8.dp))
+                    generalUi(viewModel)
                 }
             }
-        } else{
+        } else {
             Column(
                 modifier = modifier.verticalScroll(scrollState),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Logo(modifier = Modifier.weight(1f).padding(8.dp))
-                Text(viewModel.sessionState.toString(), modifier = Modifier.padding(8.dp).semantics { invisibleToUser() })
-                ExtendedFloatingActionButton(
-                    onClick = { viewModel.endSession() },
-                    icon = { Icon(Icons.Filled.Phone, "Auflegen") },
-                    text = { Text(text = "Auflegen") },
-                    containerColor = Color.Red,
-                    modifier = Modifier.padding(8.dp)
-                )
+                Logo(modifier = Modifier
+                    .weight(1f)
+                    .padding(8.dp))
+                generalUi(viewModel)
             }
         }
-    } else{
+    } else {
         Column(
             modifier = modifier.verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
-                AndroidView(
-                    factory = { context -> FrameLayout(context) },
-                    update = { view ->
-                        viewModel.sessionState
-                        if (activity != null) {
-                            viewModel.showPreview(activity, view)
-                        }
-                    },
-                    modifier = Modifier.weight(1f).padding(8.dp),
-                )
+                cameraFeed(viewModel, activity)
             } else {
-                Logo(modifier = Modifier.weight(1f).padding(8.dp))
+                Logo(modifier = Modifier
+                    .weight(1f)
+                    .padding(8.dp))
             }
-            Text(viewModel.sessionState.toString(), modifier = Modifier.padding(8.dp).semantics { invisibleToUser() })
-            ExtendedFloatingActionButton(
-                onClick = { viewModel.endSession() },
-                icon = { Icon(Icons.Filled.Phone, "Auflegen") },
-                text = { Text(text = "Auflegen") },
-                containerColor = Color.Red,
-                modifier = Modifier.padding(8.dp)
-            )
+            generalUi(viewModel)
         }
     }
 
+}
+
+@Composable
+fun generalUi(viewModel: CallViewModel) {
+    Text(
+        viewModel.sessionState.toString(),
+        modifier = Modifier
+            .padding(8.dp)
+            .semantics { invisibleToUser() })
+    ExtendedFloatingActionButton(
+        onClick = { viewModel.endSession() },
+        icon = { Icon(Icons.Filled.Phone, "Auflegen") },
+        text = { Text(text = "Auflegen") },
+        containerColor = Color.Red,
+        modifier = Modifier.padding(8.dp)
+    )
+}
+
+@Composable
+fun ColumnScope.cameraFeed(viewModel: CallViewModel, activity: Activity?) {
+    AndroidView(
+        factory = { context -> FrameLayout(context) },
+        update = { view ->
+            viewModel.sessionState
+            if (activity != null) {
+                viewModel.showPreview(activity, view)
+            }
+        },
+        modifier = Modifier
+            .weight(1f)
+            .padding(8.dp),
+    )
 }
 
 /**
@@ -245,7 +250,11 @@ fun CallScreen(
  * @param accessibilityManager  The accessibility manager.
  * @param message               The State change to announce.
  */
-private fun announceStateChange(context: Context, accessibilityManager: AccessibilityManager?, message: String) {
+private fun announceStateChange(
+    context: Context,
+    accessibilityManager: AccessibilityManager?,
+    message: String
+) {
     accessibilityManager?.let {
         if (it.isEnabled) {
             it.sendAccessibilityEvent(AccessibilityEvent().apply {
