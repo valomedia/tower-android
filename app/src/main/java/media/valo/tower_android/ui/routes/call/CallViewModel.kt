@@ -14,6 +14,7 @@ import android.media.AudioAttributes
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.Looper
 import android.util.Log
 import android.view.ViewGroup
@@ -440,7 +441,7 @@ class CallViewModel @Inject constructor(
         val speakerDevice = audioManager
             ?.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
             ?.find { it.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER }
-        if (speakerDevice != null) {
+        if (speakerDevice != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             audioManager?.setCommunicationDevice(speakerDevice)
         }
 
