@@ -166,7 +166,7 @@ fun CallScreen(
                         .padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    cameraFeed(viewModel, activity)
+                    CameraFeed(viewModel, activity)
                 }
                 Column(
                     modifier = modifier
@@ -179,7 +179,7 @@ fun CallScreen(
                     Logo(modifier = Modifier
                         .weight(1f)
                         .padding(8.dp))
-                    generalUi(viewModel)
+                    GeneralUi(viewModel)
                 }
             }
         } else {
@@ -190,7 +190,7 @@ fun CallScreen(
                 Logo(modifier = Modifier
                     .weight(1f)
                     .padding(8.dp))
-                generalUi(viewModel)
+                GeneralUi(viewModel)
             }
         }
     } else {
@@ -199,20 +199,20 @@ fun CallScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
-                cameraFeed(viewModel, activity)
+                CameraFeed(viewModel, activity)
             } else {
                 Logo(modifier = Modifier
                     .weight(1f)
                     .padding(8.dp))
             }
-            generalUi(viewModel)
+            GeneralUi(viewModel)
         }
     }
 
 }
 
 @Composable
-fun generalUi(viewModel: CallViewModel) {
+private fun GeneralUi(viewModel: CallViewModel) {
     Text(
         viewModel.sessionState.toString(),
         modifier = Modifier
@@ -228,7 +228,7 @@ fun generalUi(viewModel: CallViewModel) {
 }
 
 @Composable
-fun ColumnScope.cameraFeed(viewModel: CallViewModel, activity: Activity?) {
+private fun ColumnScope.CameraFeed(viewModel: CallViewModel, activity: Activity?) {
     AndroidView(
         factory = { context -> FrameLayout(context) },
         update = { view ->
