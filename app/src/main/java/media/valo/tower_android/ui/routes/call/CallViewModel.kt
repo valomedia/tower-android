@@ -537,6 +537,7 @@ class CallViewModel @Inject constructor(
 
                 when (message) {
                     is DataMessage.LocationRequest -> handleLocationRequest()
+                    is DataMessage.SwitchCameraRequest -> handleSwitchCameraRequest()
                     else -> {}
                 }
             })
@@ -568,6 +569,12 @@ class CallViewModel @Inject constructor(
         // button to be re-enabled for the assistant, even though we don't know whether there is any
         // point in pushing it again.
         sendMessage(DataMessage.LocationResponse())
+    }
+
+    private fun handleSwitchCameraRequest() {
+        switchSource()
+
+        sendMessage(DataMessage.SwitchCameraResponse())
     }
 
 }
