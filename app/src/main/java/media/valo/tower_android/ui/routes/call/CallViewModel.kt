@@ -222,6 +222,8 @@ class CallViewModel @Inject constructor(
 
     private var dataChannelReceiver: DataChannelReceiver? = null
 
+    private var cameraFacingUser: Boolean? = null
+
     /**
      * Start the assistance session.
      *
@@ -422,6 +424,7 @@ class CallViewModel @Inject constructor(
     private fun handleIncomingCall(incomingCall: IncomingCall) {
         sessionState = AssistanceSessionState.CONNECTING
         currentCamera = getCameraFacing(CameraFacing.BACK)
+        cameraFacingUser = false
         currentVideoStream = LocalVideoStream(currentCamera, context)
         val acceptCallOptions = AcceptCallOptions()
         val outgoingVideoOptions = OutgoingVideoOptions()
@@ -572,8 +575,14 @@ class CallViewModel @Inject constructor(
     }
 
     private fun handleSwitchCameraRequest() {
-        switchSource()
-
+        if (cameraFacingUser == false){
+            cameraFacingUser = true
+            currentCamera = getCameraFacing(CameraFacing.FRONT)
+        } else {
+            cameraFacingUser = false
+            currentCamera = getCameraFacing(CameraFacing.BACK)
+        }
+        currentVideoStream?.switchSource(currentCamera)
         sendMessage(DataMessage.SwitchCameraResponse())
     }
 
