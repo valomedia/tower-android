@@ -190,6 +190,8 @@ class CallViewModel @Inject constructor(
      */
     var isRequestingLocationUpdates by mutableStateOf(false)
 
+    var isSwitchingCamera by mutableStateOf(false)
+
     private var callClient: CallClient? = null
 
     private var callAgent: CallAgent? = null
@@ -222,7 +224,7 @@ class CallViewModel @Inject constructor(
 
     private var dataChannelReceiver: DataChannelReceiver? = null
 
-    private var cameraFacingUser: Boolean? = null
+    private var cameraFacingUser = false
 
     /**
      * Start the assistance session.
@@ -295,7 +297,7 @@ class CallViewModel @Inject constructor(
      * @param container The ViewGroup to render the preview into.
      */
     fun showPreview(activity: Activity, container: ViewGroup) {
-        if (currentVideoStream == null) { return }
+        if (currentVideoStream == null || isSwitchingCamera) { return }
         previewRenderer?.dispose()
         val previewRenderer = VideoStreamRenderer(currentVideoStream, activity)
         this.previewRenderer = previewRenderer
@@ -575,7 +577,8 @@ class CallViewModel @Inject constructor(
     }
 
     private fun handleSwitchCameraRequest() {
-        if (cameraFacingUser == false){
+        isSwitchingCamera = true
+        if (!cameraFacingUser){
             cameraFacingUser = true
             currentCamera = getCameraFacing(CameraFacing.FRONT)
         } else {
@@ -583,6 +586,7 @@ class CallViewModel @Inject constructor(
             currentCamera = getCameraFacing(CameraFacing.BACK)
         }
         currentVideoStream?.switchSource(currentCamera)
+        isSwitchingCamera = false
         sendMessage(DataMessage.SwitchCameraResponse())
     }
 

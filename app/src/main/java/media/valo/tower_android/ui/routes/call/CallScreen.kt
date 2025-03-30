@@ -166,7 +166,9 @@ fun CallScreen(
                         .padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    CameraFeed(viewModel, activity)
+                    if(!viewModel.isSwitchingCamera){
+                        CameraFeed(viewModel, activity)
+                    }
                 }
                 Column(
                     modifier = modifier
@@ -199,7 +201,9 @@ fun CallScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
-                CameraFeed(viewModel, activity)
+                if(!viewModel.isSwitchingCamera){
+                    CameraFeed(viewModel, activity)
+                }
             } else {
                 Logo(modifier = Modifier
                     .weight(1f)
