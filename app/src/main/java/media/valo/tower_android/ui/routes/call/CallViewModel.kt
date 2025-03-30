@@ -297,7 +297,7 @@ class CallViewModel @Inject constructor(
      * @param container The ViewGroup to render the preview into.
      */
     fun showPreview(activity: Activity, container: ViewGroup) {
-        if (currentVideoStream == null || isSwitchingCamera) { return }
+        if (currentVideoStream == null) { return }
         previewRenderer?.dispose()
         val previewRenderer = VideoStreamRenderer(currentVideoStream, activity)
         this.previewRenderer = previewRenderer
