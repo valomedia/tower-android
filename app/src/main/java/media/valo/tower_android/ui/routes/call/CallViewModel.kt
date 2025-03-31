@@ -306,6 +306,12 @@ class CallViewModel @Inject constructor(
         preview?.tag = 0
 
         activity.runOnUiThread {
+            previewRenderer?.dispose()
+            val previewRenderer = VideoStreamRenderer(currentVideoStream, activity)
+            this.previewRenderer = previewRenderer
+
+            val preview = previewRenderer.createView(CreateViewOptions(ScalingMode.FIT))
+            preview?.tag = 0
             container.addView(preview)
         }
     }
@@ -577,7 +583,14 @@ class CallViewModel @Inject constructor(
     }
 
     private fun handleSwitchCameraRequest() {
+        //bool to disable the composable calling the previewrenderer, to prevent the view getting
+        //called again before we are finished rotating
         isSwitchingCamera = true
+
+        //dispose preview renderer to prevent multiple processes (switching camera and rotating phone)
+        //trying to access our videostream at the same time, which would lead to the app crashing
+        previewRenderer?.dispose()
+
         if (!cameraFacingUser){
             cameraFacingUser = true
             currentCamera = getCameraFacing(CameraFacing.FRONT)
