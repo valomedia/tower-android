@@ -306,12 +306,6 @@ class CallViewModel @Inject constructor(
         preview?.tag = 0
 
         activity.runOnUiThread {
-            previewRenderer?.dispose()
-            val previewRenderer = VideoStreamRenderer(currentVideoStream, activity)
-            this.previewRenderer = previewRenderer
-
-            val preview = previewRenderer.createView(CreateViewOptions(ScalingMode.FIT))
-            preview?.tag = 0
             container.addView(preview)
         }
     }
