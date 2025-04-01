@@ -288,8 +288,6 @@ class CallViewModel @Inject constructor(
      */
     fun putCallInBackground(context: Context){
         isInBackground = true
-        call?.stopVideo(context,currentVideoStream)
-        previewRenderer?.dispose()
     }
 
 
@@ -303,7 +301,6 @@ class CallViewModel @Inject constructor(
      */
     fun putCallInForeground(context: Context){
         isInBackground = false
-        call?.startVideo(context, currentVideoStream)
     }
 
     /**
