@@ -121,7 +121,8 @@ fun CallScreen(
         }
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onStop(owner: LifecycleOwner) = viewModel.endSession()
+            override fun onStop(owner: LifecycleOwner) = viewModel.putCallInBackground(context)
+            override fun onResume(owner: LifecycleOwner) = viewModel.putCallInForeground(context)
         })
     }
 
@@ -166,7 +167,7 @@ fun CallScreen(
                         .padding(8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    CameraFeed(viewModel, activity)
+                    CameraFeed(viewModel, activity, viewModel.isInBackground)
                 }
                 Column(
                     modifier = modifier
@@ -199,7 +200,7 @@ fun CallScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
-                CameraFeed(viewModel, activity)
+                CameraFeed(viewModel, activity, viewModel.isInBackground)
             } else {
                 Logo(modifier = Modifier
                     .weight(1f)
@@ -228,25 +229,27 @@ private fun GeneralUi(viewModel: CallViewModel) {
 }
 
 @Composable
-private fun ColumnScope.CameraFeed(viewModel: CallViewModel, activity: Activity?) {
-    AndroidView(
-        factory = { context -> FrameLayout(context) },
-        update = { view ->
-            viewModel.sessionState
-            if (activity != null) {
-                viewModel.showPreview(activity, view)
-            }
-        },
-        modifier = Modifier
-            .weight(1f)
-            .padding(8.dp),
-    )
+private fun ColumnScope.CameraFeed(viewModel: CallViewModel, activity: Activity?, isInBackground: Boolean) {
+    if (!isInBackground) {
+        AndroidView(
+            factory = { context -> FrameLayout(context) },
+            update = { view ->
+                viewModel.sessionState
+                if (activity != null) {
+                    viewModel.showPreview(activity, view)
+                }
+            },
+            modifier = Modifier
+                .weight(1f)
+                .padding(8.dp),
+        )
+    }
 }
 
 /**
  * Announce a change of the Assistance Sessions State to the user, using the accessibility manager.
  *
- * @param context               The application context.
+ * @param context               The applications context.
  * @param accessibilityManager  The accessibility manager.
  * @param message               The State change to announce.
  */
