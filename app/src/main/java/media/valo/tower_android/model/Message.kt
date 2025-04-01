@@ -145,6 +145,26 @@ sealed class DataMessage: Message() {
         @Required val clientInfo: ClientInfo = ClientInfo()
     ): DataMessage()
 
+    /**
+     * A switchCameraRequest data message.
+     *
+     * When this is received, the assistant wants to switch the direction the user's camera is facing and the app should
+     * change directions, if possible.
+     */
+    @Serializable
+    @SerialName("switchCameraRequest")
+    class SwitchCameraRequest(): DataMessage()
+
+    /**
+     * A switchCameraResponse data message.
+     *
+     * This message is sent by the app of the caller in response to a switchCameraRequest.
+     * Unless something went wrong, its contents should be an empty object.
+     */
+    @Serializable
+    @SerialName("switchCameraResponse")
+    class SwitchCameraResponse(): DataMessage()
+
 }
 
 /**
