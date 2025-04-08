@@ -14,6 +14,8 @@ package media.valo.tower_android.ui.elements
 //      * Jean-Pierre Höhmann
 //
 
+import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -98,102 +100,108 @@ fun AppBar(
         }
     }
 
-    TopAppBar(
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            titleContentColor = MaterialTheme.colorScheme.primary
-        ),
-        title = {
-            Text(
-                "Tower Fernassistenz",
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        },
-        navigationIcon = {
-            if (currentDestination != null
-                && currentDestination?.hasRoute<LoginScreen>() != true
-                && currentDestination?.hasRoute<LoadingScreen>() != true
-                && currentDestination?.hasRoute<CallScreen>() != true
-            ) {
-                if (currentDestination?.hasRoute<SettingsScreen>() != true
-                    && currentDestination?.hasRoute<AboutScreen>() != true
-                ) {
-                    IconButton(
-                        onClick = {
-                            scope.launch {
-                                drawerState.apply {
-                                    if (isClosed) {
-                                        open()
-                                    } else {
-                                        close()
-                                    }
-                                }
-                            }
-                        }
+    fun isPiP(activity: Activity?): Boolean {
+        return activity?.isInPictureInPictureMode == true
+    }
+
+    if (!isPiP(LocalActivity.current)) {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary
+                ),
+                title = {
+                    Text(
+                        "Tower Fernassistenz",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                navigationIcon = {
+                    if (currentDestination != null
+                        && currentDestination?.hasRoute<LoginScreen>() != true
+                        && currentDestination?.hasRoute<LoadingScreen>() != true
+                        && currentDestination?.hasRoute<CallScreen>() != true
                     ) {
-                        Icon(
-                            imageVector = Icons.Filled.Menu,
-                            contentDescription = "Menü"
-                        )
-                    }
-                } else {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Zurück"
-                        )
-                    }
-                }
-            }
-        },
-        actions = {
-            if (currentDestination != null
-                && currentDestination?.hasRoute<CallScreen>() != true
-            ) {
-                IconButton(onClick = { expanded = true }) {
-                    Icon(
-                        imageVector = Icons.Filled.MoreVert,
-                        contentDescription = "Mehr"
-                    )
-                }
-                DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
-                    DropdownMenuItem(
-                        text = { Text("Einstellungen") },
-                        onClick = {
-                            navController.navigate(route = SettingsScreen)
-                            expanded = false
-                        }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Über") },
-                        onClick = {
-                            navController.navigate(route = AboutScreen)
-                            expanded = false
-                        }
-                    )
-                    if (isLoggedIn) {
-                        HorizontalDivider()
-                        DropdownMenuItem(
-                            text = { Text("Abmelden") },
-                            onClick = {
-                                scope.launch {
-                                    viewModel.logout()
-                                    expanded = false
-                                    drawerState.close()
-                                    navController.navigate(route = LoginScreen) {
-                                        popUpTo(navController.graph.id)
+                        if (currentDestination?.hasRoute<SettingsScreen>() != true
+                            && currentDestination?.hasRoute<AboutScreen>() != true
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    scope.launch {
+                                        drawerState.apply {
+                                            if (isClosed) {
+                                                open()
+                                            } else {
+                                                close()
+                                            }
+                                        }
                                     }
                                 }
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.Menu,
+                                    contentDescription = "Menü"
+                                )
                             }
-                        )
+                        } else {
+                            IconButton(onClick = { navController.popBackStack() }) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "Zurück"
+                                )
+                            }
+                        }
                     }
-                }
-            }
-        },
-        scrollBehavior = scrollBehavior,
-        modifier = modifier
-    )
+                },
+                actions = {
+                    if (currentDestination != null
+                        && currentDestination?.hasRoute<CallScreen>() != true
+                    ) {
+                        IconButton(onClick = { expanded = true }) {
+                            Icon(
+                                imageVector = Icons.Filled.MoreVert,
+                                contentDescription = "Mehr"
+                            )
+                        }
+                        DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                            DropdownMenuItem(
+                                text = { Text("Einstellungen") },
+                                onClick = {
+                                    navController.navigate(route = SettingsScreen)
+                                    expanded = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Über") },
+                                onClick = {
+                                    navController.navigate(route = AboutScreen)
+                                    expanded = false
+                                }
+                            )
+                            if (isLoggedIn) {
+                                HorizontalDivider()
+                                DropdownMenuItem(
+                                    text = { Text("Abmelden") },
+                                    onClick = {
+                                        scope.launch {
+                                            viewModel.logout()
+                                            expanded = false
+                                            drawerState.close()
+                                            navController.navigate(route = LoginScreen) {
+                                                popUpTo(navController.graph.id)
+                                            }
+                                        }
+                                    }
+                                )
+                            }
+                        }
+                    }
+                },
+                scrollBehavior = scrollBehavior,
+                modifier = modifier
+            )
+    }
 }
 
 /**

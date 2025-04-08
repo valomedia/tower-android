@@ -190,8 +190,6 @@ class CallViewModel @Inject constructor(
      */
     var isRequestingLocationUpdates by mutableStateOf(false)
 
-    var isInBackground by mutableStateOf(false)
-
     private var callClient: CallClient? = null
 
     private var callAgent: CallAgent? = null
@@ -276,31 +274,6 @@ class CallViewModel @Inject constructor(
             disposeSession()
             ringbackSound?.pause()
         }
-    }
-
-    /**
-     * Put the Call in background.
-     *
-     * This stops the outgoingVideoStream and
-     * gets rid of the previewRenderer to free up resources.
-     *
-     * @param context                           The applications context.
-     */
-    fun putCallInBackground(context: Context){
-        isInBackground = true
-    }
-
-
-    /**
-     * Resume the Call in foreground.
-     *
-     * This tells the UI to get the outgoingVideoStream, as well as the
-     * previewRenderer back up and running.
-     *
-     * @param context                           The applications context.
-     */
-    fun putCallInForeground(context: Context){
-        isInBackground = false
     }
 
     /**

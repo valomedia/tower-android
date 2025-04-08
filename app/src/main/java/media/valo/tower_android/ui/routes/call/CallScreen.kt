@@ -14,6 +14,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import android.widget.FrameLayout
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -44,9 +45,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -119,11 +117,6 @@ fun CallScreen(
                 }
             }
         }
-
-        ProcessLifecycleOwner.get().lifecycle.addObserver(object : DefaultLifecycleObserver {
-            override fun onStop(owner: LifecycleOwner) = viewModel.putCallInBackground(context)
-            override fun onResume(owner: LifecycleOwner) = viewModel.putCallInForeground(context)
-        })
     }
 
     LaunchedEffect(viewModel.sessionState) {
@@ -154,62 +147,17 @@ fun CallScreen(
         }
     }
 
-    if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-        if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
-            Row(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Column(
-                    modifier = modifier
-                        .verticalScroll(scrollState)
-                        .weight(3f)
-                        .fillMaxHeight()
-                        .padding(8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    CameraFeed(viewModel, activity, viewModel.isInBackground)
-                }
-                Column(
-                    modifier = modifier
-                        .verticalScroll(scrollState)
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Logo(modifier = Modifier
-                        .weight(1f)
-                        .padding(8.dp))
-                    GeneralUi(viewModel)
-                }
-            }
-        } else {
-            Column(
-                modifier = modifier.verticalScroll(scrollState),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Logo(modifier = Modifier
-                    .weight(1f)
-                    .padding(8.dp))
-                GeneralUi(viewModel)
-            }
+    if (orientation == Configuration.ORIENTATION_LANDSCAPE){
+        when{
+            !isPiP(activity) -> LandscapeUi(modifier,scrollState,viewModel,activity)
+            else -> PiPUi(viewModel,activity)
         }
     } else {
-        Column(
-            modifier = modifier.verticalScroll(scrollState),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
-                CameraFeed(viewModel, activity, viewModel.isInBackground)
-            } else {
-                Logo(modifier = Modifier
-                    .weight(1f)
-                    .padding(8.dp))
-            }
-            GeneralUi(viewModel)
+        when{
+            !isPiP(activity) -> HorizontalUi(modifier, scrollState, viewModel, activity)
+            else -> PiPUi(viewModel, activity)
         }
     }
-
 }
 
 @Composable
@@ -229,21 +177,107 @@ private fun GeneralUi(viewModel: CallViewModel) {
 }
 
 @Composable
-private fun ColumnScope.CameraFeed(viewModel: CallViewModel, activity: Activity?, isInBackground: Boolean) {
-    if (!isInBackground) {
-        AndroidView(
-            factory = { context -> FrameLayout(context) },
-            update = { view ->
-                viewModel.sessionState
-                if (activity != null) {
-                    viewModel.showPreview(activity, view)
-                }
-            },
-            modifier = Modifier
-                .weight(1f)
-                .padding(8.dp),
-        )
+private fun LandscapeUi(modifier: Modifier, scrollState: ScrollState, viewModel: CallViewModel, activity: Activity?) {
+    if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
+        Row(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            Column(
+                modifier = modifier
+                    .verticalScroll(scrollState)
+                    .weight(3f)
+                    .fillMaxHeight()
+                    .padding(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CameraFeed(viewModel, activity)
+            }
+            Column(
+                modifier = modifier
+                    .verticalScroll(scrollState)
+                    .weight(1f)
+                    .fillMaxHeight(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Logo(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(8.dp)
+                )
+                GeneralUi(viewModel)
+            }
+        }
+    } else {
+        Column(
+            modifier = modifier.verticalScroll(scrollState),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Logo(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(8.dp)
+            )
+            GeneralUi(viewModel)
+        }
     }
+}
+
+@Composable
+private fun HorizontalUi(modifier: Modifier,scrollState: ScrollState,viewModel: CallViewModel, activity: Activity?){
+    Column(
+        modifier = modifier.verticalScroll(scrollState),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
+            CameraFeed(viewModel, activity)
+        } else {
+            Logo(modifier = Modifier
+                .weight(1f)
+                .padding(8.dp))
+        }
+        GeneralUi(viewModel)
+    }
+}
+
+@Composable
+private fun ColumnScope.CameraFeed(viewModel: CallViewModel, activity: Activity?) {
+    AndroidView(
+        factory = { context -> FrameLayout(context) },
+        update = { view ->
+            viewModel.sessionState
+            if (activity != null) {
+                viewModel.showPreview(activity, view)
+            }
+        },
+        modifier = Modifier
+            .weight(1f)
+            .padding(8.dp),
+    )
+}
+
+@Composable
+private fun PiPUi(viewModel: CallViewModel, activity: Activity?) {
+    if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
+        Column {
+            AndroidView(
+                factory = { context -> FrameLayout(context) },
+                update = { view ->
+                    viewModel.sessionState
+                    if (activity != null) {
+                        viewModel.showPreview(activity, view)
+                    }
+                },
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    } else {
+        activity?.finish()
+    }
+}
+
+private fun isPiP(activity: Activity?): Boolean {
+    return activity?.isInPictureInPictureMode == true
 }
 
 /**

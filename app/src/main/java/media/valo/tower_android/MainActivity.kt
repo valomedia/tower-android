@@ -14,7 +14,9 @@ package media.valo.tower_android
 //      * Jean-Pierre Höhmann
 //
 
+import android.app.PictureInPictureParams
 import android.os.Bundle
+import android.util.Rational
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -34,5 +36,14 @@ class MainActivity : ComponentActivity() {
             }
         }
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    override fun onUserLeaveHint() {
+        super.onUserLeaveHint()
+        enterPictureInPictureMode(
+            PictureInPictureParams.Builder().setAspectRatio(
+                Rational(9,16)
+            ).build()
+        )
     }
 }
