@@ -147,16 +147,10 @@ fun CallScreen(
         }
     }
 
-    if (orientation == Configuration.ORIENTATION_LANDSCAPE){
-        when{
-            !isPiP(activity) -> LandscapeUi(modifier,scrollState,viewModel,activity)
-            else -> PiPUi(viewModel,activity)
-        }
-    } else {
-        when{
-            !isPiP(activity) -> HorizontalUi(modifier, scrollState, viewModel, activity)
-            else -> PiPUi(viewModel, activity)
-        }
+    when{
+        activity?.isInPictureInPictureMode == true -> PiPUi(viewModel, activity)
+        orientation == Configuration.ORIENTATION_LANDSCAPE -> LandscapeUi(modifier, scrollState, viewModel, activity)
+        else -> HorizontalUi(modifier, scrollState, viewModel, activity)
     }
 }
 
@@ -258,26 +252,18 @@ private fun ColumnScope.CameraFeed(viewModel: CallViewModel, activity: Activity?
 
 @Composable
 private fun PiPUi(viewModel: CallViewModel, activity: Activity?) {
-    if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
-        Column {
-            AndroidView(
-                factory = { context -> FrameLayout(context) },
-                update = { view ->
-                    viewModel.sessionState
-                    if (activity != null) {
-                        viewModel.showPreview(activity, view)
-                    }
-                },
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-    } else {
-        activity?.finish()
-    }
-}
-
-private fun isPiP(activity: Activity?): Boolean {
-    return activity?.isInPictureInPictureMode == true
+   Column {
+       AndroidView(
+           factory = { context -> FrameLayout(context) },
+           update = { view ->
+               viewModel.sessionState
+               if (activity != null) {
+                   viewModel.showPreview(activity, view)
+               }
+           },
+           modifier = Modifier.fillMaxSize()
+       )
+   }
 }
 
 /**
