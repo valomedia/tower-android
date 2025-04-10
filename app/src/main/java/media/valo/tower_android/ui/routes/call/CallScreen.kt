@@ -252,18 +252,22 @@ private fun ColumnScope.CameraFeed(viewModel: CallViewModel, activity: Activity?
 
 @Composable
 private fun PiPUi(viewModel: CallViewModel, activity: Activity?) {
-   Column {
-       AndroidView(
-           factory = { context -> FrameLayout(context) },
-           update = { view ->
-               viewModel.sessionState
-               if (activity != null) {
-                   viewModel.showPreview(activity, view)
-               }
-           },
-           modifier = Modifier.fillMaxSize()
-       )
-   }
+    if (viewModel.sessionState != AssistanceSessionState.DISCONNECTED) {
+        Column {
+            AndroidView(
+                factory = { context -> FrameLayout(context) },
+                update = { view ->
+                    viewModel.sessionState
+                    if (activity != null) {
+                        viewModel.showPreview(activity, view)
+                    }
+                },
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+    } else {
+        activity?.finish()
+    }
 }
 
 /**
