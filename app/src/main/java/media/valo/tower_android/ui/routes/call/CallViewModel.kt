@@ -190,6 +190,8 @@ class CallViewModel @Inject constructor(
      */
     var isRequestingLocationUpdates by mutableStateOf(false)
 
+    var isSwitchingCamera by mutableStateOf(false)
+
     private var callClient: CallClient? = null
 
     private var callAgent: CallAgent? = null
@@ -221,6 +223,8 @@ class CallViewModel @Inject constructor(
     private var dataChannelSender: DataChannelSender? = null
 
     private var dataChannelReceiver: DataChannelReceiver? = null
+
+    private var cameraFacingUser = false
 
     /**
      * Start the assistance session.
@@ -422,6 +426,7 @@ class CallViewModel @Inject constructor(
     private fun handleIncomingCall(incomingCall: IncomingCall) {
         sessionState = AssistanceSessionState.CONNECTING
         currentCamera = getCameraFacing(CameraFacing.BACK)
+        cameraFacingUser = false
         currentVideoStream = LocalVideoStream(currentCamera, context)
         val acceptCallOptions = AcceptCallOptions()
         val outgoingVideoOptions = OutgoingVideoOptions()
@@ -537,6 +542,7 @@ class CallViewModel @Inject constructor(
 
                 when (message) {
                     is DataMessage.LocationRequest -> handleLocationRequest()
+                    is DataMessage.SwitchCameraRequest -> handleSwitchCameraRequest()
                     else -> {}
                 }
             })
@@ -568,6 +574,27 @@ class CallViewModel @Inject constructor(
         // button to be re-enabled for the assistant, even though we don't know whether there is any
         // point in pushing it again.
         sendMessage(DataMessage.LocationResponse())
+    }
+
+    private fun handleSwitchCameraRequest() {
+        //bool to disable the composable calling the previewrenderer, to prevent the view getting
+        //called again before we are finished rotating
+        isSwitchingCamera = true
+
+        //dispose preview renderer to prevent multiple processes (switching camera and rotating phone)
+        //trying to access our videostream at the same time, which would lead to the app crashing
+        previewRenderer?.dispose()
+
+        if (!cameraFacingUser){
+            cameraFacingUser = true
+            currentCamera = getCameraFacing(CameraFacing.FRONT)
+        } else {
+            cameraFacingUser = false
+            currentCamera = getCameraFacing(CameraFacing.BACK)
+        }
+        currentVideoStream?.switchSource(currentCamera)
+        isSwitchingCamera = false
+        sendMessage(DataMessage.SwitchCameraResponse())
     }
 
 }

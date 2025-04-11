@@ -101,6 +101,7 @@ fun CallScreen(
     snackbarHostState: SnackbarHostState,
     modifier: Modifier
 ) {
+    val isSwitchingCamera = viewModel.isSwitchingCamera
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val activity = LocalActivity.current
@@ -152,7 +153,6 @@ fun CallScreen(
             }
         }
     }
-
     when{
         activity?.isInPictureInPictureMode == true -> PiPUi(viewModel, activity)
         orientation == Configuration.ORIENTATION_LANDSCAPE -> LandscapeUi(modifier, scrollState, viewModel, activity)
@@ -190,7 +190,7 @@ private fun LandscapeUi(modifier: Modifier, scrollState: ScrollState, viewModel:
                     .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CameraFeed(viewModel, activity)
+                CameraFeed(viewModel, activity, isSwitchingCamera)
             }
             Column(
                 modifier = modifier
@@ -230,7 +230,7 @@ private fun HorizontalUi(modifier: Modifier,scrollState: ScrollState,viewModel: 
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
-            CameraFeed(viewModel, activity)
+            CameraFeed(viewModel, activity, isSwitchingCamera)
         } else {
             Logo(modifier = Modifier
                 .weight(1f)
@@ -241,19 +241,21 @@ private fun HorizontalUi(modifier: Modifier,scrollState: ScrollState,viewModel: 
 }
 
 @Composable
-private fun ColumnScope.CameraFeed(viewModel: CallViewModel, activity: Activity?) {
-    AndroidView(
-        factory = { context -> FrameLayout(context) },
-        update = { view ->
-            viewModel.sessionState
-            if (activity != null) {
-                viewModel.showPreview(activity, view)
-            }
-        },
-        modifier = Modifier
-            .weight(1f)
-            .padding(8.dp),
-    )
+private fun ColumnScope.CameraFeed(viewModel: CallViewModel, activity: Activity?, isSwitchingCamera: Boolean) {
+    if (!isSwitchingCamera) {
+        AndroidView(
+            factory = { context -> FrameLayout(context) },
+            update = { view ->
+                viewModel.sessionState
+                if (activity != null && !viewModel.isSwitchingCamera) {
+                    viewModel.showPreview(activity, view)
+                }
+            },
+            modifier = Modifier
+                .weight(1f)
+                .padding(8.dp),
+        )
+    }
 }
 
 @Composable

@@ -39,6 +39,8 @@ class JsonModule() {
                 subclass(DataMessage.LocationResponse::class)
                 subclass(DataMessage.LocationEvent::class)
                 subclass(DataMessage.UserHelloEvent::class)
+                subclass(DataMessage.SwitchCameraRequest::class)
+                subclass(DataMessage.SwitchCameraResponse::class)
             }
             polymorphic(ErrorMessage::class) {
                 subclass(ErrorMessage.ErrorEvent::class)
