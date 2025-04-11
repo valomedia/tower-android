@@ -14,6 +14,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityManager
 import android.widget.FrameLayout
 import androidx.activity.compose.LocalActivity
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -39,10 +41,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.invisibleToUser
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -52,6 +56,7 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import media.valo.tower_android.R
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.DummyTowerDataSource
@@ -60,6 +65,7 @@ import media.valo.tower_android.model.AssistanceSessionState
 import media.valo.tower_android.ui.elements.AppBarPreview
 import media.valo.tower_android.ui.elements.Logo
 import media.valo.tower_android.ui.routes.home.HomeScreen
+import media.valo.tower_android.ui.theme.towerTextStyle
 import media.valo.tower_android.utils.CoroutineScopeModule
 import media.valo.tower_android.utils.JsonModule
 
@@ -253,7 +259,7 @@ private fun ColumnScope.CameraFeed(viewModel: CallViewModel, activity: Activity?
 @Composable
 private fun PiPUi(viewModel: CallViewModel, activity: Activity?) {
     if (viewModel.sessionState != AssistanceSessionState.DISCONNECTED) {
-        Column {
+        if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
             AndroidView(
                 factory = { context -> FrameLayout(context) },
                 update = { view ->
@@ -264,6 +270,20 @@ private fun PiPUi(viewModel: CallViewModel, activity: Activity?) {
                 },
                 modifier = Modifier.fillMaxSize()
             )
+        } else {
+            Column(horizontalAlignment = Alignment.CenterHorizontally){
+                Image(
+                    painter = painterResource(id = R.drawable.logo),
+                    contentDescription = null,
+                    Modifier
+                        .size(150.dp)
+                )
+                Text(
+                    text = "TOWER",
+                    style = towerTextStyle,
+                    fontSize = 32.sp
+                )
+            }
         }
     } else {
         activity?.finish()
@@ -273,7 +293,7 @@ private fun PiPUi(viewModel: CallViewModel, activity: Activity?) {
 /**
  * Announce a change of the Assistance Sessions State to the user, using the accessibility manager.
  *
- * @param context               The applications context.
+ * @param context               The application context.
  * @param accessibilityManager  The accessibility manager.
  * @param message               The State change to announce.
  */

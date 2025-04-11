@@ -14,7 +14,6 @@ package media.valo.tower_android.ui.elements
 //      * Jean-Pierre Höhmann
 //
 
-import android.app.Activity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
@@ -100,11 +99,7 @@ fun AppBar(
         }
     }
 
-    fun isPiP(activity: Activity?): Boolean {
-        return activity?.isInPictureInPictureMode == true
-    }
-
-    if (!isPiP(LocalActivity.current)) {
+    if (LocalActivity.current?.isInPictureInPictureMode == false) {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,

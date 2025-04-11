@@ -38,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -58,7 +59,7 @@ import media.valo.tower_android.ui.theme.TowerTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private lateinit var currentNavLocation: String
+    private lateinit var navController: NavHostController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -68,7 +69,7 @@ class MainActivity : ComponentActivity() {
                     TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                 val snackbarHostState = remember { SnackbarHostState() }
-                val navController = rememberNavController()
+                navController = rememberNavController()
 
                 DismissibleNavigationDrawer(
                     drawerState = drawerState,
@@ -97,14 +98,12 @@ class MainActivity : ComponentActivity() {
                                     modifier = modifier,
                                     navController = navController
                                 )
-                                currentNavLocation = "LoadingScreen"
                             }
                             composable<LoginScreen> {
                                 LoginScreen(
                                     modifier = modifier,
                                     navController = navController
                                 )
-                                currentNavLocation = "LoginScreen"
                             }
                             composable<HomeScreen> {
                                 RequirePermissions(
@@ -123,7 +122,6 @@ class MainActivity : ComponentActivity() {
                                         modifier = modifier
                                     )
                                 }
-                                currentNavLocation = "HomeScreen"
                             }
                             composable<CallScreen> {
                                 CallScreen(
@@ -131,31 +129,26 @@ class MainActivity : ComponentActivity() {
                                     snackbarHostState = snackbarHostState,
                                     modifier = modifier
                                 )
-                                currentNavLocation = "CallScreen"
                             }
                             composable<CallHistoryScreen> {
                                 CallHistoryScreen(
                                     modifier = modifier
                                 )
-                                currentNavLocation = "CallHistoryScreen"
                             }
                             composable<ProfileScreen> {
                                 ProfileScreen(
                                     modifier = modifier
                                 )
-                                currentNavLocation = "ProfileScreen"
                             }
                             composable<SettingsScreen> {
                                 SettingsScreen(
                                     modifier = modifier
                                 )
-                                currentNavLocation = "SettingsScreen"
                             }
                             composable<AboutScreen> {
                                 AboutScreen(
                                     modifier = modifier
                                 )
-                                currentNavLocation = "AboutScreen"
                             }
                         }
                     }
@@ -167,7 +160,9 @@ class MainActivity : ComponentActivity() {
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (currentNavLocation == "CallScreen") {
+        val navDestination = navController.currentDestination?.route.toString()
+        val homeRoute = "media.valo.tower_android.ui.routes.home.HomeScreen"
+        if (navDestination != homeRoute) {
             enterPictureInPictureMode(
                 PictureInPictureParams.Builder().setAspectRatio(
                     Rational(9,16)
