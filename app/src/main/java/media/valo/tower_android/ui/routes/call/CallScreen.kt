@@ -101,7 +101,6 @@ fun CallScreen(
     snackbarHostState: SnackbarHostState,
     modifier: Modifier
 ) {
-    val isSwitchingCamera = viewModel.isSwitchingCamera
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val activity = LocalActivity.current
@@ -178,6 +177,7 @@ private fun GeneralUi(viewModel: CallViewModel) {
 
 @Composable
 private fun LandscapeUi(modifier: Modifier, scrollState: ScrollState, viewModel: CallViewModel, activity: Activity?) {
+    val isSwitchingCamera = viewModel.isSwitchingCamera
     if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
         Row(
             modifier = Modifier.fillMaxSize()
@@ -225,6 +225,7 @@ private fun LandscapeUi(modifier: Modifier, scrollState: ScrollState, viewModel:
 
 @Composable
 private fun HorizontalUi(modifier: Modifier,scrollState: ScrollState,viewModel: CallViewModel, activity: Activity?){
+    val isSwitchingCamera = viewModel.isSwitchingCamera
     Column(
         modifier = modifier.verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
