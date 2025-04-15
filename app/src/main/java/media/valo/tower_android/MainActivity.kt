@@ -38,6 +38,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -160,9 +161,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        val navDestination = navController.currentDestination?.route.toString()
-        val homeRoute = "media.valo.tower_android.ui.routes.home.HomeScreen"
-        if (navDestination != homeRoute) {
+        val currentDestination = navController.currentDestination
+        if (currentDestination != null && currentDestination.hasRoute<CallScreen>()) {
             enterPictureInPictureMode(
                 PictureInPictureParams.Builder().setAspectRatio(
                     Rational(9,16)
