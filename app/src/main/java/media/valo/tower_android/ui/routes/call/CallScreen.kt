@@ -153,7 +153,7 @@ fun CallScreen(
         }
     }
     when{
-        activity?.isInPictureInPictureMode == true -> PiPUi(viewModel, activity)
+        activity != null && activity.isInPictureInPictureMode -> PiPUi(viewModel, activity)
         orientation == Configuration.ORIENTATION_LANDSCAPE -> LandscapeUi(modifier, scrollState, viewModel, activity)
         else -> HorizontalUi(modifier, scrollState, viewModel, activity)
     }
@@ -176,8 +176,12 @@ private fun GeneralUi(viewModel: CallViewModel) {
 }
 
 @Composable
-private fun LandscapeUi(modifier: Modifier, scrollState: ScrollState, viewModel: CallViewModel, activity: Activity?) {
-    val isSwitchingCamera = viewModel.isSwitchingCamera
+private fun LandscapeUi(
+    modifier: Modifier,
+    scrollState: ScrollState,
+    viewModel: CallViewModel,
+    activity: Activity?
+) {
     if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
         Row(
             modifier = Modifier.fillMaxSize()
@@ -190,7 +194,7 @@ private fun LandscapeUi(modifier: Modifier, scrollState: ScrollState, viewModel:
                     .padding(8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CameraFeed(viewModel, activity, isSwitchingCamera)
+                CameraFeed(viewModel, activity)
             }
             Column(
                 modifier = modifier
@@ -224,14 +228,18 @@ private fun LandscapeUi(modifier: Modifier, scrollState: ScrollState, viewModel:
 }
 
 @Composable
-private fun HorizontalUi(modifier: Modifier,scrollState: ScrollState,viewModel: CallViewModel, activity: Activity?){
-    val isSwitchingCamera = viewModel.isSwitchingCamera
+private fun HorizontalUi(
+    modifier: Modifier,
+    scrollState: ScrollState,
+    viewModel: CallViewModel,
+    activity: Activity?
+){
     Column(
         modifier = modifier.verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
-            CameraFeed(viewModel, activity, isSwitchingCamera)
+            CameraFeed(viewModel, activity)
         } else {
             Logo(modifier = Modifier
                 .weight(1f)
@@ -242,37 +250,38 @@ private fun HorizontalUi(modifier: Modifier,scrollState: ScrollState,viewModel: 
 }
 
 @Composable
-private fun ColumnScope.CameraFeed(viewModel: CallViewModel, activity: Activity?, isSwitchingCamera: Boolean) {
-    if (!isSwitchingCamera) {
-        AndroidView(
-            factory = { context -> FrameLayout(context) },
-            update = { view ->
-                viewModel.sessionState
-                if (activity != null && !viewModel.isSwitchingCamera) {
-                    viewModel.showPreview(activity, view)
-                }
-            },
-            modifier = Modifier
-                .weight(1f)
-                .padding(8.dp),
-        )
-    }
+private fun ColumnScope.CameraFeed(viewModel: CallViewModel, activity: Activity?) {
+    AndroidView(
+        factory = { context -> FrameLayout(context) },
+        update = { view ->
+            viewModel.sessionState
+            if (activity != null && !viewModel.isSwitchingCamera) {
+                viewModel.showPreview(activity, view)
+            }
+        },
+        modifier = Modifier
+            .weight(1f)
+            .padding(8.dp),
+    )
 }
 
 @Composable
 private fun PiPUi(viewModel: CallViewModel, activity: Activity?) {
     if (viewModel.sessionState != AssistanceSessionState.DISCONNECTED) {
         if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
-            AndroidView(
-                factory = { context -> FrameLayout(context) },
-                update = { view ->
-                    viewModel.sessionState
-                    if (activity != null) {
-                        viewModel.showPreview(activity, view)
-                    }
-                },
-                modifier = Modifier.fillMaxSize()
-            )
+            Column {
+                AndroidView(
+                    factory = { context -> FrameLayout(context) },
+                    update = { view ->
+                        viewModel.sessionState
+                        viewModel.isSwitchingCamera
+                        if (activity != null && !viewModel.isSwitchingCamera) {
+                            viewModel.showPreview(activity, view)
+                        }
+                    },
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         } else {
             Column(horizontalAlignment = Alignment.CenterHorizontally){
                 Image(
