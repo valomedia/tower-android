@@ -84,6 +84,8 @@ fun AppBar(
 ) {
     val scope = rememberCoroutineScope()
 
+    val activity = LocalActivity.current
+
     val currentBackStackEntry by navController.currentBackStackEntryAsState()
 
     val currentDestination by remember {
@@ -99,7 +101,7 @@ fun AppBar(
         }
     }
 
-    if (LocalActivity.current?.isInPictureInPictureMode == false) {
+    if (activity != null && activity.isInPictureInPictureMode) {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
