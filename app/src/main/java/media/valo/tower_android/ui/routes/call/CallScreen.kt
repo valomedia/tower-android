@@ -283,17 +283,18 @@ private fun PiPUi(viewModel: CallViewModel, activity: Activity?) {
                 )
             }
         } else {
-            Column(horizontalAlignment = Alignment.CenterHorizontally){
+            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize()){
                 Image(
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = null,
-                    Modifier
-                        .size(150.dp)
+                    modifier = Modifier
+                        .size(112.dp).padding(4.dp).weight(2f)
                 )
                 Text(
                     text = "TOWER",
                     style = towerTextStyle,
-                    fontSize = 32.sp
+                    fontSize = 32.sp,
+                    modifier = Modifier.weight(1f)
                 )
             }
         }
