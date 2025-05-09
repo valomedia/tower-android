@@ -12,6 +12,7 @@
   -
   - Created by:
   -     * Jean-Pierre Höhmann
+  -     * mvlexs
   -->
 
 <manifest
@@ -47,7 +48,8 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Tower_Android">
+            android:supportsPictureInPicture="true"
+            android:theme="@style/Theme.Tower_Android" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

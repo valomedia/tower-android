@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -31,9 +31,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import media.valo.tower_android.ui.elements.AppBar
 import media.valo.tower_android.ui.elements.Menu
 import media.valo.tower_android.ui.elements.RequirePermissions
@@ -51,12 +51,11 @@ import media.valo.tower_android.ui.routes.settings.SettingsScreen
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TowerApp() {
+fun TowerApp(navController: NavHostController) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val snackbarHostState = remember { SnackbarHostState() }
-    val navController = rememberNavController()
 
     DismissibleNavigationDrawer(
         drawerState = drawerState,
@@ -114,6 +113,7 @@ fun TowerApp() {
                     CallScreen(
                         navController = navController,
                         snackbarHostState = snackbarHostState,
+                        drawerState = drawerState,
                         modifier = modifier
                     )
                 }
