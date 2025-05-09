@@ -39,12 +39,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.runBlocking
 import media.valo.tower_android.ui.elements.AppBar
 import media.valo.tower_android.ui.elements.Menu
 import media.valo.tower_android.ui.elements.RequirePermissions
@@ -72,6 +75,14 @@ class MainActivity : ComponentActivity() {
                 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
                 val snackbarHostState = remember { SnackbarHostState() }
                 navController = rememberNavController()
+
+                LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+                    if (drawerState.isOpen) {
+                        runBlocking {
+                            drawerState.snapTo(DrawerValue.Closed)
+                        }
+                    }
+                }
 
                 DismissibleNavigationDrawer(
                     drawerState = drawerState,
