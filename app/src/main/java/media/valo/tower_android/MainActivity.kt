@@ -64,7 +64,9 @@ import media.valo.tower_android.ui.theme.TowerTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     private lateinit var navController: NavHostController
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -177,9 +179,10 @@ class MainActivity : ComponentActivity() {
                 && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
             enterPictureInPictureMode(
                 PictureInPictureParams.Builder().setAspectRatio(
-                    Rational(9,16)
+                    Rational(9, 16)
                 ).build()
             )
         }
     }
+
 }
