@@ -101,7 +101,7 @@ fun AppBar(
         }
     }
 
-    if (activity == null || !activity.isInPictureInPictureMode) {
+    if (activity?.isInPictureInPictureMode != true) {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
