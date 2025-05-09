@@ -112,6 +112,9 @@ fun CallScreen(
         )
     )
 
+    // Because for the way AnchoredDraggableState handles gestures, the menu will “fall” open when
+    // returning from PiP. Since it should never be open when on this screen, we'll just hold it
+    // shut as a workaround.
     LaunchedEffect(drawerState.isOpen) {
         runBlocking {
             drawerState.snapTo(DrawerValue.Closed)
