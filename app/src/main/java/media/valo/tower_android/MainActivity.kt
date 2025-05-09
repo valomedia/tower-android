@@ -161,8 +161,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        val currentDestination = navController.currentDestination
-        if (currentDestination != null && currentDestination.hasRoute<CallScreen>()) {
+        if (navController.currentDestination?.hasRoute<CallScreen>() == true) {
             enterPictureInPictureMode(
                 PictureInPictureParams.Builder().setAspectRatio(
                     Rational(9,16)
