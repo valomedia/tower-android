@@ -18,9 +18,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -93,7 +91,7 @@ object CallScreen
  * @param navController     Used to navigate back to the home screen once the call ends.
  * @param snackbarHostState Used to show a snackbar if the call fails.
  */
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CallScreen(
     viewModel: CallViewModel = hiltViewModel(),
@@ -104,8 +102,6 @@ fun CallScreen(
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val activity = LocalActivity.current
-    val configuration = LocalConfiguration.current
-    val orientation = configuration.orientation
     val accessibilityManager =
         context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
     val locationPermissionState = rememberMultiplePermissionsState(
@@ -152,145 +148,101 @@ fun CallScreen(
             }
         }
     }
-    when{
-        activity != null && activity.isInPictureInPictureMode -> PiPUi(viewModel, activity)
-        orientation == Configuration.ORIENTATION_LANDSCAPE -> LandscapeUi(modifier, scrollState, viewModel, activity)
-        else -> HorizontalUi(modifier, scrollState, viewModel, activity)
+
+    if (activity != null && activity.isInPictureInPictureMode) {
+        PiPUi(
+            viewModel = viewModel,
+            activity = activity,
+            modifier = Modifier.fillMaxSize()
+        )
+    } else {
+        NormalUi(
+            viewModel = viewModel,
+            scrollState = scrollState,
+            activity = activity,
+            modifier = modifier
+        )
     }
 }
 
 @Composable
-private fun GeneralUi(viewModel: CallViewModel) {
-    Text(
-        viewModel.sessionState.toString(),
-        modifier = Modifier
-            .padding(8.dp)
-            .semantics { invisibleToUser() })
-    ExtendedFloatingActionButton(
-        onClick = { viewModel.endSession() },
-        icon = { Icon(Icons.Filled.Phone, "Auflegen") },
-        text = { Text(text = "Auflegen") },
-        containerColor = Color.Red,
-        modifier = Modifier.padding(8.dp)
-    )
-}
-
-@Composable
-private fun LandscapeUi(
-    modifier: Modifier,
-    scrollState: ScrollState,
+private fun NormalUi(
     viewModel: CallViewModel,
-    activity: Activity?
+    scrollState: ScrollState,
+    activity: Activity?,
+    modifier: Modifier = Modifier
 ) {
-    if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
-        Row(
-            modifier = Modifier.fillMaxSize()
-        ) {
+    Row {
+        if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE
+                && viewModel.sessionState == AssistanceSessionState.CONNECTED) {
             Column(
-                modifier = modifier
-                    .verticalScroll(scrollState)
-                    .weight(3f)
-                    .fillMaxHeight()
-                    .padding(8.dp),
+                modifier = modifier.weight(3f),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                CameraFeed(viewModel, activity)
+                CameraFeed(
+                    viewModel = viewModel,
+                    activity = activity,
+                    modifier = Modifier.weight(1f).padding(8.dp)
+                )
             }
-            Column(
-                modifier = modifier
-                    .verticalScroll(scrollState)
-                    .weight(1f)
-                    .fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
+        }
+        Column(
+            modifier = modifier.verticalScroll(scrollState).weight(1f),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            if (LocalConfiguration.current.orientation != Configuration.ORIENTATION_LANDSCAPE
+                    && viewModel.sessionState == AssistanceSessionState.CONNECTED) {
+                CameraFeed(
+                    viewModel = viewModel,
+                    activity = activity,
+                    modifier = Modifier.weight(1f).padding(8.dp)
+                )
+            } else {
                 Logo(
                     modifier = Modifier
                         .weight(1f)
                         .padding(8.dp)
                 )
-                GeneralUi(viewModel)
             }
-        }
-    } else {
-        Column(
-            modifier = modifier.verticalScroll(scrollState),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Logo(
+            Text(
+                viewModel.sessionState.toString(),
                 modifier = Modifier
-                    .weight(1f)
                     .padding(8.dp)
+                    .semantics { invisibleToUser() })
+            ExtendedFloatingActionButton(
+                onClick = { viewModel.endSession() },
+                icon = { Icon(Icons.Filled.Phone, "Auflegen") },
+                text = { Text(text = "Auflegen") },
+                containerColor = Color.Red,
+                modifier = Modifier.padding(8.dp)
             )
-            GeneralUi(viewModel)
         }
     }
 }
 
 @Composable
-private fun HorizontalUi(
-    modifier: Modifier,
-    scrollState: ScrollState,
-    viewModel: CallViewModel,
-    activity: Activity?
-){
-    Column(
-        modifier = modifier.verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
-            CameraFeed(
-                viewModel = viewModel,
-                activity = activity,
-                modifier = Modifier.weight(1f).padding(8.dp)
-            )
-        } else {
-            Logo(modifier = Modifier
-                .weight(1f)
-                .padding(8.dp))
-        }
-        GeneralUi(viewModel)
-    }
-}
-
-@Composable
-private fun ColumnScope.CameraFeed(
+private fun PiPUi(
     viewModel: CallViewModel,
     activity: Activity?,
     modifier: Modifier = Modifier
 ) {
-    AndroidView(
-        factory = { context -> FrameLayout(context) },
-        update = { view ->
-            viewModel.sessionState
-            if (activity != null && !viewModel.isSwitchingCamera) {
-                viewModel.showPreview(activity, view)
-            }
-        },
-        modifier = modifier
-    )
-}
-
-@Composable
-private fun PiPUi(viewModel: CallViewModel, activity: Activity?) {
     when (viewModel.sessionState) {
         // The assistant hung up while we were in PiP. Close the Activity.
         AssistanceSessionState.DISCONNECTED -> activity?.finish()
 
         // We're talking to the assistant. Show the camera feed.
         AssistanceSessionState.CONNECTED -> {
-            Column {
-                CameraFeed(
-                    viewModel = viewModel,
-                    activity = activity,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
+            CameraFeed(
+                viewModel = viewModel,
+                activity = activity,
+                modifier = modifier
+            )
         }
 
         // We're waiting, show the logo.
         else -> {
-            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize()){
+            Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = modifier) {
                 Image(
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = null,
@@ -306,6 +258,24 @@ private fun PiPUi(viewModel: CallViewModel, activity: Activity?) {
             }
         }
     }
+}
+
+@Composable
+private fun CameraFeed(
+    viewModel: CallViewModel,
+    activity: Activity?,
+    modifier: Modifier = Modifier
+) {
+    AndroidView(
+        factory = { context -> FrameLayout(context) },
+        update = { view ->
+            viewModel.sessionState
+            if (activity != null && !viewModel.isSwitchingCamera) {
+                viewModel.showPreview(activity, view)
+            }
+        },
+        modifier = modifier
+    )
 }
 
 /**
