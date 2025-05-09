@@ -239,7 +239,11 @@ private fun HorizontalUi(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
-            CameraFeed(viewModel, activity)
+            CameraFeed(
+                viewModel = viewModel,
+                activity = activity,
+                modifier = Modifier.weight(1f).padding(8.dp)
+            )
         } else {
             Logo(modifier = Modifier
                 .weight(1f)
@@ -250,7 +254,11 @@ private fun HorizontalUi(
 }
 
 @Composable
-private fun ColumnScope.CameraFeed(viewModel: CallViewModel, activity: Activity?) {
+private fun ColumnScope.CameraFeed(
+    viewModel: CallViewModel,
+    activity: Activity?,
+    modifier: Modifier = Modifier
+) {
     AndroidView(
         factory = { context -> FrameLayout(context) },
         update = { view ->
@@ -259,9 +267,7 @@ private fun ColumnScope.CameraFeed(viewModel: CallViewModel, activity: Activity?
                 viewModel.showPreview(activity, view)
             }
         },
-        modifier = Modifier
-            .weight(1f)
-            .padding(8.dp),
+        modifier = modifier
     )
 }
 
@@ -274,15 +280,9 @@ private fun PiPUi(viewModel: CallViewModel, activity: Activity?) {
         // We're talking to the assistant. Show the camera feed.
         AssistanceSessionState.CONNECTED -> {
             Column {
-                AndroidView(
-                    factory = { context -> FrameLayout(context) },
-                    update = { view ->
-                        viewModel.sessionState
-                        viewModel.isSwitchingCamera
-                        if (activity != null && !viewModel.isSwitchingCamera) {
-                            viewModel.showPreview(activity, view)
-                        }
-                    },
+                CameraFeed(
+                    viewModel = viewModel,
+                    activity = activity,
                     modifier = Modifier.fillMaxSize()
                 )
             }
