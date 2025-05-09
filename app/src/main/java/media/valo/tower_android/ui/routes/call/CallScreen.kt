@@ -267,8 +267,12 @@ private fun ColumnScope.CameraFeed(viewModel: CallViewModel, activity: Activity?
 
 @Composable
 private fun PiPUi(viewModel: CallViewModel, activity: Activity?) {
-    if (viewModel.sessionState != AssistanceSessionState.DISCONNECTED) {
-        if (viewModel.sessionState == AssistanceSessionState.CONNECTED) {
+    when (viewModel.sessionState) {
+        // The assistant hung up while we were in PiP. Close the Activity.
+        AssistanceSessionState.DISCONNECTED -> activity?.finish()
+
+        // We're talking to the assistant. Show the camera feed.
+        AssistanceSessionState.CONNECTED -> {
             Column {
                 AndroidView(
                     factory = { context -> FrameLayout(context) },
@@ -282,7 +286,10 @@ private fun PiPUi(viewModel: CallViewModel, activity: Activity?) {
                     modifier = Modifier.fillMaxSize()
                 )
             }
-        } else {
+        }
+
+        // We're waiting, show the logo.
+        else -> {
             Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center, modifier = Modifier.fillMaxSize()){
                 Image(
                     painter = painterResource(id = R.drawable.logo),
@@ -298,8 +305,6 @@ private fun PiPUi(viewModel: CallViewModel, activity: Activity?) {
                 )
             }
         }
-    } else {
-        activity?.finish()
     }
 }
 
