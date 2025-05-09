@@ -6,6 +6,14 @@
 
 package media.valo.tower_android.ui
 
+//
+//  TowerApp.kt
+//  Tower_Android
+//
+//  Created by:
+//      * Jean-Pierre Höhmann
+//
+
 import android.Manifest
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -37,14 +45,6 @@ import media.valo.tower_android.ui.routes.loading.LoadingScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
 import media.valo.tower_android.ui.routes.profile.ProfileScreen
 import media.valo.tower_android.ui.routes.settings.SettingsScreen
-
-//
-//  TowerApp.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 /**
  * Ui entry point for the TOWER app.
