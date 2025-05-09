@@ -17,6 +17,7 @@ package media.valo.tower_android
 
 import android.Manifest
 import android.app.PictureInPictureParams
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Rational
 import android.view.WindowManager
@@ -161,7 +162,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onUserLeaveHint() {
         super.onUserLeaveHint()
-        if (navController.currentDestination?.hasRoute<CallScreen>() == true) {
+        if (navController.currentDestination?.hasRoute<CallScreen>() == true
+                && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
             enterPictureInPictureMode(
                 PictureInPictureParams.Builder().setAspectRatio(
                     Rational(9,16)
