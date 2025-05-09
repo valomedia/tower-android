@@ -25,10 +25,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -50,6 +53,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationServices
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.R
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
@@ -93,6 +97,7 @@ fun CallScreen(
     viewModel: CallViewModel = hiltViewModel(),
     navController: NavController,
     snackbarHostState: SnackbarHostState,
+    drawerState: DrawerState,
     modifier: Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -106,6 +111,12 @@ fun CallScreen(
             android.Manifest.permission.ACCESS_FINE_LOCATION
         )
     )
+
+    LaunchedEffect(drawerState.isOpen) {
+        runBlocking {
+            drawerState.snapTo(DrawerValue.Closed)
+        }
+    }
 
     LaunchedEffect(Unit) {
         if (viewModel.sessionState == AssistanceSessionState.DISCONNECTED) {
@@ -300,6 +311,8 @@ private fun announceStateChange(
 @Preview(showBackground = true, showSystemUi = true, locale = "de-rDE")
 @Composable
 fun CallScreenPreview() {
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
     AppBarPreview { innerPadding ->
         CallScreen(
             viewModel = CallViewModel(
@@ -314,6 +327,7 @@ fun CallScreenPreview() {
             ),
             navController = rememberNavController(),
             snackbarHostState = remember { SnackbarHostState() },
+            drawerState = drawerState,
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(8.dp)
