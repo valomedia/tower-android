@@ -12,14 +12,15 @@ package media.valo.tower_android.ui.routes.loading
 //
 //  Created by:
 //      * Jean-Pierre Höhmann
+//      * mvlexs
 //
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.serialization.Serializable
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
+import media.valo.tower_android.model.InitialContactResponse
 import javax.inject.Inject
 
 /**
@@ -36,8 +37,7 @@ class LoadingViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
-    val openingHours = OpeningHours
-
+    lateinit var indexResponseStatus: InitialContactResponse
     /**
      * Check whether the user has provided all required profile information.
      */
@@ -50,7 +50,7 @@ class LoadingViewModel @Inject constructor(
      */
     suspend fun connect(): Boolean {
         try {
-            towerRepository.index()
+            indexResponseStatus = towerRepository.index()
             if (credentialRepository.getUserId().isNullOrBlank()) {
                 credentialRepository.setUserId(towerRepository.registerUser().userId)
             }
@@ -60,30 +60,12 @@ class LoadingViewModel @Inject constructor(
         }
     }
 
-    suspend fun parseIndexResponse() {
-        val indexResponse = towerRepository.index()
-    }
-
     fun isOpen(): Boolean {
-        return openingHours.status == "open"
+        return indexResponseStatus.openingHours.status == "open"
     }
 
     fun getSchedule(): String{
-        return openingHours.description
+        return indexResponseStatus.openingHours.description
     }
 }
 
-@Serializable
-data class ApiResponse(
-    val message: String,
-    val apiVersion: String,
-    val openingHours: OpeningHours
-)
-
-@Serializable
-data class OpeningHours(
-    val time: String,
-    val status: String,
-    val schedule: Map<String, String>,
-    val description: String
-)
