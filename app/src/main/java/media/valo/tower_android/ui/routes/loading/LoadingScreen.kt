@@ -38,7 +38,7 @@ import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.ui.elements.AppBarPreview
 import media.valo.tower_android.ui.elements.Logo
 import media.valo.tower_android.ui.routes.home.HomeScreen
-import media.valo.tower_android.ui.routes.login.ClosedScreen
+import media.valo.tower_android.ui.routes.login.CurrentlyClosedError
 import media.valo.tower_android.ui.routes.login.LoginScreen
 
 /**
@@ -61,25 +61,10 @@ fun LoadingScreen(
     modifier: Modifier
 ) {
     LaunchedEffect(Unit) {
-
-        //TODO simplify?
-        when{
-            viewModel.connect() && viewModel.hasProfile() && viewModel.isOpen() -> {
+        if (!viewModel.isOpen()) {
+            if (viewModel.connect() && viewModel.hasProfile()) {
                 navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
-            }
-            !viewModel.connect() && viewModel.hasProfile() && viewModel.isOpen() -> {
-                navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
-            }
-            viewModel.connect() && !viewModel.hasProfile() && viewModel.isOpen() -> {
-                navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
-            }
-            !viewModel.connect() && !viewModel.hasProfile() && viewModel.isOpen() -> {
-                navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
-            }
-            viewModel.connect() && viewModel.hasProfile() && !viewModel.isOpen() -> {
-                navController.navigate(route = ClosedScreen) { popUpTo(navController.graph.id) }
-            }
-            else -> {
+            } else {
                 navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
             }
         }
@@ -92,6 +77,9 @@ fun LoadingScreen(
     ) {
         Logo(modifier = Modifier.padding(8.dp))
         CircularProgressIndicator(modifier = Modifier.padding(8.dp))
+    }
+    if (viewModel.isOpen()){
+        CurrentlyClosedError(modifier, navController, viewModel.getSchedule())
     }
 }
 
