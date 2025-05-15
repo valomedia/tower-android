@@ -6,12 +6,12 @@
 
 package media.valo.tower_android.ui.routes.login
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import media.valo.tower_android.ui.routes.loading.LoadingScreen
+import media.valo.tower_android.ui.routes.home.HomeScreen
 
 //
 //  ConnectionError.kt
@@ -35,7 +35,7 @@ import media.valo.tower_android.ui.routes.loading.LoadingScreen
  * Object for the navigation destination for the currently closed screen.
  */
 @Serializable
-object ClosedScreen
+data class ClosedScreen(val currentSchedule: String)
 
 /**
  * A message telling the user that they are trying to reach us outside our opening hours.
@@ -44,7 +44,7 @@ object ClosedScreen
  * @param navController User to navigate to the loading screen when the user chooses to retry.
  */
 @Composable
-fun CurrentlyClosedError(
+fun ClosedScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
     currentSchedule: String
@@ -52,28 +52,29 @@ fun CurrentlyClosedError(
     val scope = rememberCoroutineScope()
 
     Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = modifier.fillMaxWidth().padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         Text(
-            "Wir haben gerade geschlossen",
+            "Wir haben geschlossen",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(8.dp)
         )
-        OutlinedTextField(
-            value = currentSchedule,
-            onValueChange = {},
-            modifier = Modifier
+        Text(
+            currentSchedule.toString() +
+            "\nSolltest du einen Termin mit uns vereinbart haben, dann ruf uns gerne trotzdem an.",
+            modifier = Modifier.padding(16.dp)
         )
         Button(
             onClick = {
                 scope.launch {
-                    navController.navigate(route = LoadingScreen)
+                    navController.navigate(route = HomeScreen)
                 }
             },
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(16.dp)
         ) {
-            Text("Erneut versuchen")
+            Text("Okay")
         }
     }
 

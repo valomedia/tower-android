@@ -38,7 +38,7 @@ import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.ui.elements.AppBarPreview
 import media.valo.tower_android.ui.elements.Logo
 import media.valo.tower_android.ui.routes.home.HomeScreen
-import media.valo.tower_android.ui.routes.login.CurrentlyClosedError
+import media.valo.tower_android.ui.routes.login.ClosedScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
 
 /**
@@ -60,14 +60,32 @@ fun LoadingScreen(
     navController: NavController,
     modifier: Modifier
 ) {
+
     LaunchedEffect(Unit) {
-        if (!viewModel.isOpen()) {
-            if (viewModel.connect() && viewModel.hasProfile()) {
+
+
+        //TODO simplify?
+        when{
+            viewModel.connect() && viewModel.hasProfile() && viewModel.isOpen() == "open" -> {
                 navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
-            } else {
+            }
+            !viewModel.connect() && viewModel.hasProfile() && viewModel.isOpen() == "open" -> {
                 navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
             }
+            viewModel.connect() && !viewModel.hasProfile() && viewModel.isOpen() == "open" -> {
+                navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
+            }
+            !viewModel.connect() && !viewModel.hasProfile() && viewModel.isOpen() == "open" -> {
+                navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
+            }
+            viewModel.connect() && viewModel.hasProfile() && viewModel.isOpen() == "closed" -> {
+                navController.navigate(route = ClosedScreen(currentSchedule = viewModel.getSchedule())) { popUpTo(navController.graph.id) }
+            }
+            else -> {
+                navController.navigate(route = LoadingScreen) { popUpTo(navController.graph.id) }
+            }
         }
+
     }
 
     Column(
@@ -77,9 +95,6 @@ fun LoadingScreen(
     ) {
         Logo(modifier = Modifier.padding(8.dp))
         CircularProgressIndicator(modifier = Modifier.padding(8.dp))
-    }
-    if (viewModel.isOpen()){
-        CurrentlyClosedError(modifier, navController, viewModel.getSchedule())
     }
 }
 
