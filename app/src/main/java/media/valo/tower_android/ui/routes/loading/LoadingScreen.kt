@@ -63,10 +63,10 @@ fun LoadingScreen(
 
     LaunchedEffect(Unit) {
         if (viewModel.connect() && viewModel.hasProfile()) {
-            if (viewModel.isOpen) {
+            if (viewModel.isOpen == true) {
                 navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
             } else {
-                navController.navigate(route = ClosedScreen(currentSchedule = viewModel.scheduleDescription))
+                navController.navigate(route = ClosedScreen(currentSchedule = viewModel.scheduleDescription.toString()))
             }
         } else {
         navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }

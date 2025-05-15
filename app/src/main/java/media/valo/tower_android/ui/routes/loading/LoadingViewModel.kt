@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2025.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -38,8 +38,8 @@ class LoadingViewModel @Inject constructor(
 ) : ViewModel() {
 
     lateinit var indexResponse: IndexResponse
-    var isOpen = true
-    var scheduleDescription = "Aktuell können die Öffnungszeiten leider nicht geladen werden."
+    var isOpen: Boolean? = null
+    var scheduleDescription: String? = null
 
     /**
      * Check whether the user has provided all required profile information.
