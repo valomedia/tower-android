@@ -62,30 +62,15 @@ fun LoadingScreen(
 ) {
 
     LaunchedEffect(Unit) {
-
-
-        //TODO simplify?
-        when{
-            viewModel.connect() && viewModel.hasProfile() && viewModel.isOpen() == "open" -> {
+        if (viewModel.connect() && viewModel.hasProfile()) {
+            if (viewModel.isOpen) {
                 navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
+            } else {
+                navController.navigate(route = ClosedScreen(currentSchedule = viewModel.scheduleDescription))
             }
-            !viewModel.connect() && viewModel.hasProfile() && viewModel.isOpen() == "open" -> {
-                navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
-            }
-            viewModel.connect() && !viewModel.hasProfile() && viewModel.isOpen() == "open" -> {
-                navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
-            }
-            !viewModel.connect() && !viewModel.hasProfile() && viewModel.isOpen() == "open" -> {
-                navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
-            }
-            viewModel.connect() && viewModel.hasProfile() && viewModel.isOpen() == "closed" -> {
-                navController.navigate(route = ClosedScreen(currentSchedule = viewModel.getSchedule())) { popUpTo(navController.graph.id) }
-            }
-            else -> {
-                navController.navigate(route = LoadingScreen) { popUpTo(navController.graph.id) }
-            }
+        } else {
+        navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
         }
-
     }
 
     Column(
