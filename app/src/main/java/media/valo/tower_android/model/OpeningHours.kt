@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024-2025.                                                   *
+ * Copyright (c) 2025.                                                        *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -17,6 +17,16 @@ package media.valo.tower_android.model
 
 import kotlinx.serialization.Serializable
 
+//TODO: make time & schedule typesafe
+
+/**
+ * The 'OpeningHours' object, nested inside data returned by the `/`-endpoint.
+ *
+ * @param time current time
+ * @param status indicating wether the service is currently closed or not
+ * @param schedule schedule of service for the next few days
+ * @param description string containig easily readable information about opening hours
+ */
 @Serializable
 data class OpeningHours(
     val time: String,
