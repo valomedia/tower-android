@@ -26,7 +26,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
-import media.valo.tower_android.model.InitialContactResponse
+import media.valo.tower_android.model.IndexResponse
 import media.valo.tower_android.model.RegisterUserResponse
 import media.valo.tower_android.model.RequestAssistanceResponse
 import media.valo.tower_android.utils.TowerHttpClient
@@ -44,8 +44,8 @@ class HttpTowerDataSource @Inject constructor(
     private val credentialRepository: CredentialRepository
 ) : TowerDataSource {
 
-    override suspend fun index(): InitialContactResponse =
-        get("/").body<InitialContactResponse>()
+    override suspend fun index(): IndexResponse =
+        get("/").body<IndexResponse>()
 
 
     override suspend fun registerUser(): RegisterUserResponse =

@@ -6,7 +6,7 @@
 
 package media.valo.tower_android.data.remote.tower
 
-import media.valo.tower_android.model.InitialContactResponse
+import media.valo.tower_android.model.IndexResponse
 import media.valo.tower_android.model.RegisterUserResponse
 import media.valo.tower_android.model.RequestAssistanceResponse
 
@@ -30,7 +30,7 @@ interface TowerDataSource {
      * This will make a call to the index endpoint, returning a json object when the call succeeds (meaning
      * the api is reachable and the credentials are valid), and throwing otherwise.
      */
-    suspend fun index(): InitialContactResponse
+    suspend fun index(): IndexResponse
 
     /**
      * Make a request to create an identity for this instance of the app.
