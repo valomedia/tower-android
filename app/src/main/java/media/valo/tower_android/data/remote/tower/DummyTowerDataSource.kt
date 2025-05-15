@@ -6,7 +6,7 @@
 
 package media.valo.tower_android.data.remote.tower
 
-import media.valo.tower_android.model.dummyInitialContactResponse
+import media.valo.tower_android.model.dummyIndexResponse
 import media.valo.tower_android.model.dummyRegisterUserResponse
 import media.valo.tower_android.model.dummyRequestAssistanceResponse
 
@@ -26,7 +26,7 @@ import media.valo.tower_android.model.dummyRequestAssistanceResponse
  */
 class DummyTowerDataSource : TowerDataSource {
 
-    override suspend fun index() = dummyInitialContactResponse
+    override suspend fun index() = dummyIndexResponse
 
     override suspend fun registerUser() = dummyRegisterUserResponse
 
