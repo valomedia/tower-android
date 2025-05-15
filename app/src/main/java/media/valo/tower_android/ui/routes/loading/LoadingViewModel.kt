@@ -20,7 +20,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
-import media.valo.tower_android.model.InitialContactResponse
+import media.valo.tower_android.model.IndexResponse
 import javax.inject.Inject
 
 /**
@@ -37,7 +37,8 @@ class LoadingViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
-    lateinit var indexResponseStatus: InitialContactResponse
+    lateinit var indexResponse: IndexResponse
+
     /**
      * Check whether the user has provided all required profile information.
      */
@@ -50,7 +51,7 @@ class LoadingViewModel @Inject constructor(
      */
     suspend fun connect(): Boolean {
         try {
-            indexResponseStatus = towerRepository.index()
+            indexResponse = towerRepository.index()
             if (credentialRepository.getUserId().isNullOrBlank()) {
                 credentialRepository.setUserId(towerRepository.registerUser().userId)
             }
@@ -60,12 +61,12 @@ class LoadingViewModel @Inject constructor(
         }
     }
 
-    fun isOpen(): Boolean {
-        return indexResponseStatus.openingHours.status == "open"
+    fun isOpen(): String {
+        return indexResponse.openingHours.status.toString()
     }
 
     fun getSchedule(): String{
-        return indexResponseStatus.openingHours.description
+        return indexResponse.openingHours.description.toString()
     }
 }
 
