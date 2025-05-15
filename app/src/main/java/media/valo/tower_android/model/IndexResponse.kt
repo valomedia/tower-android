@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024-2025.                                                   *
+ * Copyright (c) 2025.                                                        *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -16,6 +16,13 @@ package media.valo.tower_android.model
 
 import kotlinx.serialization.Serializable
 
+/**
+ * The data returned by the `/`-endpoint.
+ *
+ * @param message message from the endpoint, typically 'success', indicating that the backend is reachable
+ * @param apiVersion the current backend api version
+ * @param openingHours nested openingHours object, containing various information about the service's availability
+ */
 @Serializable
 data class IndexResponse(
     val message: String,
@@ -24,6 +31,6 @@ data class IndexResponse(
 )
 
 /**
- * A dummy instance of `InitialContactResponse`.
+ * A dummy instance of `IndexResponse`.
  */
-val dummyInitialContactResponse = IndexResponse(message = "Success", apiVersion = "1.0", openingHours = dummyOpeningHours)
+val dummyIndexResponse = IndexResponse(message = "Success", apiVersion = "1.0", openingHours = dummyOpeningHours)
