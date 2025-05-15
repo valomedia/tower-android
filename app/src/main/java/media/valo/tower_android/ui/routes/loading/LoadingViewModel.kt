@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024-2025.                                                   *
+ * Copyright (c) 2025.                                                        *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -38,6 +38,8 @@ class LoadingViewModel @Inject constructor(
 ) : ViewModel() {
 
     lateinit var indexResponse: IndexResponse
+    var isOpen = true
+    var scheduleDescription = "Aktuell können die Öffnungszeiten leider nicht geladen werden."
 
     /**
      * Check whether the user has provided all required profile information.
@@ -52,6 +54,8 @@ class LoadingViewModel @Inject constructor(
     suspend fun connect(): Boolean {
         try {
             indexResponse = towerRepository.index()
+            isOpen = indexResponse.openingHours.status == "open"
+            scheduleDescription = indexResponse.openingHours.description
             if (credentialRepository.getUserId().isNullOrBlank()) {
                 credentialRepository.setUserId(towerRepository.registerUser().userId)
             }
@@ -61,12 +65,5 @@ class LoadingViewModel @Inject constructor(
         }
     }
 
-    fun isOpen(): String {
-        return indexResponse.openingHours.status.toString()
-    }
-
-    fun getSchedule(): String{
-        return indexResponse.openingHours.description.toString()
-    }
 }
 
