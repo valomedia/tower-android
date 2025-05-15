@@ -47,7 +47,6 @@ class HttpTowerDataSource @Inject constructor(
     override suspend fun index(): IndexResponse =
         get("/").body<IndexResponse>()
 
-
     override suspend fun registerUser(): RegisterUserResponse =
         post("/registerUser").body()
 
