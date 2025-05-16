@@ -39,8 +39,6 @@ class LoadingViewModel @Inject constructor(
 ) : ViewModel() {
 
     lateinit var indexResponse: IndexResponse
-    var isOpen: Boolean? = null
-    var scheduleDescription: String? = null
 
     /**
      * Check whether the user has provided all required profile information.
@@ -55,8 +53,6 @@ class LoadingViewModel @Inject constructor(
     suspend fun connect(): Boolean {
         try {
             indexResponse = towerRepository.index()
-            isOpen = indexResponse.openingHours.status == Status.OPEN
-            scheduleDescription = indexResponse.openingHours.description
             if (credentialRepository.getUserId().isNullOrBlank()) {
                 credentialRepository.setUserId(towerRepository.registerUser().userId)
             }

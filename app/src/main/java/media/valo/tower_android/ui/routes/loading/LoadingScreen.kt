@@ -35,6 +35,7 @@ import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataS
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.DummyTowerDataSource
 import media.valo.tower_android.data.remote.tower.TowerRepository
+import media.valo.tower_android.model.Status
 import media.valo.tower_android.ui.elements.AppBarPreview
 import media.valo.tower_android.ui.elements.Logo
 import media.valo.tower_android.ui.routes.home.HomeScreen
@@ -63,10 +64,10 @@ fun LoadingScreen(
 
     LaunchedEffect(Unit) {
         if (viewModel.connect() && viewModel.hasProfile()) {
-            if (viewModel.isOpen == true) {
+            if (viewModel.indexResponse.openingHours.status == Status.OPEN) {
                 navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
             } else {
-                navController.navigate(route = ClosedScreen(currentSchedule = viewModel.scheduleDescription.toString()))
+                navController.navigate(route = ClosedScreen(currentSchedule = viewModel.indexResponse.openingHours.description.toString()))
             }
         } else {
         navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
