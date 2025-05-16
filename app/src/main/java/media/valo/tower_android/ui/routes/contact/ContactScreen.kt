@@ -14,11 +14,9 @@ package media.valo.tower_android.ui.routes.contact
 //      * mvlexs
 //
 
-import android.content.Intent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,14 +24,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.unit.dp
 import kotlinx.serialization.Serializable
-import androidx.core.net.toUri
 
 /**
  * Object for the navigation destination for the contact screen.
@@ -51,7 +49,6 @@ fun ContactScreen(
     modifier: Modifier = Modifier,
 ){
 
-    val context = LocalContext.current
     val scrollState = rememberScrollState()
     Column(
         modifier = modifier.verticalScroll(scrollState),
@@ -59,30 +56,41 @@ fun ContactScreen(
     ) {
 
         val contactScreenText = buildAnnotatedString {
-            append("Wir freuen uns über deine Fragen und Anregungen. Schreib uns jederzeit eine Mail an:\n")
-            pushStringAnnotation(tag = "EMAIL", annotation = "mailto:feedback@tower-assist.de")
-            withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline, color = MaterialTheme.colorScheme.primary)) {
+            append("Wir freuen uns über deine Fragen und Anregungen. Schreib uns jederzeit eine Mail an: ")
+            withLink(
+                LinkAnnotation.Url(
+                    "mailto: feedback@tower-assist.de",
+                    TextLinkStyles(style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline))
+                )
+            ) {
                 append("feedback@tower-assist.de")
             }
-            pop()
-            append("\n")
-            append("Du kannst uns auch anrufen unter der Nummer:\n")
-            pushStringAnnotation(tag = "PHONE", annotation = "tel:+491738406203")
-            withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline, color = MaterialTheme.colorScheme.primary)) {
+            append(". Du kannst uns auch anrufen unter der Nummer: ")
+            withLink(
+                LinkAnnotation.Url(
+                    "tel: +49 173 8406203",
+                    TextLinkStyles(style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline))
+                )
+            ) {
                 append("+49 173 8406203")
             }
-            pop()
-            append("\n")
-            append("Wir sind von Montag bis Freitag zwischen 9 und 17 Uhr erreichbar.\n" +
-                    "Weitere Infos findest du auf unserer Webseite unter:\n")
-            pushStringAnnotation(tag = "URL", annotation = "https://tower-assist.de/")
-            withStyle(style = SpanStyle(textDecoration = TextDecoration.Underline, color = MaterialTheme.colorScheme.primary)) {
-                append("https://tower-assist.de/")
+            append(". Wir sind von Montag bis Freitag zwischen 9 und 17 Uhr erreichbar." +
+                    "Weitere Infos findest du auf unserer Webseite unter: ")
+            withLink(
+                LinkAnnotation.Url(
+                    "https://tower-assist.de/",
+                    TextLinkStyles(style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline))
+                )
+            ) {
+                append("https://tower-assist.de/\n\n")
             }
-            pop()
+            append("Tower Fernassistanz ist ein Angebot von:\n\n"+
+                    "Bathildisheim e.V.\n" +
+                    "Bathildisstraße 7\n" +
+                    "34454 Bad Arolsen",)
         }
         Column(
-            modifier = Modifier.weight(2f),
+            modifier = Modifier,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -90,33 +98,10 @@ fun ContactScreen(
                 text = "Kontakt",
                 modifier = Modifier.padding(20.dp)
             )
-            ClickableText(
-                text = contactScreenText,
-                style = MaterialTheme.typography.bodyLarge.copy(color = Color.White),
-                modifier = Modifier.padding(16.dp),
-                onClick = { offset ->
-                    contactScreenText.getStringAnnotations(start = offset, end = offset)
-                        .firstOrNull()?.let { annotation ->
-                            when (annotation.tag) {
-                                "EMAIL" -> context.startActivity(Intent(Intent.ACTION_SENDTO,
-                                    annotation.item.toUri()))
-                                "PHONE" -> context.startActivity(Intent(Intent.ACTION_DIAL,
-                                    annotation.item.toUri()))
-                                "URL" -> context.startActivity(Intent(Intent.ACTION_VIEW,
-                                    annotation.item.toUri()))
-                            }
-                        }
-
-                }
-            )
         }
         Text(
-            text =
-                    "Tower Fernassistanz ist ein Angebot von:\n"+
-                    "Bathildisheim e.V.\n" +
-                    "Bathildisstraße 7\n" +
-                    "34454 Bad Arolsen",
-            modifier = Modifier.weight(1f)
+            text = contactScreenText,
+            modifier = Modifier
         )
     }
 }

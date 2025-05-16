@@ -6,11 +6,9 @@
 
 package media.valo.tower_android.ui.routes.login
 
-import android.content.Intent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,14 +17,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
@@ -38,6 +35,7 @@ import media.valo.tower_android.ui.routes.loading.LoadingScreen
 //
 //  Created by:
 //      * Jean-Pierre Höhmann
+//      * mvlexs
 //
 
 /**
@@ -52,7 +50,6 @@ fun ConnectionError(
     navController: NavController
 ) {
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -65,11 +62,14 @@ fun ConnectionError(
                         "Tower-Fernassistenz-App installiert hast. Wenn das Problem weiterhin auftritt, " +
                         "versuche es später erneut, oder wende dich an unseren Support: "
             )
-            pushStringAnnotation(tag = "EMAIL", annotation = "mailto:feedback@tower-assist.de")
-            withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
+            withLink(
+                LinkAnnotation.Url(
+                    "mailto: feedback@tower-assist.de",
+                    TextLinkStyles(style = SpanStyle(color = Color.Blue))
+                )
+            ) {
                 append("feedback@tower-assist.de")
             }
-            pop()
         }
 
         Text(
@@ -77,18 +77,9 @@ fun ConnectionError(
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(8.dp)
         )
-        ClickableText(
+        Text(
             text = annotatedErrorText,
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.bodyLarge.copy(color = Color.White),
-            onClick = { offset ->
-                annotatedErrorText.getStringAnnotations("EMAIL", offset, offset)
-                    .firstOrNull()?.let { annotation ->
-                        when (annotation.tag) {
-                            "EMAIL" -> context.startActivity(Intent(Intent.ACTION_SENDTO, annotation.item.toUri()))
-                            }
-                    }
-            }
+            modifier = Modifier
         )
         Button(
             onClick = {
