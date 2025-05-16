@@ -21,6 +21,7 @@ import media.valo.tower_android.data.local.preferences.credentials.CredentialRep
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.IndexResponse
+import media.valo.tower_android.model.Status
 import javax.inject.Inject
 
 /**
@@ -54,7 +55,7 @@ class LoadingViewModel @Inject constructor(
     suspend fun connect(): Boolean {
         try {
             indexResponse = towerRepository.index()
-            isOpen = indexResponse.openingHours.status == "open"
+            isOpen = indexResponse.openingHours.status == Status.OPEN
             scheduleDescription = indexResponse.openingHours.description
             if (credentialRepository.getUserId().isNullOrBlank()) {
                 credentialRepository.setUserId(towerRepository.registerUser().userId)

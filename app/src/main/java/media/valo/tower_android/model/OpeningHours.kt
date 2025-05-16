@@ -4,7 +4,6 @@
  * All rights reserved.                                                       *
  ******************************************************************************/
 
-
 package media.valo.tower_android.model
 
 //
@@ -15,9 +14,8 @@ package media.valo.tower_android.model
 //      * mvlexs
 //
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-
-//TODO: make time & schedule typesafe
 
 /**
  * The 'OpeningHours' object, nested inside data returned by the `/`-endpoint.
@@ -30,17 +28,26 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class OpeningHours(
     val time: String,
-    val status: String,
+    val status: Status,
     val schedule: Map<String, String>,
     val description: String
 )
+
+@Serializable
+enum class Status{
+    @SerialName("open")
+    OPEN,
+
+    @SerialName("closed")
+    CLOSED
+}
 
 /**
  * A dummy instance of `OpeningHours`.
  */
 val dummyOpeningHours = OpeningHours(
     time = "13:37",
-    status = "closed",
+    status = Status.OPEN,
     schedule = mapOf(
         "2025-02-14" to "08:00-12:00, 13:00-17:00",
         "2025-02-15" to "",
