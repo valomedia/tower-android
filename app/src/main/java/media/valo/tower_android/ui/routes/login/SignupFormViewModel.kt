@@ -9,6 +9,7 @@ package media.valo.tower_android.ui.routes.login
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 //
@@ -71,4 +72,13 @@ class SignupFormViewModel @Inject constructor(
      */
     suspend fun setEmail(email: String?) = profileRepository.setEmail(email)
 
+    fun isEmailValid(
+        email: String
+    ): Boolean {
+        val pattern = Pattern.compile(
+            "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$"
+        )
+        val matcher = pattern.matcher(email)
+        return matcher.matches()
+    }
 }

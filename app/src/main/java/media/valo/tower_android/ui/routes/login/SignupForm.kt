@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -112,11 +113,16 @@ fun SignupForm(
             value = email,
             onValueChange = { email = it },
             label = { Text("Email") },
-            placeholder = { Text("Optional") },
+            placeholder = { Text("Optional, für Newsletter erforderlich") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.padding(8.dp).fillMaxWidth()
         )
+        if (viewModel.isEmailValid(email)) {
+            Checkbox(
+                checked =
+            )
+        }
         Button(
             enabled = firstName.isNotBlank() && !isLoading,
             onClick = {
