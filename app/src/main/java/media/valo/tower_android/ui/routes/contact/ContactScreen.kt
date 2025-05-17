@@ -54,51 +54,6 @@ fun ContactScreen(
         modifier = modifier.verticalScroll(scrollState).padding(horizontal = 6.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        val contactScreenText = buildAnnotatedString {
-            append("Wir freuen uns über deine Fragen und Anregungen. Schreib uns jederzeit eine Mail an: ")
-            withLink(
-                LinkAnnotation.Url(
-                    "mailto: feedback@tower-assist.de",
-                    TextLinkStyles(style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline))
-                )
-            ) {
-                append("feedback@tower-assist.de")
-            }
-            append(". Du kannst uns auch anrufen unter der Nummer: ")
-            withLink(
-                LinkAnnotation.Url(
-                    "tel: +49 173 8406203",
-                    TextLinkStyles(style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline))
-                )
-            ) {
-                append("+49 173 8406203")
-            }
-            append(". Wir sind von Montag bis Freitag zwischen 9 und 17 Uhr erreichbar." +
-                    "Weitere Infos findest du auf unserer Webseite unter: ")
-            withLink(
-                LinkAnnotation.Url(
-                    "https://tower-assist.de/",
-                    TextLinkStyles(style = SpanStyle(color = Color.Blue, textDecoration = TextDecoration.Underline))
-                )
-            ) {
-                append("https://tower-assist.de/\n\n")
-            }
-            append("Tower Fernassistanz ist ein Angebot von:\n\n"+
-                    "Bathildisheim e.V.\n" +
-                    "Bathildisstraße 7\n" +
-                    "34454 Bad Arolsen",)
-        }
-        Column(
-            modifier = Modifier,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                style = MaterialTheme.typography.titleLarge,
-                text = "Kontakt",
-                modifier = Modifier.padding(20.dp)
-            )
-        }
         Text(
             style = MaterialTheme.typography.titleLarge,
             text = "Kontakt",
