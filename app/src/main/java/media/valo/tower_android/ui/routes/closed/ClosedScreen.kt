@@ -63,8 +63,11 @@ fun ClosedScreen(
             modifier = Modifier.padding(8.dp)
         )
         Text(
-            currentSchedule +
-            "\n\nWir arbeiten daran, diese Zeiten weiter auszubauen. Falls du einen Termin mit uns hast, kannst du trotzdem einen Anruf mit uns starten.",
+            currentSchedule,
+            modifier = Modifier.padding(8.dp)
+        )
+        Text(
+            "Wir arbeiten daran, diese Zeiten weiter auszubauen. Falls du einen Termin mit uns hast, kannst du trotzdem einen Anruf mit uns starten.",
             modifier = Modifier.padding(8.dp)
         )
         Button(
