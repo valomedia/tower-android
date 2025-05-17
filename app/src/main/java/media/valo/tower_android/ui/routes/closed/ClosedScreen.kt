@@ -4,13 +4,13 @@
  * All rights reserved.                                                       *
  ******************************************************************************/
 
-package media.valo.tower_android.ui.routes.login
+package media.valo.tower_android.ui.routes.closed
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -19,7 +19,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -52,21 +51,21 @@ fun ClosedScreen(
     currentSchedule: String
 ) {
     val scope = rememberCoroutineScope()
+    val scrollState = rememberScrollState()
 
     Column(
-        modifier = modifier.fillMaxSize().padding(16.dp),
+        modifier = modifier.verticalScroll(scrollState).fillMaxSize().padding(horizontal = 6.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             "Wir haben gerade geschlossen",
             style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(4.dp),
-            fontSize = 10.em
+            modifier = Modifier.padding(8.dp)
         )
         Text(
-            currentSchedule.toString() +
-            "\nWir arbeiten daran, diese Zeiten weiter auszubauen. Falls du einen Termin mit uns hast, kannst du trotzdem einen Anruf mit uns starten.",
-            modifier = Modifier.padding(16.dp)
+            currentSchedule +
+            "\n\nWir arbeiten daran, diese Zeiten weiter auszubauen. Falls du einen Termin mit uns hast, kannst du trotzdem einen Anruf mit uns starten.",
+            modifier = Modifier.padding(8.dp)
         )
         Button(
             onClick = {
@@ -74,7 +73,7 @@ fun ClosedScreen(
                     navController.navigate(route = HomeScreen)
                 }
             },
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(8.dp),
         ) {
             Text("Weiter")
         }

@@ -43,7 +43,7 @@ import media.valo.tower_android.ui.routes.call.CallScreen
 import media.valo.tower_android.ui.routes.call_history.CallHistoryScreen
 import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
-import media.valo.tower_android.ui.routes.login.ClosedScreen
+import media.valo.tower_android.ui.routes.closed.ClosedScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
 import media.valo.tower_android.ui.routes.profile.ProfileScreen
 import media.valo.tower_android.ui.routes.settings.SettingsScreen

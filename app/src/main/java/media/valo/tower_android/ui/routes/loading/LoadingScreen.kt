@@ -39,7 +39,7 @@ import media.valo.tower_android.model.Status
 import media.valo.tower_android.ui.elements.AppBarPreview
 import media.valo.tower_android.ui.elements.Logo
 import media.valo.tower_android.ui.routes.home.HomeScreen
-import media.valo.tower_android.ui.routes.login.ClosedScreen
+import media.valo.tower_android.ui.routes.closed.ClosedScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
 
 /**
