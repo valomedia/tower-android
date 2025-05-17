@@ -51,8 +51,8 @@ class HttpClientModule() {
         }
         install(ContentNegotiation) {
             json(Json {
-                ignoreUnknownKeys = true
-            }
+                    ignoreUnknownKeys = true
+                }
             )
         }
     }
