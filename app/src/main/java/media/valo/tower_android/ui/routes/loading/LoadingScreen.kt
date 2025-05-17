@@ -67,7 +67,7 @@ fun LoadingScreen(
             if (viewModel.indexResponse.openingHours.status == Status.OPEN) {
                 navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
             } else {
-                navController.navigate(route = ClosedScreen(currentSchedule = viewModel.indexResponse.openingHours.description.toString()))
+                navController.navigate(route = ClosedScreen(currentSchedule = viewModel.indexResponse.openingHours.description))
             }
         } else {
         navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
