@@ -55,31 +55,28 @@ fun ConnectionError(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        val annotatedErrorText = buildAnnotatedString {
-            append(
-                "Bitte überprüfe ob du mit dem Internet verbunden bist, und die aktuelle Version der " +
-                        "Tower-Fernassistenz-App installiert hast. Wenn das Problem weiterhin auftritt, " +
-                        "versuche es später erneut, oder wende dich an unseren Support: "
-            )
-            withLink(
-                LinkAnnotation.Url(
-                    "mailto: feedback@tower-assist.de",
-                    TextLinkStyles(style = SpanStyle(color = Color.Blue))
-                )
-            ) {
-                append("feedback@tower-assist.de")
-            }
-        }
-
         Text(
             "Verbindung fehlgeschlagen",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(8.dp)
         )
         Text(
-            text = annotatedErrorText,
-            modifier = Modifier
+            text = buildAnnotatedString {
+                append(
+                    "Bitte überprüfe ob du mit dem Internet verbunden bist, und die aktuelle Version der " +
+                            "Tower-Fernassistenz-App installiert hast. Wenn das Problem weiterhin auftritt, " +
+                            "versuche es später erneut, oder wende dich an unseren Support: "
+                )
+                withLink(
+                    LinkAnnotation.Url(
+                        "mailto:feedback@tower-assist.de",
+                        TextLinkStyles(style = SpanStyle(color = Color.Blue))
+                    )
+                ) {
+                    append("feedback@tower-assist.de")
+                }
+            },
+            modifier = Modifier.padding(8.dp)
         )
         Button(
             onClick = {
@@ -92,7 +89,6 @@ fun ConnectionError(
             Text("Erneut versuchen")
         }
     }
-
 }
 
 /**
