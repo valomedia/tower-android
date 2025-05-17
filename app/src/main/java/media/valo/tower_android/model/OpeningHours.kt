@@ -29,6 +29,9 @@ data class OpeningHours(
     val description: String
 )
 
+/**
+ * The 'Status' object, indicating wether the Service is 'open' or 'closed'.
+ */
 @Serializable
 enum class Status{
     @SerialName("open")
