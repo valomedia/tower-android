@@ -21,6 +21,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -59,63 +60,67 @@ fun ContactScreen(
             text = "Kontakt",
             modifier = Modifier.padding(8.dp)
         )
-        Text(
-            text = buildAnnotatedString {
-                append("Wir freuen uns über deine Fragen und Anregungen. Schreib uns jederzeit eine Mail an: ")
-                withLink(
-                    LinkAnnotation.Url(
-                        "mailto:feedback@tower-assist.de",
-                        TextLinkStyles(
-                            style = SpanStyle(
-                                color = Color.Blue,
-                                textDecoration = TextDecoration.Underline
+        Column(
+            horizontalAlignment = AbsoluteAlignment.Left
+        ){
+            Text(
+                text = buildAnnotatedString {
+                    append("Wir freuen uns über deine Fragen und Anregungen. Schreib uns jederzeit eine Mail an: ")
+                    withLink(
+                        LinkAnnotation.Url(
+                            "mailto:feedback@tower-assist.de",
+                            TextLinkStyles(
+                                style = SpanStyle(
+                                    color = Color.Blue,
+                                    textDecoration = TextDecoration.Underline
+                                )
                             )
                         )
-                    )
-                ) {
-                    append("feedback@tower-assist.de")
-                }
-                append(". Du kannst uns auch anrufen unter der Nummer: ")
-                withLink(
-                    LinkAnnotation.Url(
-                        "tel:+491738406203",
-                        TextLinkStyles(
-                            style = SpanStyle(
-                                color = Color.Blue,
-                                textDecoration = TextDecoration.Underline
+                    ) {
+                        append("feedback@tower-assist.de")
+                    }
+                    append(". Du kannst uns auch anrufen unter der Nummer: ")
+                    withLink(
+                        LinkAnnotation.Url(
+                            "tel:+491738406203",
+                            TextLinkStyles(
+                                style = SpanStyle(
+                                    color = Color.Blue,
+                                    textDecoration = TextDecoration.Underline
+                                )
                             )
                         )
+                    ) {
+                        append("+49 173 8406203")
+                    }
+                    append(
+                        ". Wir sind von Montag bis Freitag zwischen 9 und 17 Uhr erreichbar." +
+                                "Weitere Infos findest du auf unserer Webseite unter: "
                     )
-                ) {
-                    append("+49 173 8406203")
-                }
-                append(
-                    ". Wir sind von Montag bis Freitag zwischen 9 und 17 Uhr erreichbar." +
-                            "Weitere Infos findest du auf unserer Webseite unter: "
-                )
-                withLink(
-                    LinkAnnotation.Url(
-                        "https://tower-assist.de/",
-                        TextLinkStyles(
-                            style = SpanStyle(
-                                color = Color.Blue,
-                                textDecoration = TextDecoration.Underline
+                    withLink(
+                        LinkAnnotation.Url(
+                            "https://tower-assist.de/",
+                            TextLinkStyles(
+                                style = SpanStyle(
+                                    color = Color.Blue,
+                                    textDecoration = TextDecoration.Underline
+                                )
                             )
                         )
-                    )
-                ) {
-                    append("https://tower-assist.de/")
-                }
-            },
-            modifier = Modifier.padding(8.dp)
-        )
-        Text(
-            text = "Tower Fernassistanz ist ein Angebot von:",
-            modifier = Modifier.padding(8.dp)
-        )
-        Text(
-            text = "Bathildisheim e.V.\n" + "Bathildisstraße 7\n" + "34454 Bad Arolsen\n",
-            modifier = Modifier.padding(8.dp)
-        )
+                    ) {
+                        append("https://tower-assist.de/")
+                    }
+                },
+                modifier = Modifier.padding(8.dp)
+            )
+            Text(
+                text = "Tower Fernassistanz ist ein Angebot von:",
+                modifier = Modifier.padding(8.dp)
+            )
+            Text(
+                text = "Bathildisheim e.V.\n" + "Bathildisstraße 7\n" + "34454 Bad Arolsen\n",
+                modifier = Modifier.padding(8.dp)
+            )
+        }
     }
 }
