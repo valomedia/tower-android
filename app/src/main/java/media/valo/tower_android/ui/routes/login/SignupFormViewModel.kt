@@ -9,6 +9,7 @@ package media.valo.tower_android.ui.routes.login
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
+import media.valo.tower_android.data.remote.tower.NewsletterRepository
 import java.util.regex.Pattern
 import javax.inject.Inject
 
@@ -27,7 +28,8 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class SignupFormViewModel @Inject constructor(
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val newsletterRepository: NewsletterRepository
 ) : ViewModel() {
 
     /**
@@ -71,6 +73,8 @@ class SignupFormViewModel @Inject constructor(
      * @param email The new e-mail address to set, or `null` to unset the e-mail address.
      */
     suspend fun setEmail(email: String?) = profileRepository.setEmail(email)
+
+    suspend fun subscribeToNewsletter() = newsletterRepository.subscribe()
 
     fun isEmailValid(
         email: String
