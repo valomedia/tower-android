@@ -122,9 +122,21 @@ fun SignupForm(
             modifier = Modifier.padding(8.dp).fillMaxWidth()
         )
         if (viewModel.isEmailValid(email)) {
-            Checkbox(
-                checked =
-            )
+            Row(
+                modifier = Modifier.padding(8.dp),
+                horizontalArrangement = Arrangement.Center
+                ) {
+                Checkbox(
+                    checked = isChecked,
+                    onCheckedChange = { isChecked = !isChecked },
+                    modifier = modifier.padding(8.dp),
+                    enabled = true
+                )
+                Text(
+                    text = "Ich möchte euren monatlichen Newsletter erhalten",
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
         }
         Button(
             enabled = firstName.isNotBlank() && !isLoading,
