@@ -1,0 +1,126 @@
+/******************************************************************************
+ * Copyright (c) 2025.                                                        *
+ * valo.media GmbH                                                            *
+ * All rights reserved.                                                       *
+ ******************************************************************************/
+
+package media.valo.tower_android.ui.routes.contact
+
+//
+//  AboutScreen.kt
+//  Tower_Android
+//
+//  Created by:
+//      * mvlexs
+//
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.AbsoluteAlignment
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withLink
+import androidx.compose.ui.unit.dp
+import kotlinx.serialization.Serializable
+
+/**
+ * Object for the navigation destination for the contact screen.
+ */
+@Serializable
+object ContactScreen
+
+/**
+ * Screen with detailed information about the Tower service and possibilities to contact the support.
+ *
+ * @param modifier  `Modifier` for this element.
+ */
+@Composable
+fun ContactScreen(
+    modifier: Modifier = Modifier,
+) {
+    val scrollState = rememberScrollState()
+
+    Column(
+        modifier = modifier.verticalScroll(scrollState).padding(horizontal = 6.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            style = MaterialTheme.typography.titleLarge,
+            text = "Kontakt",
+            modifier = Modifier.padding(8.dp)
+        )
+        Column(
+            horizontalAlignment = AbsoluteAlignment.Left
+        ){
+            Text(
+                text = buildAnnotatedString {
+                    append("Wir freuen uns über deine Fragen und Anregungen. Schreib uns jederzeit eine Mail an: ")
+                    withLink(
+                        LinkAnnotation.Url(
+                            "mailto:feedback@tower-assist.de",
+                            TextLinkStyles(
+                                style = SpanStyle(
+                                    color = Color.Blue,
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            )
+                        )
+                    ) {
+                        append("feedback@tower-assist.de")
+                    }
+                    append(". Du kannst uns auch anrufen unter der Nummer: ")
+                    withLink(
+                        LinkAnnotation.Url(
+                            "tel:+491738406203",
+                            TextLinkStyles(
+                                style = SpanStyle(
+                                    color = Color.Blue,
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            )
+                        )
+                    ) {
+                        append("+49 173 8406203")
+                    }
+                    append(
+                        ". Wir sind von Montag bis Freitag zwischen 9 und 17 Uhr erreichbar." +
+                                "Weitere Infos findest du auf unserer Webseite unter: "
+                    )
+                    withLink(
+                        LinkAnnotation.Url(
+                            "https://tower-assist.de/",
+                            TextLinkStyles(
+                                style = SpanStyle(
+                                    color = Color.Blue,
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            )
+                        )
+                    ) {
+                        append("https://tower-assist.de/")
+                    }
+                },
+                modifier = Modifier.padding(8.dp)
+            )
+            Text(
+                text = "Tower Fernassistanz ist ein Angebot von:",
+                modifier = Modifier.padding(8.dp)
+            )
+            Text(
+                text = "Bathildisheim e.V.\n" + "Bathildisstraße 7\n" + "34454 Bad Arolsen\n",
+                modifier = Modifier.padding(8.dp)
+            )
+        }
+    }
+}

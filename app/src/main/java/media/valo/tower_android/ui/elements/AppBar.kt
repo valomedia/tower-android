@@ -60,6 +60,7 @@ import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.ui.routes.about.AboutScreen
 import media.valo.tower_android.ui.routes.call.CallScreen
 import media.valo.tower_android.ui.routes.closed.ClosedScreen
+import media.valo.tower_android.ui.routes.contact.ContactScreen
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
 import media.valo.tower_android.ui.routes.settings.SettingsScreen
@@ -124,6 +125,7 @@ fun AppBar(
                     ) {
                         if (currentDestination?.hasRoute<SettingsScreen>() != true
                             && currentDestination?.hasRoute<AboutScreen>() != true
+                            && currentDestination?.hasRoute<ContactScreen>() != true
                         ) {
                             IconButton(
                                 onClick = {
@@ -168,6 +170,13 @@ fun AppBar(
                                 text = { Text("Einstellungen") },
                                 onClick = {
                                     navController.navigate(route = SettingsScreen)
+                                    expanded = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Kontakt") },
+                                onClick = {
+                                    navController.navigate(route = ContactScreen)
                                     expanded = false
                                 }
                             )
