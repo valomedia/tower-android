@@ -25,6 +25,7 @@ import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.serialization.json.Json
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -48,7 +49,12 @@ class HttpClientModule() {
         install(Logging) {
             sanitizeHeader { header -> header == HttpHeaders.Authorization }
         }
-        install(ContentNegotiation) { json() }
+        install(ContentNegotiation) {
+            json(Json {
+                    ignoreUnknownKeys = true
+                }
+            )
+        }
     }
 
 }

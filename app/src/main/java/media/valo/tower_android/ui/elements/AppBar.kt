@@ -59,6 +59,7 @@ import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataS
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.ui.routes.about.AboutScreen
 import media.valo.tower_android.ui.routes.call.CallScreen
+import media.valo.tower_android.ui.routes.closed.ClosedScreen
 import media.valo.tower_android.ui.routes.contact.ContactScreen
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
@@ -120,6 +121,7 @@ fun AppBar(
                         && currentDestination?.hasRoute<LoginScreen>() != true
                         && currentDestination?.hasRoute<LoadingScreen>() != true
                         && currentDestination?.hasRoute<CallScreen>() != true
+                        && currentDestination?.hasRoute<ClosedScreen>() != true
                     ) {
                         if (currentDestination?.hasRoute<SettingsScreen>() != true
                             && currentDestination?.hasRoute<AboutScreen>() != true

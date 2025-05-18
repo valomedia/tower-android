@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import media.valo.tower_android.ui.elements.AppBar
 import media.valo.tower_android.ui.elements.Menu
 import media.valo.tower_android.ui.elements.RequirePermissions
@@ -43,6 +44,7 @@ import media.valo.tower_android.ui.routes.call_history.CallHistoryScreen
 import media.valo.tower_android.ui.routes.contact.ContactScreen
 import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
+import media.valo.tower_android.ui.routes.closed.ClosedScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
 import media.valo.tower_android.ui.routes.profile.ProfileScreen
 import media.valo.tower_android.ui.routes.settings.SettingsScreen
@@ -141,6 +143,15 @@ fun TowerApp(navController: NavHostController) {
                 composable<AboutScreen> {
                     AboutScreen(
                         modifier = modifier
+                    )
+                }
+                composable<ClosedScreen> {
+                    backStackEntry ->
+                    val closedScreen: ClosedScreen = backStackEntry.toRoute()
+                    ClosedScreen(
+                        modifier = modifier,
+                        navController = navController,
+                        currentSchedule = closedScreen.currentSchedule
                     )
                 }
             }

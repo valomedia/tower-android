@@ -12,6 +12,7 @@ package media.valo.tower_android.ui.routes.loading
 //
 //  Created by:
 //      * Jean-Pierre Höhmann
+//      * mvlexs
 //
 
 import androidx.lifecycle.ViewModel
@@ -19,6 +20,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
+import media.valo.tower_android.model.IndexResponse
+import media.valo.tower_android.model.Status
 import javax.inject.Inject
 
 /**
@@ -35,6 +38,8 @@ class LoadingViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
+    lateinit var indexResponse: IndexResponse
+
     /**
      * Check whether the user has provided all required profile information.
      */
@@ -47,7 +52,7 @@ class LoadingViewModel @Inject constructor(
      */
     suspend fun connect(): Boolean {
         try {
-            towerRepository.index()
+            indexResponse = towerRepository.index()
             if (credentialRepository.getUserId().isNullOrBlank()) {
                 credentialRepository.setUserId(towerRepository.registerUser().userId)
             }
@@ -58,3 +63,4 @@ class LoadingViewModel @Inject constructor(
     }
 
 }
+
