@@ -36,7 +36,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
 
 //
@@ -146,8 +148,10 @@ fun SignupForm(
                     viewModel.setEmail(email)
                     navController.navigate(route = LoadingScreen)
                     if (isChecked) {
-                        val x = viewModel.subscribeToNewsletter()
-                        Log.d("Malik", x.toString())
+                        withContext(NonCancellable) {
+                            val x = viewModel.subscribeToNewsletter()
+                            Log.d("Malik", x.toString())
+                        }
                     }
                 }
             },
