@@ -40,6 +40,7 @@ import media.valo.tower_android.ui.elements.RequirePermissions
 import media.valo.tower_android.ui.routes.about.AboutScreen
 import media.valo.tower_android.ui.routes.call.CallScreen
 import media.valo.tower_android.ui.routes.call_history.CallHistoryScreen
+import media.valo.tower_android.ui.routes.contact.ContactScreen
 import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
@@ -129,6 +130,11 @@ fun TowerApp(navController: NavHostController) {
                 }
                 composable<SettingsScreen> {
                     SettingsScreen(
+                        modifier = modifier
+                    )
+                }
+                composable<ContactScreen>{
+                    ContactScreen(
                         modifier = modifier
                     )
                 }

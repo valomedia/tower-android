@@ -16,6 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -29,6 +35,7 @@ import media.valo.tower_android.ui.routes.loading.LoadingScreen
 //
 //  Created by:
 //      * Jean-Pierre Höhmann
+//      * mvlexs
 //
 
 /**
@@ -54,11 +61,21 @@ fun ConnectionError(
             modifier = Modifier.padding(8.dp)
         )
         Text(
-            """
-                Bitte überprüfe ob du mit dem Internet verbunden bist, und die aktuelle Version der
-                Tower-Fernassistenz-App installiert hast. Wenn das Problem weiterhin auftritt,
-                versuche es später erneut, oder wende dich an unseren Support.
-            """.trimIndent().replace("\n", " "),
+            text = buildAnnotatedString {
+                append(
+                    "Bitte überprüfe ob du mit dem Internet verbunden bist, und die aktuelle Version der " +
+                            "Tower-Fernassistenz-App installiert hast. Wenn das Problem weiterhin auftritt, " +
+                            "versuche es später erneut, oder wende dich an unseren Support: "
+                )
+                withLink(
+                    LinkAnnotation.Url(
+                        "mailto:feedback@tower-assist.de",
+                        TextLinkStyles(style = SpanStyle(color = Color.Blue))
+                    )
+                ) {
+                    append("feedback@tower-assist.de")
+                }
+            },
             modifier = Modifier.padding(8.dp)
         )
         Button(
@@ -72,7 +89,6 @@ fun ConnectionError(
             Text("Erneut versuchen")
         }
     }
-
 }
 
 /**
