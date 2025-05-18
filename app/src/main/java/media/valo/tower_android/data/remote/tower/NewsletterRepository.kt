@@ -8,12 +8,13 @@ package media.valo.tower_android.data.remote.tower
 
 
 import io.ktor.client.HttpClient
+import io.ktor.client.request.forms.submitForm
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.Parameters
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import media.valo.tower_android.data.local.preferences.profile.ProfileDataSource
 import media.valo.tower_android.utils.NewsletterHttpClient
-import okhttp3.FormBody
-import okhttp3.Request
 import javax.inject.Inject
 
 //
@@ -74,25 +75,15 @@ class NewsletterRepository @Inject constructor(
      */
     suspend fun getEmail(): String? = emailFlow.firstOrNull()
 
-
-    suspend fun subscribeToNewsletter() {
-        val newsletterEndpointUrl = "https://102627ed.sibforms.com/serve/MUIFAEchGCPcZdL9j3YFGC6VsahIbu0_oP1O2xv5eqY_utQUNu0eiFdF_FkAtpwjROfWOY2c__ltTpJ4DnZprEhfJsD8pnGK9V3nSaxEhEXTyNeHNqzZy7SWT9OF1t6Qr7ud9YipcpzI4YoG3TRP7QtFN1HBNWE26Vb3YUc06M8QwQsVD6WXFnAampEWhkp3tYf8EdFUfB6n_TYL"
-        val formBody = if(getLastName() != null ) {
-            FormBody.Builder()
-                .add("firstName", getFirstName().toString())
-                .add("email", getEmail().toString())
-                .add("lastName", getLastName().toString()).build()
-        } else {
-            FormBody.Builder()
-                .add("firstName", getFirstName().toString())
-                .add("email", getEmail().toString()).build() }
-        val newsletterRequest =
-            Request.Builder()
-                .url(newsletterEndpointUrl)
-                .post(formBody)
-                .build()
-        val call = httpClient
-
-
-    }
+    suspend fun subscribe(): HttpResponse =
+        httpClient.submitForm(
+            url = url,
+            formParameters = Parameters.build {
+                append("email", getEmail().toString())
+                append("firstName", getFirstName().toString())
+                getLastName()?.let { last ->
+                    append("lastName", last)
+                }
+            }
+        )
 }
