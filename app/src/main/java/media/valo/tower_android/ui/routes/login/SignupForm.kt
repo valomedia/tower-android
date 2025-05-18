@@ -158,14 +158,14 @@ fun SignupForm(
     }
 }
 
-/**
- * Preview for SignupForm.
- */
-@Preview(showBackground = true, locale = "de-rDE")
-@Composable
-fun SignupFormPreview() {
-    SignupForm(
-        navController = rememberNavController(),
-        viewModel = SignupFormViewModel(ProfileRepository(DummyProfileDataSource()))
-    )
-}
+///**
+// * Preview for SignupForm.
+// */
+//@Preview(showBackground = true, locale = "de-rDE")
+//@Composable
+//fun SignupFormPreview() {
+//    SignupForm(
+//        navController = rememberNavController(),
+//        viewModel = SignupFormViewModel(ProfileRepository(DummyProfileDataSource()))
+//    )
+//}
