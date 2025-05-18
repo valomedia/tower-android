@@ -25,10 +25,10 @@ import javax.inject.Inject
 class HttpNewsletterDataSource @Inject constructor(
     private val profileRepository: ProfileRepository,
     @NewsletterHttpClient private val httpClient: HttpClient
-) {
+): NewsletterDataSource {
     private val url = "https://102627ed.sibforms.com/serve/MUIFAEchGCPcZdL9j3YFGC6VsahIbu0_oP1O2xv5eqY_utQUNu0eiFdF_FkAtpwjROfWOY2c__ltTpJ4DnZprEhfJsD8pnGK9V3nSaxEhEXTyNeHNqzZy7SWT9OF1t6Qr7ud9YipcpzI4YoG3TRP7QtFN1HBNWE26Vb3YUc06M8QwQsVD6WXFnAampEWhkp3tYf8EdFUfB6n_TYL"
 
-    suspend fun subscribe(): HttpResponse =
+    override suspend fun subscribe() {
         httpClient.submitForm(
             url = url,
             formParameters = Parameters.Companion.build {
@@ -39,4 +39,5 @@ class HttpNewsletterDataSource @Inject constructor(
                 }
             }
         )
+    }
 }
