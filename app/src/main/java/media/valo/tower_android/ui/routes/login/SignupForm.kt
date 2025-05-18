@@ -37,8 +37,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
-import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
-import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
 
 //
@@ -147,6 +145,10 @@ fun SignupForm(
                     viewModel.setLastName(lastName)
                     viewModel.setEmail(email)
                     navController.navigate(route = LoadingScreen)
+                    if (isChecked) {
+                        val x = viewModel.subscribeToNewsletter()
+                        Log.d("Malik", x.toString())
+                    }
                 }
             },
             modifier = Modifier.padding(8.dp)
