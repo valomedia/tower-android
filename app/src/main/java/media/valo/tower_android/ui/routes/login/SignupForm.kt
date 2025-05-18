@@ -33,12 +33,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
+import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
+import media.valo.tower_android.data.newsletter.DummyHttpNewsletterDataSource
+import media.valo.tower_android.data.newsletter.NewsletterRepository
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
 
 //
@@ -47,6 +53,7 @@ import media.valo.tower_android.ui.routes.loading.LoadingScreen
 //
 //  Created by:
 //      * Jean-Pierre Höhmann
+//      * mvlexs
 //
 
 /**
@@ -162,14 +169,17 @@ fun SignupForm(
     }
 }
 
-///**
-// * Preview for SignupForm.
-// */
-//@Preview(showBackground = true, locale = "de-rDE")
-//@Composable
-//fun SignupFormPreview() {
-//    SignupForm(
-//        navController = rememberNavController(),
-//        viewModel = SignupFormViewModel(ProfileRepository(DummyProfileDataSource()))
-//    )
-//}
+/**
+ * Preview for SignupForm.
+ */
+@Preview(showBackground = true, locale = "de-rDE")
+@Composable
+fun SignupFormPreview() {
+    SignupForm(
+        navController = rememberNavController(),
+        viewModel = SignupFormViewModel(
+            ProfileRepository(DummyProfileDataSource()),
+            NewsletterRepository(DummyHttpNewsletterDataSource())
+        )
+    )
+}
