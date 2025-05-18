@@ -1,9 +1,23 @@
+/******************************************************************************
+ * Copyright (c) 2025.                                                        *
+ * valo.media GmbH                                                            *
+ * All rights reserved.                                                       *
+ ******************************************************************************/
+
 package media.valo.tower_android.data.newsletter
 
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+
+//
+//  NewsletterDataSourceModule.kt
+//  Tower_Android
+//
+//  Created by:
+//      * mvlexs
+//
 
 @Module
 @InstallIn(SingletonComponent::class)

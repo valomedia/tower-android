@@ -8,7 +8,6 @@ package media.valo.tower_android.data.newsletter
 
 import io.ktor.client.HttpClient
 import io.ktor.client.request.forms.submitForm
-import io.ktor.client.statement.HttpResponse
 import io.ktor.http.Parameters
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.utils.NewsletterHttpClient
