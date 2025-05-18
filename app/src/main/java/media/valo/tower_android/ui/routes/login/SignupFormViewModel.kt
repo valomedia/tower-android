@@ -9,7 +9,7 @@ package media.valo.tower_android.ui.routes.login
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
-import media.valo.tower_android.data.remote.tower.NewsletterRepository
+import media.valo.tower_android.data.newsletter.NewsletterRepository
 import java.util.regex.Pattern
 import javax.inject.Inject
 
