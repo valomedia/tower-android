@@ -156,7 +156,7 @@ fun SignupForm(
                     navController.navigate(route = LoadingScreen)
                     if (isChecked) {
                         applicationContext.launch {
-                            val x = viewModel.subscribeToNewsletter()
+                            viewModel.subscribeToNewsletter()
                         }
                     }
                 }
