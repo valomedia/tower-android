@@ -34,11 +34,9 @@ class HttpNewsletterDataSource @Inject constructor(
             val response = httpClient.submitForm(
                 url = url,
                 formParameters = Parameters.Companion.build {
-                    profileRepository.getEmail()?.let { append("email", it) }
-                    profileRepository.getFirstName()?.let { append("firstName", it) }
-                    if (profileRepository.getLastName() != null){
-                        profileRepository.getLastName()?.let { append("lastName", it) }
-                    }
+                    profileRepository.getFirstName()?.let { append("VORNAME", it) }
+                    profileRepository.getLastName()?.let { append("NACHNAME", it) }
+                    profileRepository.getEmail()?.let { append("EMAIL", it) }
                 }
             )
             Log.d("Malik", response.status.isSuccess().toString())
