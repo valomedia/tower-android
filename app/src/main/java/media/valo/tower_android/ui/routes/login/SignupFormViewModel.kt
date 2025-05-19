@@ -76,6 +76,11 @@ class SignupFormViewModel @Inject constructor(
 
     suspend fun subscribeToNewsletter() = newsletterRepository.subscribe()
 
+    /**
+     * This is a helper function, using regex to check if the currently entered Email is a valid one. (format wise)
+     *
+     * This will then return either true or false, helping show the Newsletter signup checkbox only, if the mail is valid.
+     */
     fun isEmailValid(
         email: String
     ): Boolean {
