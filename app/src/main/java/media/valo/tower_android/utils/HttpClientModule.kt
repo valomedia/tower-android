@@ -64,18 +64,8 @@ class HttpClientModule() {
     @Singleton
     fun provideNewsletterHttpClient(
     ): HttpClient = HttpClient(OkHttp) {
-        expectSuccess = true
         install(Logging) {
             sanitizeHeader { header -> header == HttpHeaders.Authorization }
-        }
-
-        /**
-         * This is needed to not have an error thrown during newsletter signup.
-         *
-         * For further reference see: https://github.com/ktorio/ktor/issues/1793
-         */
-        install(HttpRedirect){
-            checkHttpMethod = false
         }
     }
 }
