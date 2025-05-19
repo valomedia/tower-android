@@ -32,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,7 +40,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import media.valo.tower_android.TowerAndroidApplication
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.newsletter.DummyHttpNewsletterDataSource
@@ -77,6 +78,7 @@ fun SignupForm(
     var email by remember { mutableStateOf("") }
 
     var isChecked by rememberSaveable { mutableStateOf(false) }
+    val applicationContext = LocalContext.current.applicationContext as TowerAndroidApplication
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -154,7 +156,7 @@ fun SignupForm(
                     viewModel.setEmail(email)
                     navController.navigate(route = LoadingScreen)
                     if (isChecked) {
-                        withContext(NonCancellable) {
+                        applicationContext.launch {
                             val x = viewModel.subscribeToNewsletter()
                             Log.d("Malik", x.toString())
                         }
