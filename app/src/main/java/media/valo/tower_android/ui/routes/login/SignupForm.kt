@@ -6,7 +6,6 @@
 
 package media.valo.tower_android.ui.routes.login
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -158,7 +157,6 @@ fun SignupForm(
                     if (isChecked) {
                         applicationContext.launch {
                             val x = viewModel.subscribeToNewsletter()
-                            Log.d("Malik", x.toString())
                         }
                     }
                 }
