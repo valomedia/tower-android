@@ -18,10 +18,13 @@ import android.app.Application
 import android.content.Context
 import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 
 @HiltAndroidApp
-class TowerAndroidApplication : Application() {
+class TowerAndroidApplication : Application(), CoroutineScope by CoroutineScope(SupervisorJob() + Dispatchers.Default) {
 
     /**
      * `Context` dependency.
