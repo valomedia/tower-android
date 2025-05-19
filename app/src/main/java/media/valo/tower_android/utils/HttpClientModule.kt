@@ -20,6 +20,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.HttpRedirect
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.http.HttpHeaders
@@ -55,6 +56,9 @@ class HttpClientModule() {
         install(ContentNegotiation) { json() }
     }
 
+    /**
+     * The HttpClient used for newsletter signup
+     */
     @NewsletterHttpClient
     @Provides
     @Singleton
@@ -63,6 +67,15 @@ class HttpClientModule() {
         expectSuccess = true
         install(Logging) {
             sanitizeHeader { header -> header == HttpHeaders.Authorization }
+        }
+
+        /**
+         * This is needed to not have an error thrown during newsletter signup.
+         *
+         * For further reference see: https://github.com/ktorio/ktor/issues/1793
+         */
+        install(HttpRedirect){
+            checkHttpMethod = false
         }
     }
 }
