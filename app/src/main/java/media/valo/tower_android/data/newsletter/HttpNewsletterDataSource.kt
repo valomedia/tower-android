@@ -48,6 +48,4 @@ class HttpNewsletterDataSource @Inject constructor(
             return false
         }
     }
-
-
 }
