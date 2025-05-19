@@ -43,7 +43,7 @@ import kotlinx.coroutines.launch
 import media.valo.tower_android.TowerAndroidApplication
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
-import media.valo.tower_android.data.newsletter.DummyHttpNewsletterDataSource
+import media.valo.tower_android.data.newsletter.DummyNewsletterDataSource
 import media.valo.tower_android.data.newsletter.NewsletterRepository
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
 
@@ -180,7 +180,7 @@ fun SignupFormPreview() {
         navController = rememberNavController(),
         viewModel = SignupFormViewModel(
             ProfileRepository(DummyProfileDataSource()),
-            NewsletterRepository(DummyHttpNewsletterDataSource())
+            NewsletterRepository(DummyNewsletterDataSource())
         )
     )
 }

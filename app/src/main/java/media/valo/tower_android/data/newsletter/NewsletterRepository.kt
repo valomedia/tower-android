@@ -6,6 +6,8 @@
 
 package media.valo.tower_android.data.newsletter
 
+import javax.inject.Inject
+
 //
 //  NewsletterRepository.kt
 //  Tower_Android
@@ -14,8 +16,11 @@ package media.valo.tower_android.data.newsletter
 //      * mvlexs
 //
 
-import javax.inject.Inject
-
+/**
+ * A repository for the Newsletter signup api.
+ *
+ * @param newsletterDataSource   `newsletterDataSource` dependency.
+ */
 class NewsletterRepository @Inject constructor(
     private val newsletterDataSource: NewsletterDataSource
 ) {

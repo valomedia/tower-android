@@ -23,6 +23,12 @@ import javax.inject.Inject
 //      * mvlexs
 //
 
+/**
+ * A `NewsletterDataSource` backed by a `HttpClient`.
+ *
+ * @param profileRepository    `ProfileRepository` dependency.
+ * @param httpClient            `HttpClient` dependency.
+ */
 class HttpNewsletterDataSource @Inject constructor(
     private val profileRepository: ProfileRepository,
     @NewsletterHttpClient private val httpClient: HttpClient

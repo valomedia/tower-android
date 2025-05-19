@@ -13,9 +13,17 @@ package media.valo.tower_android.data.newsletter
 //  Created by:
 //      * mvlexs
 //
-
+/**
+ * A data source representing the Newsletter signup api.
+ */
 interface NewsletterDataSource {
 
+    /**
+     * Make a post to the newsletter endpoint, containing the users first name, email adress and second name if set.
+     *
+     * This will make a post to the newsletter endpoint, returning 'true' when the call succeeds (meaning
+     * the user got signed up for the newsletter), and throwing + returning false otherwise.
+     */
     suspend fun subscribe(): Boolean
 
 }

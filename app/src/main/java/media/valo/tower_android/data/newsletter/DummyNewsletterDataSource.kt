@@ -14,8 +14,12 @@ package media.valo.tower_android.data.newsletter
 //      * mvlexs
 //
 
-
-class DummyHttpNewsletterDataSource: NewsletterDataSource {
+/**
+ * A dummy implementation of `NewsletterDataSource`.
+ *
+ * This implements all api-calls as no-ops.
+ */
+class DummyNewsletterDataSource: NewsletterDataSource {
 
     override suspend fun subscribe() = false
 
