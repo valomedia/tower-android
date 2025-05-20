@@ -123,24 +123,25 @@ fun SignupForm(
             placeholder = { Text("Optional, für Newsletter erforderlich") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier.padding(8.dp).fillMaxWidth()
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
         )
-        if (viewModel.isEmailValid(email)) {
-            Row(
-                modifier = Modifier.padding(8.dp),
-                horizontalArrangement = Arrangement.Center
-                ) {
-                Checkbox(
-                    checked = wantsNewsletter,
-                    onCheckedChange = { wantsNewsletter = !wantsNewsletter },
-                    modifier = modifier.padding(8.dp),
-                    enabled = true
-                )
-                Text(
-                    text = "Ich möchte euren monatlichen Newsletter erhalten",
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
+        Row(
+            modifier = Modifier.padding(8.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
+            ) {
+            Checkbox(
+                checked = wantsNewsletter,
+                onCheckedChange = { wantsNewsletter = !wantsNewsletter },
+                modifier = Modifier,
+                enabled = viewModel.isEmailValid(email)
+            )
+            Text(
+                text = "Ich möchte euren monatlichen Newsletter erhalten",
+                modifier = Modifier
+            )
         }
         Button(
             enabled = firstName.isNotBlank() && !isLoading,
@@ -153,7 +154,7 @@ fun SignupForm(
                     navController.navigate(route = LoadingScreen)
                 }
                 if (wantsNewsletter) {
-                    viewModel.subscribeToNewsletter()
+                    val x = viewModel.appScope.launch{ viewModel.subscribeToNewsletter() }
                 }
             },
             modifier = Modifier.padding(8.dp)
