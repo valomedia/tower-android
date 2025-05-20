@@ -4,23 +4,28 @@
  * All rights reserved.                                                       *
  ******************************************************************************/
 
-package media.valo.tower_android.data.newsletter
+package media.valo.tower_android.data.remote.newsletter
+
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
 //
-//  DummyHttpNewsletterDataSource.kt
+//  NewsletterDataSourceModule.kt
 //  Tower_Android
 //
 //  Created by:
 //      * mvlexs
 //
 
-/**
- * A dummy implementation of `NewsletterDataSource`.
- *
- * This implements all api-calls as no-ops.
- */
-class DummyNewsletterDataSource: NewsletterDataSource {
+@Module
+@InstallIn(SingletonComponent::class)
+interface NewsletterDataSourceModule {
 
-    override suspend fun subscribe() = false
+    @Binds
+    fun bindNewsletterDataSource(
+        httpNewsletterDataSource: HttpNewsletterDataSource
+    ): NewsletterDataSource
 
 }

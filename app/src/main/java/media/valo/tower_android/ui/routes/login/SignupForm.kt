@@ -40,8 +40,8 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
-import media.valo.tower_android.data.newsletter.DummyNewsletterDataSource
-import media.valo.tower_android.data.newsletter.NewsletterRepository
+import media.valo.tower_android.data.remote.newsletter.DummyNewsletterDataSource
+import media.valo.tower_android.data.remote.newsletter.NewsletterRepository
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
 
 //

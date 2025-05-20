@@ -4,28 +4,27 @@
  * All rights reserved.                                                       *
  ******************************************************************************/
 
-package media.valo.tower_android.data.newsletter
+package media.valo.tower_android.data.remote.newsletter
 
-import dagger.Binds
-import dagger.Module
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
+import javax.inject.Inject
 
 //
-//  NewsletterDataSourceModule.kt
+//  NewsletterRepository.kt
 //  Tower_Android
 //
 //  Created by:
 //      * mvlexs
 //
 
-@Module
-@InstallIn(SingletonComponent::class)
-interface NewsletterDataSourceModule {
+/**
+ * A repository for the Newsletter signup api.
+ *
+ * @param newsletterDataSource   `newsletterDataSource` dependency.
+ */
+class NewsletterRepository @Inject constructor(
+    private val newsletterDataSource: NewsletterDataSource
+) {
 
-    @Binds
-    fun bindNewsletterDataSource(
-        httpNewsletterDataSource: HttpNewsletterDataSource
-    ): NewsletterDataSource
+    suspend fun subscribe() = newsletterDataSource.subscribe()
 
 }

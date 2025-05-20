@@ -11,7 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
-import media.valo.tower_android.data.newsletter.NewsletterRepository
+import media.valo.tower_android.data.remote.newsletter.NewsletterRepository
 import media.valo.tower_android.utils.AppScope
 import java.util.regex.Pattern
 import javax.inject.Inject

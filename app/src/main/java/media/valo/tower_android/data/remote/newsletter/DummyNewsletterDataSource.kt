@@ -4,12 +4,10 @@
  * All rights reserved.                                                       *
  ******************************************************************************/
 
-package media.valo.tower_android.data.newsletter
-
-import javax.inject.Inject
+package media.valo.tower_android.data.remote.newsletter
 
 //
-//  NewsletterRepository.kt
+//  DummyHttpNewsletterDataSource.kt
 //  Tower_Android
 //
 //  Created by:
@@ -17,14 +15,12 @@ import javax.inject.Inject
 //
 
 /**
- * A repository for the Newsletter signup api.
+ * A dummy implementation of `NewsletterDataSource`.
  *
- * @param newsletterDataSource   `newsletterDataSource` dependency.
+ * This implements all api-calls as no-ops.
  */
-class NewsletterRepository @Inject constructor(
-    private val newsletterDataSource: NewsletterDataSource
-) {
+class DummyNewsletterDataSource: NewsletterDataSource {
 
-    suspend fun subscribe() = newsletterDataSource.subscribe()
+    override suspend fun subscribe() = false
 
 }

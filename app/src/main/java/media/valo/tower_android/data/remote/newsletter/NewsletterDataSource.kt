@@ -4,7 +4,7 @@
  * All rights reserved.                                                       *
  ******************************************************************************/
 
-package media.valo.tower_android.data.newsletter
+package media.valo.tower_android.data.remote.newsletter
 
 //
 //  NewsletterDataSource.kt
