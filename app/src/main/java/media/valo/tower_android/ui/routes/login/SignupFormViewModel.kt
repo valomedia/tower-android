@@ -9,7 +9,6 @@ package media.valo.tower_android.ui.routes.login
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.newsletter.NewsletterRepository
 import media.valo.tower_android.utils.AppScope
@@ -33,7 +32,7 @@ import javax.inject.Inject
 class SignupFormViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val newsletterRepository: NewsletterRepository,
-    @AppScope private val appScope: CoroutineScope
+    @AppScope val appScope: CoroutineScope
 ) : ViewModel() {
 
     /**
