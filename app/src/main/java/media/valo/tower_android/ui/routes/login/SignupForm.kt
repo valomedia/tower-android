@@ -31,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,7 +38,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
-import media.valo.tower_android.TowerAndroidApplication
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.newsletter.DummyNewsletterDataSource
@@ -77,7 +75,6 @@ fun SignupForm(
     var email by remember { mutableStateOf("") }
 
     var isChecked by rememberSaveable { mutableStateOf(false) }
-    val applicationContext = LocalContext.current.applicationContext as TowerAndroidApplication
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -154,11 +151,9 @@ fun SignupForm(
                     viewModel.setLastName(lastName)
                     viewModel.setEmail(email)
                     navController.navigate(route = LoadingScreen)
-                    if (isChecked) {
-                        applicationContext.launch {
-                            viewModel.subscribeToNewsletter()
-                        }
-                    }
+                }
+                if (isChecked) {
+                    viewModel.subscribeToNewsletter()
                 }
             },
             modifier = Modifier.padding(8.dp)
@@ -178,7 +173,8 @@ fun SignupFormPreview() {
         navController = rememberNavController(),
         viewModel = SignupFormViewModel(
             ProfileRepository(DummyProfileDataSource()),
-            NewsletterRepository(DummyNewsletterDataSource())
+            NewsletterRepository(DummyNewsletterDataSource()),
+            TODO("find workaround to make preview usable again")
         )
     )
 }
