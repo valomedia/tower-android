@@ -38,9 +38,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
