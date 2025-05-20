@@ -29,7 +29,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SignupFormViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
-    private val newsletterRepository: NewsletterRepository
+    private val newsletterRepository: NewsletterRepository,
+    @AppScope private val appScope: CoroutineScope
 ) : ViewModel() {
 
     /**
