@@ -82,19 +82,4 @@ class SignupFormViewModel @Inject constructor(
      * handing over first name, email and optionally last name.
      */
     suspend fun subscribeToNewsletter() = newsletterRepository.subscribe()
-
-    /**
-     * This is a helper function, using regex to check if the currently entered Email is a valid one. (format wise)
-     *
-     * This will then return either true or false, helping show the Newsletter signup checkbox only, if the mail is valid.
-     */
-    fun isEmailValid(
-        email: String
-    ): Boolean {
-        val pattern = Pattern.compile(
-            "^(?=.{4,}$)[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+$"
-        )
-        val matcher = pattern.matcher(email)
-        return matcher.matches()
-    }
 }
