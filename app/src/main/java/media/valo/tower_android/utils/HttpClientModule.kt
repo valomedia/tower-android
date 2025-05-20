@@ -34,6 +34,10 @@ import javax.inject.Singleton
 @Retention(AnnotationRetention.BINARY)
 annotation class TowerHttpClient
 
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class NewsletterHttpClient
+
 @Module
 @InstallIn(SingletonComponent::class)
 class HttpClientModule() {
@@ -57,4 +61,15 @@ class HttpClientModule() {
         }
     }
 
+    /**
+     * The HttpClient used for newsletter signup
+     */
+    @NewsletterHttpClient
+    @Provides
+    @Singleton
+    fun provideNewsletterHttpClient(): HttpClient = HttpClient(OkHttp) {
+        install(Logging) {
+            sanitizeHeader { header -> header == HttpHeaders.Authorization }
+        }
+    }
 }

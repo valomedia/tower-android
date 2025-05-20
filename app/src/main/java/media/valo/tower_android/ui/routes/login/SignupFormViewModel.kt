@@ -8,7 +8,11 @@ package media.valo.tower_android.ui.routes.login
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
+import media.valo.tower_android.data.remote.newsletter.NewsletterRepository
+import media.valo.tower_android.utils.AppScope
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 //
@@ -26,7 +30,9 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class SignupFormViewModel @Inject constructor(
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val newsletterRepository: NewsletterRepository,
+    @AppScope val appScope: CoroutineScope
 ) : ViewModel() {
 
     /**
@@ -71,4 +77,9 @@ class SignupFormViewModel @Inject constructor(
      */
     suspend fun setEmail(email: String?) = profileRepository.setEmail(email)
 
+    /**
+     * Post a request to subscribe to the newsletter to the newsletter endpoint,
+     * handing over first name, email and optionally last name.
+     */
+    suspend fun subscribeToNewsletter() = newsletterRepository.subscribe()
 }
