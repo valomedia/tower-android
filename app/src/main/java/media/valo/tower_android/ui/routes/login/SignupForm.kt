@@ -188,7 +188,7 @@ fun SignupForm(
 @Preview(showBackground = true, locale = "de-rDE")
 @Composable
 fun SignupFormPreview() {
-    val previewScope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+    val previewScope = CoroutineScopeModule().provideCoroutineScope()
     SignupForm(
         navController = rememberNavController(),
         viewModel = SignupFormViewModel(
