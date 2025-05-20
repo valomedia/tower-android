@@ -74,7 +74,7 @@ fun SignupForm(
     var lastName by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
 
-    var isChecked by rememberSaveable { mutableStateOf(false) }
+    var wantsNewsletter by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -131,8 +131,8 @@ fun SignupForm(
                 horizontalArrangement = Arrangement.Center
                 ) {
                 Checkbox(
-                    checked = isChecked,
-                    onCheckedChange = { isChecked = !isChecked },
+                    checked = wantsNewsletter,
+                    onCheckedChange = { wantsNewsletter = !wantsNewsletter },
                     modifier = modifier.padding(8.dp),
                     enabled = true
                 )
@@ -152,7 +152,7 @@ fun SignupForm(
                     viewModel.setEmail(email)
                     navController.navigate(route = LoadingScreen)
                 }
-                if (isChecked) {
+                if (wantsNewsletter) {
                     viewModel.subscribeToNewsletter()
                 }
             },
