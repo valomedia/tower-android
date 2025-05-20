@@ -78,7 +78,11 @@ class SignupFormViewModel @Inject constructor(
      */
     suspend fun setEmail(email: String?) = profileRepository.setEmail(email)
 
-    fun subscribeToNewsletter() = appScope.launch{ newsletterRepository.subscribe() }
+    /**
+     * Post a request to subscribe to the newsletter to the newsletter endpoint,
+     * handing over first name, email and optionally last name.
+     */
+    suspend fun subscribeToNewsletter() = newsletterRepository.subscribe()
 
     /**
      * This is a helper function, using regex to check if the currently entered Email is a valid one. (format wise)
