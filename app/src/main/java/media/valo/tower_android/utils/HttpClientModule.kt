@@ -62,6 +62,7 @@ class HttpClientModule() {
     @Provides
     @Singleton
     fun provideNewsletterHttpClient(
+        @AppScope appScope: CoroutineScope
     ): HttpClient = HttpClient(OkHttp) {
         install(Logging) {
             sanitizeHeader { header -> header == HttpHeaders.Authorization }
