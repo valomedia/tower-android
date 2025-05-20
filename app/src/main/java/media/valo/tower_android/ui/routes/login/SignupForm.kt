@@ -84,7 +84,7 @@ fun SignupForm(
         focusRequester.requestFocus()
     }
 
-    if (isSigningUp == false) {
+    if (!isSigningUp) {
         Column(
             modifier = modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -138,11 +138,7 @@ fun SignupForm(
                 verticalAlignment = Alignment.CenterVertically
                 ) {
                 Checkbox(
-                    checked = if(email.isEmpty()){
-                        false
-                    } else {
-                        wantsNewsletter
-                    },
+                    checked = wantsNewsletter && email.isNotEmpty(),
                     onCheckedChange = { wantsNewsletter = !wantsNewsletter },
                     modifier = Modifier,
                     enabled = email.isNotEmpty()
