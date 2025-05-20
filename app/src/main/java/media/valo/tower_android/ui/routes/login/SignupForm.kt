@@ -138,7 +138,11 @@ fun SignupForm(
                 verticalAlignment = Alignment.CenterVertically
                 ) {
                 Checkbox(
-                    checked = wantsNewsletter,
+                    checked = if(email.isEmpty()){
+                        false
+                    } else {
+                        wantsNewsletter
+                    },
                     onCheckedChange = { wantsNewsletter = !wantsNewsletter },
                     modifier = Modifier,
                     enabled = email.isNotEmpty()
