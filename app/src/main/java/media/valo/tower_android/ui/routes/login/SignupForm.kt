@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -42,6 +43,7 @@ import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataS
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.newsletter.DummyNewsletterDataSource
 import media.valo.tower_android.data.remote.newsletter.NewsletterRepository
+import media.valo.tower_android.ui.elements.Logo
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
 
 //
@@ -75,91 +77,106 @@ fun SignupForm(
     var email by remember { mutableStateOf("") }
 
     var wantsNewsletter by rememberSaveable { mutableStateOf(false) }
+    var isSigningUp by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
 
-    Column(
-        modifier = modifier.fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            "Angaben zu dir",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(8.dp)
-        )
-        Text(
-            "Verrate uns bitte deinen Namen, damit wir dich bei Anrufen besser ansprechen können.",
-            modifier = Modifier.padding(8.dp)
-        )
-        Row(modifier = Modifier.padding(8.dp)) {
-            OutlinedTextField(
-                value = firstName,
-                onValueChange = { firstName = it },
-                label = { Text("Vorname") },
-                placeholder = { Text("Erforderlich") },
-                singleLine = true,
-                enabled = !isLoading,
-                modifier = Modifier
-                    .fillMaxWidth(.5f)
-                    .focusRequester(focusRequester)
-            )
-            Spacer(Modifier.width(6.dp))
-            OutlinedTextField(
-                value = lastName,
-                onValueChange = { lastName = it },
-                label = { Text("Nachname") },
-                placeholder = { Text("Optional") },
-                singleLine = true,
-                enabled = !isLoading,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("Email") },
-            placeholder = { Text("Optional, für Newsletter erforderlich") },
-            singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
-        )
-        Row(
-            modifier = Modifier.padding(8.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-            ) {
-            Checkbox(
-                checked = wantsNewsletter,
-                onCheckedChange = { wantsNewsletter = !wantsNewsletter },
-                modifier = Modifier,
-                enabled = viewModel.isEmailValid(email)
+    if (isSigningUp == false) {
+        Column(
+            modifier = modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                "Angaben zu dir",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(8.dp)
             )
             Text(
-                text = "Ich möchte euren monatlichen Newsletter erhalten",
-                modifier = Modifier
+                "Verrate uns bitte deinen Namen, damit wir dich bei Anrufen besser ansprechen können.",
+                modifier = Modifier.padding(8.dp)
             )
+            Row(modifier = Modifier.padding(8.dp)) {
+                OutlinedTextField(
+                    value = firstName,
+                    onValueChange = { firstName = it },
+                    label = { Text("Vorname") },
+                    placeholder = { Text("Erforderlich") },
+                    singleLine = true,
+                    enabled = !isLoading,
+                    modifier = Modifier
+                        .fillMaxWidth(.5f)
+                        .focusRequester(focusRequester)
+                )
+                Spacer(Modifier.width(6.dp))
+                OutlinedTextField(
+                    value = lastName,
+                    onValueChange = { lastName = it },
+                    label = { Text("Nachname") },
+                    placeholder = { Text("Optional") },
+                    singleLine = true,
+                    enabled = !isLoading,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email") },
+                placeholder = { Text("Optional, für Newsletter erforderlich") },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth()
+            )
+            Row(
+                modifier = Modifier.padding(8.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+                ) {
+                Checkbox(
+                    checked = wantsNewsletter,
+                    onCheckedChange = { wantsNewsletter = !wantsNewsletter },
+                    modifier = Modifier,
+                    enabled = viewModel.isEmailValid(email)
+                )
+                Text(
+                    text = "Ich möchte euren monatlichen Newsletter erhalten",
+                    modifier = Modifier
+                )
+            }
+            Button(
+                enabled = firstName.isNotBlank() && !isLoading,
+                onClick = {
+                    scope.launch {
+                        isLoading = true
+                        isSigningUp = true
+                        viewModel.setFirstName(firstName)
+                        viewModel.setLastName(lastName)
+                        viewModel.setEmail(email)
+                        if (wantsNewsletter) {
+                            val newsletterSignup = viewModel.appScope.launch{ viewModel.subscribeToNewsletter() }
+                            newsletterSignup.join()
+                        }
+                        navController.navigate(route = LoadingScreen)
+                    }
+
+                },
+                modifier = Modifier.padding(8.dp)
+            ) {
+                Text("Anmelden")
+            }
         }
-        Button(
-            enabled = firstName.isNotBlank() && !isLoading,
-            onClick = {
-                scope.launch {
-                    isLoading = true
-                    viewModel.setFirstName(firstName)
-                    viewModel.setLastName(lastName)
-                    viewModel.setEmail(email)
-                    navController.navigate(route = LoadingScreen)
-                }
-                if (wantsNewsletter) {
-                    val x = viewModel.appScope.launch{ viewModel.subscribeToNewsletter() }
-                }
-            },
-            modifier = Modifier.padding(8.dp)
+    } else {
+        Column(
+            modifier = modifier,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text("Anmelden")
+            Logo(modifier = Modifier.padding(8.dp))
+            CircularProgressIndicator(modifier = Modifier.padding(8.dp))
         }
     }
 }
