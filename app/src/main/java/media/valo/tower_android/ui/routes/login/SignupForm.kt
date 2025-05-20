@@ -45,6 +45,7 @@ import media.valo.tower_android.data.remote.newsletter.DummyNewsletterDataSource
 import media.valo.tower_android.data.remote.newsletter.NewsletterRepository
 import media.valo.tower_android.ui.elements.Logo
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
+import media.valo.tower_android.utils.CoroutineScopeModule
 
 //
 //  SignupForm.kt
@@ -140,7 +141,7 @@ fun SignupForm(
                     checked = wantsNewsletter,
                     onCheckedChange = { wantsNewsletter = !wantsNewsletter },
                     modifier = Modifier,
-                    enabled = viewModel.isEmailValid(email)
+                    enabled = email.isNotEmpty()
                 )
                 Text(
                     text = "Ich möchte euren monatlichen Newsletter erhalten",
@@ -156,7 +157,7 @@ fun SignupForm(
                         viewModel.setFirstName(firstName)
                         viewModel.setLastName(lastName)
                         viewModel.setEmail(email)
-                        if (wantsNewsletter) {
+                        if (wantsNewsletter && email.isNotEmpty()) {
                             val newsletterSignup = viewModel.appScope.launch{ viewModel.subscribeToNewsletter() }
                             newsletterSignup.join()
                         }
