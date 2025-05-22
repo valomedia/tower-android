@@ -17,11 +17,13 @@ package media.valo.tower_android.ui.routes.loading
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import media.valo.tower_android.BuildConfig
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.IndexResponse
 import media.valo.tower_android.model.Status
+import java.lang.Integer.parseInt
 import javax.inject.Inject
 
 /**
@@ -62,5 +64,10 @@ class LoadingViewModel @Inject constructor(
         }
     }
 
+    fun compareVersions(): Boolean{
+        val appMajorVersion = parseInt(BuildConfig.VERSION_NAME.split('.')[0], 10)
+        val backendMajorVersion = parseInt(indexResponse.apiVersion.split('.')[0], 10)
+        return backendMajorVersion > appMajorVersion
+    }
 }
 
