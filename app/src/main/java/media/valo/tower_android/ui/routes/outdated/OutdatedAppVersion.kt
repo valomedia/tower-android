@@ -40,7 +40,7 @@ fun OutdatedAppVersion(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Veraltete App Version",
+            text = "Veraltete Version",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(8.dp)
         )
