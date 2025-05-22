@@ -66,17 +66,17 @@ fun LoadingScreen(
 
     LaunchedEffect(Unit) {
         if (viewModel.connect()) {
-            if (viewModel.indexResponse.apiVersion.toFloat() > BuildConfig.VERSION_NAME.toFloat()) {
-                navController.navigate(route = OutdatedAppVersionScreen)
-            }
-            if (viewModel.hasProfile()) {
-                if (viewModel.indexResponse.openingHours.status == Status.OPEN) {
-                    navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
-                } else {
-                    navController.navigate(route = ClosedScreen(currentSchedule = viewModel.indexResponse.openingHours.description))
-                }
-            } else {
-            navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
+            when {
+                viewModel.compareVersions() -> navController.navigate(route = OutdatedAppVersionScreen)
+                else -> if (viewModel.hasProfile()) {
+                            if (viewModel.indexResponse.openingHours.status == Status.OPEN) {
+                                navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
+                            } else {
+                                navController.navigate(route = ClosedScreen(currentSchedule = viewModel.indexResponse.openingHours.description))
+                            }
+                        } else {
+                            navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
+                        }
             }
         }
     }
