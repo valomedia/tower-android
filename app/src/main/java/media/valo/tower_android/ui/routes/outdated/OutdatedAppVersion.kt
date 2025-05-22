@@ -1,4 +1,18 @@
+/******************************************************************************
+ * Copyright (c) 2025.                                                        *
+ * valo.media GmbH                                                            *
+ * All rights reserved.                                                       *
+ ******************************************************************************/
+
 package media.valo.tower_android.ui.routes.outdated
+
+//
+//  OutdatedAppVersion.kt
+//  Tower_Android
+//
+//  Created by:
+//      * mvlexs
+//
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
