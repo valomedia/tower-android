@@ -29,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.serialization.Serializable
+import media.valo.tower_android.BuildConfig
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.credentials.DummyCredentialDataSource
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
@@ -41,6 +42,7 @@ import media.valo.tower_android.ui.elements.Logo
 import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.ui.routes.closed.ClosedScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
+import media.valo.tower_android.ui.routes.outdated.OutdatedAppVersionScreen
 
 /**
  * Object for the navigation destination for the loading screen.
@@ -63,14 +65,19 @@ fun LoadingScreen(
 ) {
 
     LaunchedEffect(Unit) {
-        if (viewModel.connect() && viewModel.hasProfile()) {
-            if (viewModel.indexResponse.openingHours.status == Status.OPEN) {
-                navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
-            } else {
-                navController.navigate(route = ClosedScreen(currentSchedule = viewModel.indexResponse.openingHours.description))
+        if (viewModel.connect()) {
+            if (viewModel.indexResponse.apiVersion.toFloat() > BuildConfig.VERSION_NAME.toFloat()) {
+                navController.navigate(route = OutdatedAppVersionScreen)
             }
-        } else {
-        navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
+            if (viewModel.hasProfile()) {
+                if (viewModel.indexResponse.openingHours.status == Status.OPEN) {
+                    navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
+                } else {
+                    navController.navigate(route = ClosedScreen(currentSchedule = viewModel.indexResponse.openingHours.description))
+                }
+            } else {
+            navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
+            }
         }
     }
 
