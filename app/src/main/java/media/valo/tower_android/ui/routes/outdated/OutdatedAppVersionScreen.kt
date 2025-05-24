@@ -31,6 +31,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 object OutdatedAppVersionScreen
 
+/**
+ * The screen that is shown if the backend major version is bigger than that of the app
+ *
+ * @param modifier``Modifier` for this element.
+ */
 @Composable
 fun OutdatedAppVersionScreen(
     modifier: Modifier = Modifier
