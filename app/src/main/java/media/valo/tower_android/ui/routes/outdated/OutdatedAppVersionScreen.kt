@@ -43,9 +43,11 @@ object OutdatedAppVersionScreen
 fun OutdatedAppVersionScreen(
     modifier: Modifier = Modifier
 ) {
+    val scrollState = rememberScrollState()
+
     Column(
-        modifier = modifier,
         modifier = modifier
+        .verticalScroll(scrollState)
         .padding(horizontal = 6.dp)
         .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
