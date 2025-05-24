@@ -68,4 +68,3 @@ class LoadingViewModel @Inject constructor(
         private val appMajorVersion = parseInt(BuildConfig.VERSION_NAME.split('.')[0], 10)
         private val backendMajorVersion = parseInt(indexResponse.apiVersion.split('.')[0], 10)
 }
-
