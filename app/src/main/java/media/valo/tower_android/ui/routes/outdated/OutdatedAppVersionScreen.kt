@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -57,9 +56,8 @@ fun OutdatedAppVersionScreen(
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(8.dp)
         )
-        OutlinedTextField(
-            value = "Die Version deiner App ist veraltet. Aktualisiere bitte deine Tower Assistenz App auf die neuste Version, um technische Fehler zu vermeiden.",
-            onValueChange = {},
+        Text(
+            text = "Die Version deiner App ist veraltet. Aktualisiere bitte deine Tower Assistenz App auf die neuste Version, um technische Fehler zu vermeiden.",
             modifier = Modifier.padding(8.dp)
         )
     }
