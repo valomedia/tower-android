@@ -22,7 +22,6 @@ import media.valo.tower_android.data.local.preferences.credentials.CredentialRep
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.IndexResponse
-import media.valo.tower_android.model.Status
 import java.lang.Integer.parseInt
 import javax.inject.Inject
 
@@ -64,10 +63,9 @@ class LoadingViewModel @Inject constructor(
         }
     }
 
-    fun compareVersions(): Boolean{
-        val appMajorVersion = parseInt(BuildConfig.VERSION_NAME.split('.')[0], 10)
-        val backendMajorVersion = parseInt(indexResponse.apiVersion.split('.')[0], 10)
-        return backendMajorVersion > appMajorVersion
-    }
+    val isAppUpdateNeeded
+        get() = appMajorVersion < backendMajorVersion
+        private val appMajorVersion = parseInt(BuildConfig.VERSION_NAME.split('.')[0], 10)
+        private val backendMajorVersion = parseInt(indexResponse.apiVersion.split('.')[0], 10)
 }
 
