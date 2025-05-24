@@ -29,7 +29,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.serialization.Serializable
-import media.valo.tower_android.BuildConfig
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.credentials.DummyCredentialDataSource
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
@@ -67,7 +66,7 @@ fun LoadingScreen(
     LaunchedEffect(Unit) {
         if (viewModel.connect()) {
             when {
-                viewModel.compareVersions() -> navController.navigate(route = OutdatedAppVersionScreen)
+                viewModel.isAppUpdateNeeded -> navController.navigate(route = OutdatedAppVersionScreen)
                 else -> if (viewModel.hasProfile()) {
                             if (viewModel.indexResponse.openingHours.status == Status.OPEN) {
                                 navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
