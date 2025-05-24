@@ -7,7 +7,7 @@
 package media.valo.tower_android.ui.routes.outdated
 
 //
-//  OutdatedAppVersion.kt
+//  OutdatedAppVersionScreen.kt
 //  Tower_Android
 //
 //  Created by:
@@ -32,8 +32,8 @@ import kotlinx.serialization.Serializable
 object OutdatedAppVersionScreen
 
 @Composable
-fun OutdatedAppVersion(
-    modifier: Modifier
+fun OutdatedAppVersionScreen(
+    modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier,
