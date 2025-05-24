@@ -157,7 +157,7 @@ fun TowerApp(navController: NavHostController) {
                         currentSchedule = closedScreen.currentSchedule
                     )
                 }
-                composable< OutdatedAppVersionScreen> {
+                composable<OutdatedAppVersionScreen> {
                     OutdatedAppVersion(
                         modifier = modifier
                     )
