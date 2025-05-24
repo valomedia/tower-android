@@ -63,8 +63,8 @@ class LoadingViewModel @Inject constructor(
         }
     }
 
-    private val appMajorVersion = parseInt(BuildConfig.VERSION_NAME.split('.')[0])
-    private val backendMajorVersion = parseInt(indexResponse.apiVersion.split('.')[0])
+    private val appMajorVersion = BuildConfig.VERSION_NAME.substringBefore(".").toInt()
+    private val backendMajorVersion = indexResponse.apiVersion.substringBefore(".").toInt()
 
     /**
      * The getter of isAppUpdateNeeded will compare app
