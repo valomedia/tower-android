@@ -64,12 +64,12 @@ fun LoadingScreen(
 ) {
 
     LaunchedEffect(Unit) {
-        val isConnected = viewModel.connect()
+        val isConnected = viewModel.connect() != null
         if(!viewModel.isAppUpdateNeeded) {
             when{
                 !isConnected || !viewModel.hasProfile() -> navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
                 viewModel.isServiceOpen -> navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
-                !viewModel.isServiceOpen -> navController.navigate(route = ClosedScreen(currentSchedule = viewModel.indexResponse.openingHours.description))
+                !viewModel.isServiceOpen -> navController.navigate(route = ClosedScreen(currentSchedule = viewModel.schedule.toString()))
             }
         } else {
             navController.navigate(route = OutdatedAppVersionScreen)
