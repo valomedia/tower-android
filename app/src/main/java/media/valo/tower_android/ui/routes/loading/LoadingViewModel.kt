@@ -22,7 +22,7 @@ import media.valo.tower_android.data.local.preferences.credentials.CredentialRep
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.IndexResponse
-import java.lang.Integer.parseInt
+import media.valo.tower_android.model.Status
 import javax.inject.Inject
 
 /**
@@ -72,4 +72,7 @@ class LoadingViewModel @Inject constructor(
      */
     val isAppUpdateNeeded
         get() = appMajorVersion < backendMajorVersion
+
+    val isServiceOpen
+        get() = indexResponse.openingHours.status == Status.OPEN
 }
