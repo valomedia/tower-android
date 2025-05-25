@@ -12,6 +12,7 @@ package media.valo.tower_android.ui.routes.loading
 //
 //  Created by:
 //      * Jean-Pierre Höhmann
+//      * mvlexs
 //
 
 import androidx.compose.foundation.layout.Arrangement
@@ -64,19 +65,15 @@ fun LoadingScreen(
 ) {
 
     LaunchedEffect(Unit) {
-        if (viewModel.connect()) {
-            when {
-                viewModel.isAppUpdateNeeded -> navController.navigate(route = OutdatedAppVersionScreen)
-                else -> if (viewModel.hasProfile()) {
-                            if (viewModel.indexResponse.openingHours.status == Status.OPEN) {
-                                navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
-                            } else {
-                                navController.navigate(route = ClosedScreen(currentSchedule = viewModel.indexResponse.openingHours.description))
-                            }
-                        } else {
-                            navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
-                        }
+        val isConnected = viewModel.connect()
+        if(!viewModel.isAppUpdateNeeded) {
+            when{
+                !isConnected || !viewModel.hasProfile() -> navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
+                viewModel.isServiceOpen -> navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
+                !viewModel.isServiceOpen -> navController.navigate(route = ClosedScreen(currentSchedule = viewModel.indexResponse.openingHours.description))
             }
+        } else {
+            navController.navigate(route = OutdatedAppVersionScreen)
         }
     }
 
