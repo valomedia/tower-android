@@ -36,7 +36,6 @@ import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataS
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.DummyTowerDataSource
 import media.valo.tower_android.data.remote.tower.TowerRepository
-import media.valo.tower_android.model.Status
 import media.valo.tower_android.ui.elements.AppBarPreview
 import media.valo.tower_android.ui.elements.Logo
 import media.valo.tower_android.ui.routes.home.HomeScreen
