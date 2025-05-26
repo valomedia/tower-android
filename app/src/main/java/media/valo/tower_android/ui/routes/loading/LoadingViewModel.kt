@@ -39,7 +39,11 @@ class LoadingViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
-    lateinit var indexResponse: IndexResponse
+    private var indexResponse: IndexResponse? = null
+
+    private var backendMajorVersion: Int? = null
+
+    private val appMajorVersion = BuildConfig.VERSION_NAME.substringBefore(".").toInt()
 
     /**
      * Check whether the user has provided all required profile information.
@@ -51,28 +55,37 @@ class LoadingViewModel @Inject constructor(
      *
      * @return Whether the connection was successful.
      */
-    suspend fun connect(): Boolean {
+    suspend fun connect(): IndexResponse? {
         try {
             indexResponse = towerRepository.index()
             if (credentialRepository.getUserId().isNullOrBlank()) {
                 credentialRepository.setUserId(towerRepository.registerUser().userId)
             }
-            return true
+            backendMajorVersion = try { indexResponse?.apiVersion?.substringBefore("." )?.toInt() } catch(_:Error) {appMajorVersion + 1}
+            return indexResponse
         } catch (_: Exception) {
-            return false
+            return null
         }
     }
-
-    private val appMajorVersion = BuildConfig.VERSION_NAME.substringBefore(".").toInt()
-    private val backendMajorVersion = try { indexResponse.apiVersion.substringBefore(".").toInt() } catch(_:Error) {appMajorVersion + 1}
 
     /**
      * The getter of isAppUpdateNeeded will compare app
      * and backend major version and return true if the apps major version is smaller.
+     *
+     * Defaults to true if there is an issue reaching the backend.
      */
     val isAppUpdateNeeded
-        get() = appMajorVersion < backendMajorVersion
+        get() = backendMajorVersion?.let { appMajorVersion < it } ?: true
 
+    /**
+     * The getter of isServiceOpen will return true if the service is currently open.
+     */
     val isServiceOpen
-        get() = indexResponse.openingHours.status == Status.OPEN
+        get() = indexResponse?.openingHours?.status == Status.OPEN
+
+    /**
+     * The getter of schedule will return the current schedule.
+     */
+    val schedule
+        get() = indexResponse?.openingHours?.description
 }
