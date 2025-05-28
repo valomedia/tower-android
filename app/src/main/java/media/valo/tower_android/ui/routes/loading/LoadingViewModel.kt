@@ -69,22 +69,21 @@ class LoadingViewModel @Inject constructor(
     }
 
     /**
-     * The getter of isAppUpdateNeeded will compare app
-     * and backend major version and return true if the apps major version is smaller.
-     *
-     * Defaults to true if there is an issue reaching the backend.
+     * This will compare the backend's and app's major version and return true if the app's is smaller than that of the backend.
      */
     val isAppUpdateNeeded
         get() = backendMajorVersion?.let { appMajorVersion < it } ?: true
 
     /**
-     * The getter of isServiceOpen will return true if the service is currently open.
+     * This returns true, when the backend call succeeds and holds the status message 'open'.
      */
     val isServiceOpen
         get() = indexResponse?.openingHours?.status == Status.OPEN
 
     /**
-     * The getter of schedule will return the current schedule.
+     * This returns the description retrieved from a successful backend call.
+     *
+     * The description holds human readable information about the current opening hours.
      */
     val schedule
         get() = indexResponse?.openingHours?.description
