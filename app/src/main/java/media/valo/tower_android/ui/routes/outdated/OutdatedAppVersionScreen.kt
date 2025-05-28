@@ -52,12 +52,19 @@ fun OutdatedAppVersionScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Veraltete Version",
+            text = "Deine App benötigt ein Update",
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier.padding(8.dp)
         )
         Text(
-            text = "Die Version deiner App ist veraltet. Aktualisiere bitte deine Tower Assistenz App auf die neuste Version, um technische Fehler zu vermeiden.",
+            text = "Bitte aktualisiere TOWER Fernassistenz über den App Store, bevor du einen Anruf startest",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(8.dp)
+        )
+        Text(
+            text = "Wir arbeiten kontinuierlich daran, unser Angebot zu verbessen. Gelegentlich ist es dafür notwendig, die App zu aktualisieren." +
+                    " Um die App zu aktualisieren, musst du zum App Store gehen und dort auf „aktualisieren“ tippen. " +
+                    "Bevor du deine App aktualisiert hast, kannst du leider keinen Anruf starten.",
             modifier = Modifier.padding(8.dp)
         )
     }
