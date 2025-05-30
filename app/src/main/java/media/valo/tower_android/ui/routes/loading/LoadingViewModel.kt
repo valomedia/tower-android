@@ -56,15 +56,15 @@ class LoadingViewModel @Inject constructor(
      *
      * @return Whether the connection was successful.
      */
-    suspend fun connect(): IndexResponse? {
+    suspend fun connect(): Boolean {
         try {
             indexResponse = towerRepository.index()
             if (credentialRepository.getUserId().isNullOrBlank()) {
                 credentialRepository.setUserId(towerRepository.registerUser().userId)
             }
-            return indexResponse
+            return indexResponse != null
         } catch (_: Exception) {
-            return null
+            return indexResponse != null
         }
     }
 
