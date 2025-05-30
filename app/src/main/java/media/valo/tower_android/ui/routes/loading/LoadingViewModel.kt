@@ -42,8 +42,9 @@ class LoadingViewModel @Inject constructor(
     private var indexResponse: IndexResponse? = null
 
     private var backendMajorVersion: Int? = null
-
-    private val appMajorVersion = BuildConfig.VERSION_NAME.substringBefore(".").toInt()
+        get() = try { indexResponse?.apiVersion?.substringBefore("." )?.toInt() } catch(_:Error) {appMajorVersion + 1}
+    private val appMajorVersion
+        get() = BuildConfig.VERSION_NAME.substringBefore(".").toInt()
 
     /**
      * Check whether the user has provided all required profile information.
@@ -61,7 +62,6 @@ class LoadingViewModel @Inject constructor(
             if (credentialRepository.getUserId().isNullOrBlank()) {
                 credentialRepository.setUserId(towerRepository.registerUser().userId)
             }
-            backendMajorVersion = try { indexResponse?.apiVersion?.substringBefore("." )?.toInt() } catch(_:Error) {appMajorVersion + 1}
             return indexResponse
         } catch (_: Exception) {
             return null
