@@ -78,7 +78,7 @@ class LoadingViewModel @Inject constructor(
      * This returns true, when the backend call succeeds and holds the status message 'open'.
      */
     val isServiceOpen
-        get() = indexResponse?.openingHours?.status == Status.OPEN
+        get() = if(indexResponse?.openingHours?.status != null){ indexResponse?.openingHours?.status == Status.OPEN } else { false }
 
     /**
      * This returns the description retrieved from a successful backend call.
@@ -86,5 +86,5 @@ class LoadingViewModel @Inject constructor(
      * The description holds human readable information about the current opening hours.
      */
     val schedule
-        get() = indexResponse?.openingHours?.description
+        get() = indexResponse?.openingHours?.description ?: "Fehler beim Abrufen der Aktuellen Öffnungszeiten."
 }
