@@ -69,7 +69,7 @@ class LoadingViewModel @Inject constructor(
     }
 
     /**
-     * This will compare the backend's and app's major version.
+     * This returns true, when the backends major version is not null and bigger than that of the app.
      */
     val isAppUpdateNeeded: Boolean?
         get() = backendMajorVersion?.let { appMajorVersion < it }
