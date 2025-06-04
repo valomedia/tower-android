@@ -62,9 +62,9 @@ class LoadingViewModel @Inject constructor(
             if (credentialRepository.getUserId().isNullOrBlank()) {
                 credentialRepository.setUserId(towerRepository.registerUser().userId)
             }
-            return indexResponse != null
+            return true
         } catch (_: Exception) {
-            return indexResponse != null
+            return false
         }
     }
 
