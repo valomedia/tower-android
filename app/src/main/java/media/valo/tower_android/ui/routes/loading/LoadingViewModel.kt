@@ -41,7 +41,7 @@ class LoadingViewModel @Inject constructor(
 
     private var indexResponse: IndexResponse? = null
 
-    private var backendMajorVersion: Int? = null
+    private val backendMajorVersion: Int?
         get() = try { indexResponse?.apiVersion?.substringBefore("." )?.toInt() } catch(_:Error) {appMajorVersion + 1}
     private val appMajorVersion
         get() = BuildConfig.VERSION_NAME.substringBefore(".").toInt()
