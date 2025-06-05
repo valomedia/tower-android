@@ -39,12 +39,30 @@ class LoadingViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
+    /**
+     * This holds true, when the backend call succeeds and holds the status message 'open'.
+     */
+    var isServiceOpen: Boolean? = null
+
+    /**
+     * This returns the description retrieved from a successful backend call.
+     *
+     * The description holds human readable information about the current opening hours.
+     */
+    var schedule: String? = null
+
     private var indexResponse: IndexResponse? = null
 
     private val backendMajorVersion: Int?
         get() = try { indexResponse?.apiVersion?.substringBefore("." )?.toInt() } catch(_:Error) {appMajorVersion + 1}
     private val appMajorVersion
         get() = BuildConfig.VERSION_NAME.substringBefore(".").toInt()
+
+    /**
+     * This returns true, when the backends major version is not null and bigger than that of the app.
+     */
+    val isAppUpdateNeeded: Boolean?
+        get() = backendMajorVersion?.let { appMajorVersion < it }
 
     /**
      * Check whether the user has provided all required profile information.
@@ -62,29 +80,11 @@ class LoadingViewModel @Inject constructor(
             if (credentialRepository.getUserId().isNullOrBlank()) {
                 credentialRepository.setUserId(towerRepository.registerUser().userId)
             }
+            isServiceOpen = indexResponse?.openingHours?.status == Status.OPEN
+            schedule = indexResponse?.openingHours?.description
             return true
         } catch (_: Exception) {
             return false
         }
     }
-
-    /**
-     * This returns true, when the backends major version is not null and bigger than that of the app.
-     */
-    val isAppUpdateNeeded: Boolean?
-        get() = backendMajorVersion?.let { appMajorVersion < it }
-
-    /**
-     * This returns true, when the backend call succeeds and holds the status message 'open'.
-     */
-    val isServiceOpen
-        get() = if(indexResponse?.openingHours?.status != null){ indexResponse?.openingHours?.status == Status.OPEN } else { false }
-
-    /**
-     * This returns the description retrieved from a successful backend call.
-     *
-     * The description holds human readable information about the current opening hours.
-     */
-    val schedule
-        get() = indexResponse?.openingHours?.description ?: "Fehler beim Abrufen der Aktuellen Öffnungszeiten."
 }
