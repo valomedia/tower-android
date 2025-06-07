@@ -68,6 +68,10 @@ class LoadingViewModel @Inject constructor(
                 -1
             }
         } else { null }
+
+    /**
+     * This parses the Major Version of the app from the Version Name, which is defined in the gradle build config.
+     */
     val appMajorVersion
         get() = BuildConfig.VERSION_NAME.substringBefore(".").toInt()
 
