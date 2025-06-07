@@ -39,19 +39,29 @@ class LoadingViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
+    private var indexResponse: IndexResponse? = null
+
     /**
      * This holds true, when the backend call succeeds and holds the status message 'open'.
+     *
+     * If the Backend could not be reached this holds null.
+     *
+     * Else this holds false, assuming the service is closed
      */
-    var isServiceOpen: Boolean? = null
+    val isServiceOpen: Boolean?
+        get() = when (indexResponse?.openingHours?.status) {
+            null -> null
+            Status.OPEN -> true
+            else -> false
+        }
 
     /**
      * This holds the description retrieved from a successful backend call.
      *
      * The description holds human readable information about the current opening hours.
      */
-    var schedule: String? = null
-
-    private var indexResponse: IndexResponse? = null
+    val schedule: String?
+        get() = indexResponse?.openingHours?.description
 
     /**
      * This holds null if there was an Issue connecting to the backend.
@@ -91,8 +101,6 @@ class LoadingViewModel @Inject constructor(
             if (credentialRepository.getUserId().isNullOrBlank()) {
                 credentialRepository.setUserId(towerRepository.registerUser().userId)
             }
-            isServiceOpen = indexResponse?.openingHours?.status == Status.OPEN
-            schedule = indexResponse?.openingHours?.description
             return true
         } catch (_: Exception) {
             return false
