@@ -67,9 +67,25 @@ fun LoadingScreen(
         val isConnected = viewModel.connect()
         val isServiceOpen = viewModel.isServiceOpen
         val schedule = viewModel.schedule
+        val backendMajorVersion = viewModel.backendMajorVersion
+        val appMajorVersion = viewModel.appMajorVersion
+
+        /**
+         * This holds true, when the backends major version is not null and bigger than that of the app.
+         *
+         * In case of the backendMajorVersion failing to parse and therefore holding '-1', this also holds true, assuming an update is needed.
+         *
+         * If the backend couldn't be reached and therefore the backendMajorVersion holds null, this holds null as well, indicating connection issues.
+         */
+        val isAppUpdateNeeded = when{
+            backendMajorVersion == null -> null
+            backendMajorVersion > appMajorVersion || backendMajorVersion == -1 -> true
+            else -> false
+            }
+
         when {
-            viewModel.isAppUpdateNeeded == true -> navController.navigate(route = OutdatedAppVersionScreen) { popUpTo(navController.graph.id) }
-            !isConnected || !viewModel.hasProfile() || isServiceOpen == null || schedule == null -> navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
+            isAppUpdateNeeded == true -> navController.navigate(route = OutdatedAppVersionScreen) { popUpTo(navController.graph.id) }
+            !isConnected || !viewModel.hasProfile() || isServiceOpen == null || schedule == null || isAppUpdateNeeded == null -> navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
             !isServiceOpen -> navController.navigate(route = ClosedScreen(currentSchedule = schedule)) { popUpTo(navController.graph.id) }
             else -> navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
         }

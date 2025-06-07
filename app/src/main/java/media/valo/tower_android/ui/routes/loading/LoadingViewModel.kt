@@ -45,7 +45,7 @@ class LoadingViewModel @Inject constructor(
     var isServiceOpen: Boolean? = null
 
     /**
-     * This returns the description retrieved from a successful backend call.
+     * This holds the description retrieved from a successful backend call.
      *
      * The description holds human readable information about the current opening hours.
      */
@@ -53,16 +53,23 @@ class LoadingViewModel @Inject constructor(
 
     private var indexResponse: IndexResponse? = null
 
-    private val backendMajorVersion: Int?
-        get() = try { indexResponse?.apiVersion?.substringBefore("." )?.toInt() } catch(_:Error) {appMajorVersion + 1}
-    private val appMajorVersion
-        get() = BuildConfig.VERSION_NAME.substringBefore(".").toInt()
-
     /**
-     * This returns true, when the backends major version is not null and bigger than that of the app.
+     * This holds null if there was an Issue connecting to the backend.
+     *
+     * This holds '-1' if there was an Issue parsing the String holding the api Version.
+     *
+     * Otherwise this holds the backends Major Version
      */
-    val isAppUpdateNeeded: Boolean?
-        get() = backendMajorVersion?.let { appMajorVersion < it }
+    val backendMajorVersion: Int?
+        get() = if(indexResponse?.apiVersion != null) {
+            try {
+                indexResponse?.apiVersion?.substringBefore(".")?.toInt()
+            } catch (_: Error) {
+                -1
+            }
+        } else { null }
+    val appMajorVersion
+        get() = BuildConfig.VERSION_NAME.substringBefore(".").toInt()
 
     /**
      * Check whether the user has provided all required profile information.
