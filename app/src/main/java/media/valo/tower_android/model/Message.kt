@@ -165,6 +165,20 @@ sealed class DataMessage: Message() {
     @SerialName("switchCameraResponse")
     class SwitchCameraResponse(): DataMessage()
 
+    /**
+     * A orientationChanged data message.
+     *
+     * This message can be sent to tower-staff to indicate that the video being received must be rotated.
+     * It specifies a rotationAngle of either 0, 90, 180, or 270 degrees. The video will then be rotated clockwise by the specified amount.
+     * The rotation is set relative to the original orientation of the video, not to the last rotation set by another orientatonEvent.
+     *
+     * @param rotationAngle   The amount of degrees the users video feed has to be turned. (0, 90, 180, 270)
+     */
+    @Serializable
+    @SerialName("orientationEvent")
+    data class OrientationEvent(
+        @Required val rotationAngle: Int
+    ): DataMessage()
 }
 
 /**

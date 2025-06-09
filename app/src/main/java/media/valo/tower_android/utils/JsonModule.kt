@@ -24,6 +24,7 @@ import javax.inject.Singleton
 //
 //  Created by:
 //      * Jean-Pierre Höhmann
+//      * mvlexs
 //
 
 @Module
@@ -41,6 +42,7 @@ class JsonModule() {
                 subclass(DataMessage.UserHelloEvent::class)
                 subclass(DataMessage.SwitchCameraRequest::class)
                 subclass(DataMessage.SwitchCameraResponse::class)
+                subclass(DataMessage.OrientationEvent::class)
             }
             polymorphic(ErrorMessage::class) {
                 subclass(ErrorMessage.ErrorEvent::class)
