@@ -77,11 +77,10 @@ fun LoadingScreen(
          *
          * If the backend couldn't be reached and therefore the backendMajorVersion holds null, this holds null as well, indicating connection issues.
          */
-        val isAppUpdateNeeded = when{
-            backendMajorVersion == null -> null
-            backendMajorVersion > appMajorVersion || backendMajorVersion == -1 -> true
-            else -> false
-            }
+        val isAppUpdateNeeded = if (backendMajorVersion != null) {
+            backendMajorVersion > appMajorVersion || backendMajorVersion == -1
+        } else {null}
+
 
         when {
             isAppUpdateNeeded == true -> navController.navigate(route = OutdatedAppVersionScreen) { popUpTo(navController.graph.id) }
