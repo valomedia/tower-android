@@ -42,11 +42,9 @@ class LoadingViewModel @Inject constructor(
     private var indexResponse: IndexResponse? = null
 
     /**
-     * This holds true, when the backend call succeeds and holds the status message 'open'.
+     * Whether the assistants are currently taking calls.
      *
-     * If the Backend could not be reached this holds null.
-     *
-     * Else this holds false, assuming the service is closed
+     * This will be null until connect() is successfully called.
      */
     val isServiceOpen: Boolean?
         get() = when (indexResponse?.openingHours?.status) {
@@ -56,19 +54,17 @@ class LoadingViewModel @Inject constructor(
         }
 
     /**
-     * This holds the description retrieved from a successful backend call.
+     * The current opening hours of the service.
      *
-     * The description holds human readable information about the current opening hours.
+     * This will be null until connect() is successfully called.
      */
     val schedule: String?
         get() = indexResponse?.openingHours?.description
 
     /**
-     * This holds null if there was an Issue connecting to the backend.
+     * The major version of the backend.
      *
-     * This holds '-1' if there was an Issue parsing the String holding the api Version.
-     *
-     * Otherwise this holds the backends Major Version
+     * This will be null until connect() is successfully called and -1 if the version couldn't be parsed.
      */
     val backendMajorVersion: Int?
         get() = if(indexResponse?.apiVersion != null) {
@@ -80,7 +76,7 @@ class LoadingViewModel @Inject constructor(
         } else { null }
 
     /**
-     * This parses the Major Version of the app from the Version Name, which is defined in the gradle build config.
+     * The major version of the app.
      */
     val appMajorVersion
         get() = BuildConfig.VERSION_NAME.substringBefore(".").toInt()

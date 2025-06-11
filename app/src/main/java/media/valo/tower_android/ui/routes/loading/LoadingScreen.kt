@@ -71,11 +71,11 @@ fun LoadingScreen(
         val appMajorVersion = viewModel.appMajorVersion
 
         /**
-         * This holds true, when the backends major version is not null and bigger than that of the app.
+         * Wether the app needs to be updated.
          *
-         * In case of the backendMajorVersion failing to parse and therefore holding '-1', this also holds true, assuming an update is needed.
-         *
-         * If the backend couldn't be reached and therefore the backendMajorVersion holds null, this holds null as well, indicating connection issues.
+         * The app needs to be updated if:
+         * - the backend major version is greater than the app major version
+         * - the backend major could not be parsed
          */
         val isAppUpdateNeeded = if (backendMajorVersion != null) {
             backendMajorVersion > appMajorVersion || backendMajorVersion == -1
