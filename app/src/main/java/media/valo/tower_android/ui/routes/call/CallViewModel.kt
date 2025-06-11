@@ -43,9 +43,14 @@ import com.azure.android.communication.calling.IncomingCall
 import com.azure.android.communication.calling.LocalVideoStream
 import com.azure.android.communication.calling.OutgoingVideoOptions
 import com.azure.android.communication.calling.PropertyChangedListener
+import com.azure.android.communication.calling.RawOutgoingVideoStreamOptions
 import com.azure.android.communication.calling.ScalingMode
 import com.azure.android.communication.calling.VideoDeviceInfo
+import com.azure.android.communication.calling.VideoStreamFormat
+import com.azure.android.communication.calling.VideoStreamPixelFormat
 import com.azure.android.communication.calling.VideoStreamRenderer
+import com.azure.android.communication.calling.VideoStreamResolution
+import com.azure.android.communication.calling.VirtualOutgoingVideoStream
 import com.azure.android.communication.common.CommunicationTokenCredential
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -431,6 +436,17 @@ class CallViewModel @Inject constructor(
         val acceptCallOptions = AcceptCallOptions()
         val outgoingVideoOptions = OutgoingVideoOptions()
         outgoingVideoOptions.setOutgoingVideoStreams(listOf(currentVideoStream))
+
+        val videoStreamFormat = VideoStreamFormat()
+        videoStreamFormat.resolution = VideoStreamResolution.P360
+        videoStreamFormat.pixelFormat = VideoStreamPixelFormat.RGBA
+        videoStreamFormat.framesPerSecond = 30F
+        videoStreamFormat.stride1 = 640 * 4
+        val videoStreamFormats = listOf(videoStreamFormat)
+        val rawOutgoingVideoOptions = RawOutgoingVideoStreamOptions()
+        rawOutgoingVideoOptions.formats = videoStreamFormats
+        val rawOutgoingVideoStream = VirtualOutgoingVideoStream(rawOutgoingVideoOptions)
+
         acceptCallOptions.outgoingVideoOptions = outgoingVideoOptions
         ringbackSound?.pause()
         try {
