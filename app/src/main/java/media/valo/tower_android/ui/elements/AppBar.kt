@@ -63,6 +63,7 @@ import media.valo.tower_android.ui.routes.closed.ClosedScreen
 import media.valo.tower_android.ui.routes.contact.ContactScreen
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
+import media.valo.tower_android.ui.routes.outdated.OutdatedAppVersionScreen
 import media.valo.tower_android.ui.routes.settings.SettingsScreen
 import media.valo.tower_android.ui.theme.TowerTheme
 
@@ -122,6 +123,7 @@ fun AppBar(
                         && currentDestination?.hasRoute<LoadingScreen>() != true
                         && currentDestination?.hasRoute<CallScreen>() != true
                         && currentDestination?.hasRoute<ClosedScreen>() != true
+                        && currentDestination?.hasRoute<OutdatedAppVersionScreen>() != true
                     ) {
                         if (currentDestination?.hasRoute<SettingsScreen>() != true
                             && currentDestination?.hasRoute<AboutScreen>() != true

@@ -12,6 +12,7 @@ package media.valo.tower_android.ui
 //
 //  Created by:
 //      * Jean-Pierre Höhmann
+//      * mvlexs
 //
 
 import android.Manifest
@@ -46,6 +47,7 @@ import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
 import media.valo.tower_android.ui.routes.closed.ClosedScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
+import media.valo.tower_android.ui.routes.outdated.OutdatedAppVersionScreen
 import media.valo.tower_android.ui.routes.profile.ProfileScreen
 import media.valo.tower_android.ui.routes.settings.SettingsScreen
 
@@ -152,6 +154,11 @@ fun TowerApp(navController: NavHostController) {
                         modifier = modifier,
                         navController = navController,
                         currentSchedule = closedScreen.currentSchedule
+                    )
+                }
+                composable<OutdatedAppVersionScreen> {
+                    OutdatedAppVersionScreen(
+                        modifier = modifier
                     )
                 }
             }

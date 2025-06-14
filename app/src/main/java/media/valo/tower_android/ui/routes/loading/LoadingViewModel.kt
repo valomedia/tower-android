@@ -17,6 +17,7 @@ package media.valo.tower_android.ui.routes.loading
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import media.valo.tower_android.BuildConfig
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
@@ -38,7 +39,47 @@ class LoadingViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
-    lateinit var indexResponse: IndexResponse
+    private var indexResponse: IndexResponse? = null
+
+    /**
+     * Whether the assistants are currently taking calls.
+     *
+     * This will be null until connect() is successfully called.
+     */
+    val isServiceOpen: Boolean?
+        get() = when (indexResponse?.openingHours?.status) {
+            null -> null
+            Status.OPEN -> true
+            else -> false
+        }
+
+    /**
+     * The current opening hours of the service.
+     *
+     * This will be null until connect() is successfully called.
+     */
+    val schedule: String?
+        get() = indexResponse?.openingHours?.description
+
+    /**
+     * The major version of the backend.
+     *
+     * This will be null until connect() is successfully called and -1 if the version couldn't be parsed.
+     */
+    val backendMajorVersion: Int?
+        get() = if(indexResponse?.apiVersion != null) {
+            try {
+                indexResponse?.apiVersion?.substringBefore(".")?.toInt()
+            } catch (_: Error) {
+                -1
+            }
+        } else { null }
+
+    /**
+     * The major version of the app.
+     */
+    val appMajorVersion
+        get() = BuildConfig.VERSION_NAME.substringBefore(".").toInt()
 
     /**
      * Check whether the user has provided all required profile information.
@@ -61,6 +102,4 @@ class LoadingViewModel @Inject constructor(
             return false
         }
     }
-
 }
-

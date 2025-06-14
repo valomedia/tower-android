@@ -12,6 +12,7 @@ package media.valo.tower_android.ui.routes.loading
 //
 //  Created by:
 //      * Jean-Pierre Höhmann
+//      * mvlexs
 //
 
 import androidx.compose.foundation.layout.Arrangement
@@ -35,12 +36,12 @@ import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataS
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.DummyTowerDataSource
 import media.valo.tower_android.data.remote.tower.TowerRepository
-import media.valo.tower_android.model.Status
 import media.valo.tower_android.ui.elements.AppBarPreview
 import media.valo.tower_android.ui.elements.Logo
 import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.ui.routes.closed.ClosedScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
+import media.valo.tower_android.ui.routes.outdated.OutdatedAppVersionScreen
 
 /**
  * Object for the navigation destination for the loading screen.
@@ -63,14 +64,29 @@ fun LoadingScreen(
 ) {
 
     LaunchedEffect(Unit) {
-        if (viewModel.connect() && viewModel.hasProfile()) {
-            if (viewModel.indexResponse.openingHours.status == Status.OPEN) {
-                navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
-            } else {
-                navController.navigate(route = ClosedScreen(currentSchedule = viewModel.indexResponse.openingHours.description))
-            }
-        } else {
-        navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
+        val isConnected = viewModel.connect()
+        val isServiceOpen = viewModel.isServiceOpen
+        val schedule = viewModel.schedule
+        val backendMajorVersion = viewModel.backendMajorVersion
+        val appMajorVersion = viewModel.appMajorVersion
+
+        /**
+         * Wether the app needs to be updated.
+         *
+         * The app needs to be updated if:
+         * - the backend major version is greater than the app major version
+         * - the backend major could not be parsed
+         */
+        val isAppUpdateNeeded = if (backendMajorVersion != null) {
+            backendMajorVersion > appMajorVersion || backendMajorVersion == -1
+        } else {null}
+
+
+        when {
+            isAppUpdateNeeded == true -> navController.navigate(route = OutdatedAppVersionScreen) { popUpTo(navController.graph.id) }
+            !isConnected || !viewModel.hasProfile() || isServiceOpen == null || schedule == null || isAppUpdateNeeded == null -> navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
+            !isServiceOpen -> navController.navigate(route = ClosedScreen(currentSchedule = schedule)) { popUpTo(navController.graph.id) }
+            else -> navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
         }
     }
 
