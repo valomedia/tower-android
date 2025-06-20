@@ -1,8 +1,13 @@
+/******************************************************************************
+ * Copyright (c) 2025.                                                        *
+ * valo.media GmbH                                                            *
+ * All rights reserved.                                                       *
+ ******************************************************************************/
 
 package media.valo.tower_android.utils
 
 //
-//  PreferencesDataStoreModule.kt
+//  CameraModule.kt
 //  Tower_Android
 //
 //  Created by:
@@ -19,6 +24,7 @@ import android.os.Handler
 import android.os.HandlerThread
 import androidx.annotation.RequiresPermission
 import com.azure.android.communication.calling.VirtualOutgoingVideoStream
+
 class CameraModule(
     context: Context,
     val videoStream: VirtualOutgoingVideoStream?,

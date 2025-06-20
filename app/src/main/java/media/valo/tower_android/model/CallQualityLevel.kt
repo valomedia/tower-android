@@ -1,4 +1,18 @@
+/******************************************************************************
+ * Copyright (c) 2025.                                                        *
+ * valo.media GmbH                                                            *
+ * All rights reserved.                                                       *
+ ******************************************************************************/
+
 package media.valo.tower_android.model
+
+//
+//  CallQualityLevel.kt
+//  Tower_Android
+//
+//  Created by:
+//      * mvlexs
+//
 
 import com.azure.android.communication.calling.VideoStreamFormat
 import com.azure.android.communication.calling.VideoStreamPixelFormat

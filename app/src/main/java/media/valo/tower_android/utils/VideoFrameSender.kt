@@ -1,4 +1,18 @@
+/******************************************************************************
+ * Copyright (c) 2025.                                                        *
+ * valo.media GmbH                                                            *
+ * All rights reserved.                                                       *
+ ******************************************************************************/
+
 package media.valo.tower_android.utils
+
+//
+//  VideoFrameSender.kt
+//  Tower_Android
+//
+//  Created by:
+//      * mvlexs
+//
 
 import android.graphics.Bitmap
 import android.media.Image
