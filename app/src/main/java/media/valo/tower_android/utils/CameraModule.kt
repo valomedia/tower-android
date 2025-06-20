@@ -60,7 +60,7 @@ class CameraModule(
                 imageReader?.setOnImageAvailableListener({ reader ->
                     val image = reader.acquireLatestImage()
                     if (image != null) {
-                        videoFrameSender?.enqueueImage(image)
+                        videoFrameSender?.passFrame(image)
                     }
                 }, backgroundHandler)
                 onCameraReady(camera)
@@ -97,7 +97,7 @@ class CameraModule(
     }
 
     private fun startBackgroundThread() {
-        backgroundThread = HandlerThread("CameraBackground").also { it.start() }
+        backgroundThread = HandlerThread("CameraThread").also { it.start() }
         backgroundHandler = Handler(backgroundThread!!.looper)
     }
 
