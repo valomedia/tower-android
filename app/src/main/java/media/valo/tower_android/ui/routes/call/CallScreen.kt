@@ -272,16 +272,7 @@ private fun CameraFeed(
     activity: Activity?,
     modifier: Modifier = Modifier
 ) {
-    AndroidView(
-        factory = { context -> FrameLayout(context) },
-        update = { view ->
-            viewModel.sessionState
-            if (activity != null && !viewModel.isSwitchingCamera) {
-                viewModel.showPreview(activity, view)
-            }
-        },
-        modifier = modifier
-    )
+    Text("Todo")
 }
 
 /**

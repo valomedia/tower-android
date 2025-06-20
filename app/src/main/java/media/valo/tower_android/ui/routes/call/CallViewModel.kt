@@ -7,7 +7,6 @@
 package media.valo.tower_android.ui.routes.call
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
 import android.media.AudioAttributes
@@ -17,7 +16,7 @@ import android.media.MediaPlayer
 import android.os.Build
 import android.os.Looper
 import android.util.Log
-import android.view.ViewGroup
+import androidx.annotation.RequiresPermission
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -29,7 +28,6 @@ import com.azure.android.communication.calling.CallAgent
 import com.azure.android.communication.calling.CallClient
 import com.azure.android.communication.calling.CallState
 import com.azure.android.communication.calling.CameraFacing
-import com.azure.android.communication.calling.CreateViewOptions
 import com.azure.android.communication.calling.DataChannelCallFeature
 import com.azure.android.communication.calling.DataChannelPriority
 import com.azure.android.communication.calling.DataChannelReceiver
@@ -40,16 +38,13 @@ import com.azure.android.communication.calling.DataChannelSenderOptions
 import com.azure.android.communication.calling.DeviceManager
 import com.azure.android.communication.calling.Features
 import com.azure.android.communication.calling.IncomingCall
-import com.azure.android.communication.calling.LocalVideoStream
 import com.azure.android.communication.calling.OutgoingVideoOptions
 import com.azure.android.communication.calling.PropertyChangedListener
 import com.azure.android.communication.calling.RawOutgoingVideoStreamOptions
-import com.azure.android.communication.calling.ScalingMode
 import com.azure.android.communication.calling.VideoDeviceInfo
 import com.azure.android.communication.calling.VideoStreamFormat
-import com.azure.android.communication.calling.VideoStreamPixelFormat
 import com.azure.android.communication.calling.VideoStreamRenderer
-import com.azure.android.communication.calling.VideoStreamResolution
+import com.azure.android.communication.calling.VideoStreamState
 import com.azure.android.communication.calling.VirtualOutgoingVideoStream
 import com.azure.android.communication.common.CommunicationTokenCredential
 import com.google.android.gms.common.api.ResolvableApiException
@@ -71,10 +66,13 @@ import media.valo.tower_android.R
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
+import media.valo.tower_android.model.CallQualityLevel
 import media.valo.tower_android.model.DataMessage
 import media.valo.tower_android.model.ErrorMessage
 import media.valo.tower_android.model.Message
 import media.valo.tower_android.utils.AppScope
+import media.valo.tower_android.utils.CameraModule
+import media.valo.tower_android.utils.VideoFrameSender
 import javax.inject.Inject
 
 //
@@ -207,10 +205,6 @@ class CallViewModel @Inject constructor(
 
     private var call: Call? = null
 
-    private var currentCamera: VideoDeviceInfo? = null
-
-    private var currentVideoStream: LocalVideoStream? = null
-
     private var previewRenderer: VideoStreamRenderer? = null
 
     private var onCallError: () -> Unit = {}
@@ -231,6 +225,18 @@ class CallViewModel @Inject constructor(
 
     private var cameraFacingUser = false
 
+    private var videoFrameSender: VideoFrameSender? = null
+
+    private var cameraModule: CameraModule? = null
+
+    private var videoStreamFormat: VideoStreamFormat? = null
+
+    private var videoStreamFormats: List<VideoStreamFormat>? = null
+
+    private var rawOutgoingVideoOptions: RawOutgoingVideoStreamOptions? = null
+
+    private var rawOutgoingVideoStream: VirtualOutgoingVideoStream? = null
+
     /**
      * Start the assistance session.
      *
@@ -245,6 +251,13 @@ class CallViewModel @Inject constructor(
 
         configureAudio()
         ringbackSound?.start()
+
+        videoStreamFormat = CallQualityLevel.HIGH.videoStreamFormat //TODO("Switch depending on Call Quality Level")
+
+        videoStreamFormats = videoStreamFormat?.let { listOf(it) }
+
+        rawOutgoingVideoOptions = RawOutgoingVideoStreamOptions()
+        rawOutgoingVideoOptions?.formats = videoStreamFormats
 
         appScope.launch {
             try {
@@ -282,36 +295,6 @@ class CallViewModel @Inject constructor(
 
             disposeSession()
             ringbackSound?.pause()
-        }
-    }
-
-    /**
-     * Switch cameras.
-     *
-     * This will switch to the next available camera. If the user isn't on a call, or the camera
-     * isn't active, or no other camera is available, this will do nothing.
-     */
-    fun switchSource() {
-        currentVideoStream?.switchSource(getNextAvailableCamera())
-    }
-
-    /**
-     * Start rendering the preview for the video stream.
-     *
-     * @param activity  The current Activity, used to access the ui thread.
-     * @param container The ViewGroup to render the preview into.
-     */
-    fun showPreview(activity: Activity, container: ViewGroup) {
-        if (currentVideoStream == null) { return }
-        previewRenderer?.dispose()
-        val previewRenderer = VideoStreamRenderer(currentVideoStream, activity)
-        this.previewRenderer = previewRenderer
-
-        val preview = previewRenderer.createView(CreateViewOptions(ScalingMode.FIT))
-        preview?.tag = 0
-
-        activity.runOnUiThread {
-            container.addView(preview)
         }
     }
 
@@ -428,25 +411,41 @@ class CallViewModel @Inject constructor(
         return callAgent
     }
 
+    @RequiresPermission(Manifest.permission.CAMERA)
     private fun handleIncomingCall(incomingCall: IncomingCall) {
+        rawOutgoingVideoStream = VirtualOutgoingVideoStream(rawOutgoingVideoOptions)
+
+        // Set up the VideoFrameSender, but do not start it yet
+        videoFrameSender = VideoFrameSender(rawOutgoingVideoStream)
+
+        // Listen for state changes on the outgoing video stream
+        rawOutgoingVideoStream?.addOnStateChangedListener { args ->
+            val callVideoStream = args.stream
+            when (callVideoStream.state) {
+                VideoStreamState.STARTED -> {
+                    videoFrameSender?.start()
+                }
+                VideoStreamState.STOPPED -> {
+                    videoFrameSender?.stop()
+                }
+                else -> { /* no-op */ }
+            }
+        }
+
+        // Set up the camera module to enqueue images to the sender
+        cameraModule = CameraModule(
+            context = context,
+            videoFrameSender = videoFrameSender,
+            videoStream = rawOutgoingVideoStream
+        )
+
+        cameraModule?.startCamera { /* no-op, handled by state listener */ }
+
         sessionState = AssistanceSessionState.CONNECTING
-        currentCamera = getCameraFacing(CameraFacing.BACK)
         cameraFacingUser = false
-        currentVideoStream = LocalVideoStream(currentCamera, context)
         val acceptCallOptions = AcceptCallOptions()
         val outgoingVideoOptions = OutgoingVideoOptions()
-        outgoingVideoOptions.setOutgoingVideoStreams(listOf(currentVideoStream))
-
-        val videoStreamFormat = VideoStreamFormat()
-        videoStreamFormat.resolution = VideoStreamResolution.P360
-        videoStreamFormat.pixelFormat = VideoStreamPixelFormat.RGBA
-        videoStreamFormat.framesPerSecond = 30F
-        videoStreamFormat.stride1 = 640 * 4
-        val videoStreamFormats = listOf(videoStreamFormat)
-        val rawOutgoingVideoOptions = RawOutgoingVideoStreamOptions()
-        rawOutgoingVideoOptions.formats = videoStreamFormats
-        val rawOutgoingVideoStream = VirtualOutgoingVideoStream(rawOutgoingVideoOptions)
-
+        outgoingVideoOptions.setOutgoingVideoStreams(listOf(rawOutgoingVideoStream))
         acceptCallOptions.outgoingVideoOptions = outgoingVideoOptions
         ringbackSound?.pause()
         try {
@@ -498,6 +497,7 @@ class CallViewModel @Inject constructor(
     private fun disposeSession() {
         callClient?.dispose()
         callAgent?.dispose()
+        videoFrameSender?.stop()
         previewRenderer?.dispose()
 
         callClient = null
@@ -505,29 +505,29 @@ class CallViewModel @Inject constructor(
         deviceManager = null
         audioManager = null
         call = null
-        currentCamera = null
-        currentVideoStream = null
         previewRenderer = null
         dataChannelCallFeature = null
         dataChannelSender = null
         dataChannelReceiver = null
+        cameraModule = null
+        videoFrameSender = null
 
         sessionState = AssistanceSessionState.DISCONNECTED
         isRequestingLocationUpdates = false
     }
 
-    private fun getNextAvailableCamera(): VideoDeviceInfo? {
-        val availableCameras = deviceManager?.cameras ?: emptyList<VideoDeviceInfo>()
-        if (availableCameras.isEmpty()) {
-            return null
-        }
-        for (i in availableCameras.indices) {
-            if (currentCamera?.id == availableCameras[i].id) {
-                return availableCameras[(i + 1) % availableCameras.size]
-            }
-        }
-        return availableCameras[0]
-    }
+//    private fun getNextAvailableCamera(): VideoDeviceInfo? {
+//        val availableCameras = deviceManager?.cameras ?: emptyList<VideoDeviceInfo>()
+//        if (availableCameras.isEmpty()) {
+//            return null
+//        }
+//        for (i in availableCameras.indices) {
+//            if (currentCamera?.id == availableCameras[i].id) {
+//                return availableCameras[(i + 1) % availableCameras.size]
+//            }
+//        }
+//        return availableCameras[0]
+//    }
 
     private fun getCameraFacing(@Suppress("SameParameterValue") cameraFacing: CameraFacing): VideoDeviceInfo? {
         return deviceManager?.cameras?.first { it.cameraFacing == cameraFacing }
@@ -603,12 +603,12 @@ class CallViewModel @Inject constructor(
 
         if (!cameraFacingUser){
             cameraFacingUser = true
-            currentCamera = getCameraFacing(CameraFacing.FRONT)
+            TODO()
         } else {
             cameraFacingUser = false
-            currentCamera = getCameraFacing(CameraFacing.BACK)
+            TODO()
         }
-        currentVideoStream?.switchSource(currentCamera)
+        TODO()
         isSwitchingCamera = false
         sendMessage(DataMessage.SwitchCameraResponse())
     }
