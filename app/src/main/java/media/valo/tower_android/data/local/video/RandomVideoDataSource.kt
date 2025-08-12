@@ -16,11 +16,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import media.valo.tower_android.utils.AppScope
-import media.valo.tower_android.utils.planeSizes
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
+import media.valo.tower_android.utils.allocateBuffers
 import javax.inject.Inject
-import kotlin.math.ceil
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
 
@@ -46,11 +43,8 @@ class RandomVideoDataSource @Inject constructor(
             while (true) {
                 val format = format
                 if (format != null) {
-                    val planes = format.pixelFormat.planeSizes.map { planeSize ->
-                        val capacity = ceil(format.width * format.height * planeSize).toInt()
-                        val buffer = ByteBuffer.allocateDirect(capacity)
-                        buffer.order(ByteOrder.nativeOrder())
-                        buffer.put(Random.nextBytes(capacity))
+                    val planes = format.allocateBuffers().map { buffer ->
+                        buffer.put(Random.nextBytes(buffer.capacity()))
                         buffer.rewind()
                         buffer
                     }
