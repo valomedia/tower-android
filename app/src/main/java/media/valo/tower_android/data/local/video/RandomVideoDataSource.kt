@@ -43,14 +43,14 @@ class RandomVideoDataSource @Inject constructor(
             while (true) {
                 val format = format
                 if (format != null) {
-                    val planes = format.allocateBuffers().map { buffer ->
+                    val buffers = format.allocateBuffers().map { buffer ->
                         buffer.put(Random.nextBytes(buffer.capacity()))
                         buffer.rewind()
                         buffer
                     }
 
                     val videoFrame = RawVideoFrameBuffer()
-                    videoFrame.buffers = planes
+                    videoFrame.buffers = buffers
                     videoFrame.streamFormat = format
                     videoFrame.use(callback)
 

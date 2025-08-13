@@ -141,12 +141,12 @@ class CameraVideoDataSource @Inject constructor(
             { reader ->
                 val image = reader.acquireLatestImage()
 
-                val planes = format.allocateBuffers()
-                planes[0].put(image.planes[0].buffer)
+                val buffers = format.allocateBuffers()
+                buffers[0].put(image.planes[0].buffer)
 
                 val videoFrame = RawVideoFrameBuffer()
                 videoFrame.streamFormat = format
-                videoFrame.buffers = planes
+                videoFrame.buffers = buffers
                 videoFrame.use(callback)
 
                 image.close()
