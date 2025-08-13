@@ -21,6 +21,7 @@ import com.azure.android.communication.calling.RawVideoFrameBuffer
 import com.azure.android.communication.calling.VideoStreamFormat
 import com.azure.android.communication.calling.VideoStreamPixelFormat
 import media.valo.tower_android.utils.allocateBuffers
+import media.valo.tower_android.utils.isEven
 import javax.inject.Inject
 
 //
@@ -135,14 +136,29 @@ class CameraVideoDataSource @Inject constructor(
         format: VideoStreamFormat
     ) {
         check(format.pixelFormat == VideoStreamPixelFormat.NV12) { "Pixel format must be NV12." }
+        check(format.width.isEven && format.height.isEven) { "Width and height must be divisible by 2." }
 
         val imageReader = ImageReader.newInstance(format.width, format.height, ImageFormat.YUV_420_888, 2)
         imageReader.setOnImageAvailableListener(
             { reader ->
                 val image = reader.acquireLatestImage()
+                val yPlane = image.planes[0]
+                val uPlane = image.planes[1]
+                val vPlane = image.planes[2]
+
+                check(yPlane.rowStride == format.width && uPlane.rowStride == format.width) {
+                    "Camera not supported."
+                }
 
                 val buffers = format.allocateBuffers()
-                buffers[0].put(image.planes[0].buffer)
+                buffers[0].put(yPlane.buffer)
+
+                val uvResolution = buffers[1].capacity() / 2
+                for (i in 0..<uvResolution) {
+                    buffers[1].put(uPlane.buffer.get(i * uPlane.pixelStride))
+                    buffers[1].put(vPlane.buffer.get(i * vPlane.pixelStride))
+                }
+
                 buffers.map { it.rewind() }
 
                 val videoFrame = RawVideoFrameBuffer()
