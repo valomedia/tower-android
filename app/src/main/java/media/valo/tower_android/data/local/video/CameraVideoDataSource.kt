@@ -143,6 +143,7 @@ class CameraVideoDataSource @Inject constructor(
 
                 val buffers = format.allocateBuffers()
                 buffers[0].put(image.planes[0].buffer)
+                buffers.map { it.rewind() }
 
                 val videoFrame = RawVideoFrameBuffer()
                 videoFrame.streamFormat = format
