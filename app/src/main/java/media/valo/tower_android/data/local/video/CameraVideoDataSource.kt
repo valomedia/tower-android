@@ -142,6 +142,10 @@ class CameraVideoDataSource @Inject constructor(
         imageReader.setOnImageAvailableListener(
             { reader ->
                 val image = reader.acquireLatestImage()
+                if (image == null) {
+                    return@setOnImageAvailableListener
+                }
+
                 val yPlane = image.planes[0]
                 val uPlane = image.planes[1]
                 val vPlane = image.planes[2]
