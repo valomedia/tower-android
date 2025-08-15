@@ -32,7 +32,7 @@ interface VideoDataSource {
      */
     var format: VideoStreamFormat?
 
-    val orientation: Int
+    val shouldMirrorPreview: Boolean
 
     /**
      * Start producing video frames.
@@ -48,5 +48,9 @@ interface VideoDataSource {
      * `start()` may be called again.
      */
     fun stop()
+
+    fun switchSource()
+
+    fun rotationFor(orientation: Int): Int
 
 }

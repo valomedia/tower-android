@@ -32,6 +32,8 @@ import javax.inject.Inject
 //      * Jean-Pierre Höhmann
 //
 
+private const val FULL_ROTATION = 360
+
 class CameraVideoDataSource @Inject constructor(
     private val cameraManager: CameraManager
 ): VideoDataSource {
@@ -42,9 +44,16 @@ class CameraVideoDataSource @Inject constructor(
             updateCaptureSession()
         }
 
-    override var orientation: Int = 0
-        private set
+    override val shouldMirrorPreview: Boolean by this::isCameraFacingUser
 
+    private val lensFacing: Int get() = if (isCameraFacingUser) {
+        CameraCharacteristics.LENS_FACING_FRONT
+    } else {
+        CameraCharacteristics.LENS_FACING_BACK
+    }
+
+    private var isCameraFacingUser = false
+    private var sensorOrientation: Int = 0
     private var cameraDevice: CameraDevice? = null
     private var imageReader: ImageReader? = null
     private var cameraCaptureSession: CameraCaptureSession? = null
@@ -58,20 +67,6 @@ class CameraVideoDataSource @Inject constructor(
     override fun start(callback: (RawVideoFrameBuffer) -> Unit) {
         this.callback = callback
 
-        val cameraId = cameraManager
-            .cameraIdList
-            .firstOrNull { id ->
-                (cameraManager.getCameraCharacteristics(id).get(CameraCharacteristics.LENS_FACING)
-                        == CameraCharacteristics.LENS_FACING_FRONT)
-            }
-            ?: cameraManager.cameraIdList.firstOrNull()
-
-        // No cameras available, so don't produce video
-        if (cameraId == null) { return }
-
-        val characteristics = cameraManager.getCameraCharacteristics(cameraId)
-        orientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 0
-
         val cameraThread = HandlerThread("CameraThread").apply { start() }
         val cameraHandler = Handler(cameraThread.looper)
         this.cameraThread = cameraThread
@@ -81,6 +76,52 @@ class CameraVideoDataSource @Inject constructor(
         val imageReaderHandler = Handler(imageReaderThread.looper)
         this.imageReaderThread = imageReaderThread
         this.imageReaderHandler = imageReaderHandler
+
+        openCamera()
+    }
+
+    override fun stop() {
+        stopCaptureSession()
+
+        cameraDevice?.close()
+        cameraThread?.quitSafely()
+        imageReaderThread?.quitSafely()
+
+        isCameraFacingUser = false
+        cameraDevice = null
+        sensorOrientation = 0
+        cameraThread = null
+        cameraHandler = null
+        imageReaderThread = null
+        imageReaderHandler = null
+        callback = null
+    }
+
+    @RequiresPermission(Manifest.permission.CAMERA)
+    override fun switchSource() {
+        closeCamera()
+        isCameraFacingUser = !isCameraFacingUser
+        openCamera()
+    }
+
+    override fun rotationFor(orientation: Int): Int {
+        return (sensorOrientation + orientation * if (isCameraFacingUser) 1 else -1) % FULL_ROTATION
+    }
+
+    @RequiresPermission(Manifest.permission.CAMERA)
+    private fun openCamera() {
+        val cameraId = cameraManager
+            .cameraIdList
+            .firstOrNull { id ->
+                cameraManager.getCameraCharacteristics(id).get(CameraCharacteristics.LENS_FACING) == lensFacing
+            }
+            ?: cameraManager.cameraIdList.firstOrNull()
+
+        // No cameras available, so don't produce video
+        if (cameraId == null) { return }
+
+        val characteristics = cameraManager.getCameraCharacteristics(cameraId)
+        sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 0
 
         cameraManager.openCamera(
             cameraId,
@@ -93,11 +134,10 @@ class CameraVideoDataSource @Inject constructor(
 
                 @RequiresPermission(Manifest.permission.CAMERA)
                 override fun onDisconnected(camera: CameraDevice) {
-                    stop()
-
                     // The camera we were using disappeared, but of any other camera is still available, we can start
                     // again using that camera. If there are no cameras available anymore, this is a no-op.
-                    start(callback)
+                    closeCamera()
+                    openCamera()
                 }
 
                 override fun onError(camera: CameraDevice, error: Int) {
@@ -110,18 +150,9 @@ class CameraVideoDataSource @Inject constructor(
 
     }
 
-    override fun stop() {
+    private fun closeCamera() {
         stopCaptureSession()
-
         cameraDevice?.close()
-        cameraThread?.quitSafely()
-        imageReaderThread?.quitSafely()
-
-        cameraDevice = null
-        cameraThread = null
-        cameraHandler = null
-        imageReaderThread = null
-        imageReaderHandler = null
     }
 
     private fun updateCaptureSession() {

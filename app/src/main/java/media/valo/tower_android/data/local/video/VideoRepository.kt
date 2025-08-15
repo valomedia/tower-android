@@ -8,8 +8,6 @@ package media.valo.tower_android.data.local.video
 
 import com.azure.android.communication.calling.RawVideoFrameBuffer
 import com.azure.android.communication.calling.VideoStreamFormat
-import java9.util.concurrent.CompletableFuture
-import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 
 //
@@ -31,7 +29,7 @@ class VideoRepository @Inject constructor(
 
     var format: VideoStreamFormat? by videoDataSource::format
 
-    val orientation: Int by videoDataSource::orientation
+    val shouldMirrorPreview: Boolean by videoDataSource::shouldMirrorPreview
 
     fun start(callback: (RawVideoFrameBuffer) -> CompletableFuture<Void>) = videoDataSource.start {
         // If the format changes concurrently with the creation of a frame, the VideoDataSource might produce a frame
@@ -42,4 +40,7 @@ class VideoRepository @Inject constructor(
 
     fun stop() = videoDataSource.stop()
 
+    fun switchSource() = videoDataSource.switchSource()
+
+    fun rotationFor(orientation: Int): Int = videoDataSource.rotationFor(orientation)
 }

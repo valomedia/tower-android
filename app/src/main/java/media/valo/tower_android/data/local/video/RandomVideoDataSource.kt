@@ -34,7 +34,7 @@ class RandomVideoDataSource @Inject constructor(
 
     override var format: VideoStreamFormat? = null
 
-    override val orientation = 0
+    override val shouldMirrorPreview = false
 
     private var videoFrameIterator: Job? = null
 
@@ -68,5 +68,9 @@ class RandomVideoDataSource @Inject constructor(
         runBlocking { videoFrameIterator?.cancelAndJoin() }
         videoFrameIterator = null
     }
+
+    override fun switchSource() = Unit
+
+    override fun rotationFor(orientation: Int): Int = 0
 
 }
