@@ -19,6 +19,7 @@ import androidx.annotation.RequiresPermission
 import com.azure.android.communication.calling.RawVideoFrameBuffer
 import com.azure.android.communication.calling.VideoStreamFormat
 import com.azure.android.communication.calling.VideoStreamPixelFormat
+import io.ktor.util.moveToByteArray
 import media.valo.tower_android.utils.allocateBuffers
 import media.valo.tower_android.utils.isEven
 import javax.inject.Inject
@@ -151,23 +152,22 @@ class CameraVideoDataSource @Inject constructor(
                     return@setOnImageAvailableListener
                 }
 
-                val yPlane = image.planes[0]
-                val uPlane = image.planes[1]
-                val vPlane = image.planes[2]
-
-                check(yPlane.rowStride == format.width && uPlane.rowStride == format.width) {
+                check(image.planes[1].rowStride == format.width && image.planes[2].rowStride == format.width) {
                     "Camera not supported."
                 }
 
                 val buffers = format.allocateBuffers()
-                buffers[0].put(yPlane.buffer)
-
+                val uPlane = image.planes[1].buffer.moveToByteArray()
+                val vPlane = image.planes[2].buffer.moveToByteArray()
+                val uvPlane = ByteArray(buffers[1].capacity())
                 val uvResolution = buffers[1].capacity() / 2
+                val uvPixelStride = image.planes[1].pixelStride
                 for (i in 0..<uvResolution) {
-                    buffers[1].put(uPlane.buffer.get(i * uPlane.pixelStride))
-                    buffers[1].put(vPlane.buffer.get(i * vPlane.pixelStride))
+                    uvPlane[2 * i] = uPlane[i * uvPixelStride]
+                    uvPlane[2 * i + 1] = vPlane[i * uvPixelStride]
                 }
-
+                buffers[0].put(image.planes[0].buffer)
+                buffers[1].put(uvPlane)
                 buffers.map { it.rewind() }
 
                 val videoFrame = RawVideoFrameBuffer()
