@@ -32,6 +32,8 @@ interface VideoDataSource {
      */
     var format: VideoStreamFormat?
 
+    val orientation: Int
+
     /**
      * Start producing video frames.
      *

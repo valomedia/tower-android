@@ -41,6 +41,9 @@ class CameraVideoDataSource @Inject constructor(
             updateCaptureSession()
         }
 
+    override var orientation: Int = 0
+        private set
+
     private var cameraDevice: CameraDevice? = null
     private var imageReader: ImageReader? = null
     private var cameraCaptureSession: CameraCaptureSession? = null
@@ -64,6 +67,9 @@ class CameraVideoDataSource @Inject constructor(
 
         // No cameras available, so don't produce video
         if (cameraId == null) { return }
+
+        val characteristics = cameraManager.getCameraCharacteristics(cameraId)
+        orientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 0
 
         val cameraThread = HandlerThread("CameraThread").apply { start() }
         val cameraHandler = Handler(cameraThread.looper)

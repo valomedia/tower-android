@@ -34,6 +34,8 @@ class RandomVideoDataSource @Inject constructor(
 
     override var format: VideoStreamFormat? = null
 
+    override val orientation = 0
+
     private var videoFrameIterator: Job? = null
 
     override fun start(callback: (RawVideoFrameBuffer) -> Unit) {

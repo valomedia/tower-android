@@ -31,6 +31,8 @@ class VideoRepository @Inject constructor(
 
     var format: VideoStreamFormat? by videoDataSource::format
 
+    val orientation: Int by videoDataSource::orientation
+
     fun start(callback: (RawVideoFrameBuffer) -> CompletableFuture<Void>) = videoDataSource.start {
         // If the format changes concurrently with the creation of a frame, the VideoDataSource might produce a frame
         // that doesn't match the expected format. In this case sending the frame will fail, which is expected. This
