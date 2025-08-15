@@ -6,7 +6,7 @@
 
 package media.valo.tower_android.data.local.video
 
-import com.azure.android.communication.calling.RawVideoFrame
+import com.azure.android.communication.calling.RawVideoFrameBuffer
 import com.azure.android.communication.calling.VideoStreamFormat
 import java9.util.concurrent.CompletableFuture
 import java.util.concurrent.ExecutionException
@@ -31,7 +31,7 @@ class VideoRepository @Inject constructor(
 
     var format: VideoStreamFormat? by videoDataSource::format
 
-    fun start(callback: (RawVideoFrame) -> CompletableFuture<Void>) = videoDataSource.start {
+    fun start(callback: (RawVideoFrameBuffer) -> CompletableFuture<Void>) = videoDataSource.start {
         // If the format changes concurrently with the creation of a frame, the VideoDataSource might produce a frame
         // that doesn't match the expected format. In this case sending the frame will fail, which is expected. This
         // isn't a problem, since the next frame will likely send just fine, so we just ignore it here.

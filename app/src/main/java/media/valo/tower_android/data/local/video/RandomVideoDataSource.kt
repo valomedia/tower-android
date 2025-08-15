@@ -6,7 +6,6 @@
 
 package media.valo.tower_android.data.local.video
 
-import com.azure.android.communication.calling.RawVideoFrame
 import com.azure.android.communication.calling.RawVideoFrameBuffer
 import com.azure.android.communication.calling.VideoStreamFormat
 import kotlinx.coroutines.CoroutineScope
@@ -37,7 +36,7 @@ class RandomVideoDataSource @Inject constructor(
 
     private var videoFrameIterator: Job? = null
 
-    override fun start(callback: (RawVideoFrame) -> Unit) {
+    override fun start(callback: (RawVideoFrameBuffer) -> Unit) {
         if (videoFrameIterator != null) { stop() }
         videoFrameIterator = appScope.launch {
             while (true) {

@@ -6,7 +6,7 @@
 
 package media.valo.tower_android.data.local.video
 
-import com.azure.android.communication.calling.RawVideoFrame
+import com.azure.android.communication.calling.RawVideoFrameBuffer
 import com.azure.android.communication.calling.VideoStreamFormat
 
 //
@@ -37,7 +37,7 @@ interface VideoDataSource {
      *
      * Once this is called, video data will be streamed into `videoFrameFlow`.
      */
-    fun start(callback: ((RawVideoFrame) -> Unit))
+    fun start(callback: ((RawVideoFrameBuffer) -> Unit))
 
     /**
      * Stop producing video frames.

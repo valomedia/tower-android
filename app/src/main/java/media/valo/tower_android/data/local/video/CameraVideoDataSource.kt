@@ -16,7 +16,6 @@ import android.media.ImageReader
 import android.os.Handler
 import android.os.HandlerThread
 import androidx.annotation.RequiresPermission
-import com.azure.android.communication.calling.RawVideoFrame
 import com.azure.android.communication.calling.RawVideoFrameBuffer
 import com.azure.android.communication.calling.VideoStreamFormat
 import com.azure.android.communication.calling.VideoStreamPixelFormat
@@ -49,10 +48,10 @@ class CameraVideoDataSource @Inject constructor(
     private var cameraHandler: Handler? = null
     private var imageReaderThread: HandlerThread? = null
     private var imageReaderHandler: Handler? = null
-    private var callback: ((RawVideoFrame) -> Unit)? = null
+    private var callback: ((RawVideoFrameBuffer) -> Unit)? = null
 
     @RequiresPermission(Manifest.permission.CAMERA)
-    override fun start(callback: (RawVideoFrame) -> Unit) {
+    override fun start(callback: (RawVideoFrameBuffer) -> Unit) {
         this.callback = callback
 
         val cameraId = cameraManager
@@ -131,7 +130,7 @@ class CameraVideoDataSource @Inject constructor(
     }
 
     private fun startCaptureSession(
-        callback: (RawVideoFrame) -> Unit,
+        callback: (RawVideoFrameBuffer) -> Unit,
         cameraDevice: CameraDevice,
         format: VideoStreamFormat
     ) {
