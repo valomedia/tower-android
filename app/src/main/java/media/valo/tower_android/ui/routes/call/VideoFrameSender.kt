@@ -40,7 +40,7 @@ class VideoFrameSender(
         virtualOutgoingVideoStream.addOnStateChangedListener {
             when (it.stream.state) {
                 VideoStreamState.STARTED -> start()
-                VideoStreamState.STOPPED -> stop()
+                VideoStreamState.STOPPING -> stop()
                 else -> Unit
             }
         }
@@ -53,7 +53,7 @@ class VideoFrameSender(
     }
 
     private fun stop() {
-        Log.d(TAG, "Video stream stopped")
+        Log.d(TAG, "Video stream stopping")
         videoRepository.stop()
     }
 
