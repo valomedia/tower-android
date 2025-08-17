@@ -31,12 +31,7 @@ class VideoRepository @Inject constructor(
 
     val shouldMirrorPreview: Boolean by videoDataSource::shouldMirrorPreview
 
-    fun start(callback: (RawVideoFrameBuffer) -> CompletableFuture<Void>) = videoDataSource.start {
-        // If the format changes concurrently with the creation of a frame, the VideoDataSource might produce a frame
-        // that doesn't match the expected format. In this case sending the frame will fail, which is expected. This
-        // isn't a problem, since the next frame will likely send just fine, so we just ignore it here.
-        try { callback(it).get() } catch (_: ExecutionException) {}
-    }
+    fun start(callback: (RawVideoFrameBuffer) -> Unit) = videoDataSource.start(callback)
 
     fun stop() = videoDataSource.stop()
 
