@@ -58,6 +58,8 @@ import kotlinx.serialization.Serializable
 import media.valo.tower_android.R
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
+import media.valo.tower_android.data.local.video.RandomVideoDataSource
+import media.valo.tower_android.data.local.video.VideoRepository
 import media.valo.tower_android.data.remote.tower.DummyTowerDataSource
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
@@ -276,8 +278,8 @@ private fun CameraFeed(
         factory = { context -> FrameLayout(context) },
         update = { view ->
             viewModel.sessionState
-            if (activity != null && !viewModel.isSwitchingCamera) {
-                viewModel.showPreview(activity, view)
+            if (activity != null) {
+                viewModel.enableVideoFrameSender(activity, view)
             }
         },
         modifier = modifier
@@ -315,6 +317,7 @@ private fun announceStateChange(
 @Composable
 fun CallScreenPreview() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val appScope = CoroutineScopeModule().provideCoroutineScope()
 
     AppBarPreview { innerPadding ->
         CallScreen(
@@ -326,7 +329,8 @@ fun CallScreenPreview() {
                 fusedLocationClient = LocationServices.getFusedLocationProviderClient(LocalContext.current),
                 locationServicesSettingsClient = LocationServices.getSettingsClient(LocalContext.current),
                 looper = Looper.getMainLooper(),
-                appScope = CoroutineScopeModule().provideCoroutineScope()
+                appScope = appScope,
+                videoRepository = VideoRepository(RandomVideoDataSource(appScope))
             ),
             navController = rememberNavController(),
             snackbarHostState = remember { SnackbarHostState() },
