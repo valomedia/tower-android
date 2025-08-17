@@ -6,6 +6,8 @@
 
 package media.valo.tower_android.data.local.video
 
+import android.graphics.Bitmap
+import android.util.Size
 import com.azure.android.communication.calling.RawVideoFrameBuffer
 import com.azure.android.communication.calling.VideoStreamFormat
 
@@ -34,6 +36,8 @@ interface VideoDataSource {
 
     val shouldMirrorPreview: Boolean
 
+    val photoSize: Size
+
     /**
      * Start producing video frames.
      *
@@ -50,6 +54,8 @@ interface VideoDataSource {
     fun stop()
 
     fun switchSource()
+
+    fun takePhoto(): Bitmap?
 
     fun rotationFor(orientation: Int): Int
 

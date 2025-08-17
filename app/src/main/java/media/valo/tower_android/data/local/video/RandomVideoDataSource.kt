@@ -6,16 +6,24 @@
 
 package media.valo.tower_android.data.local.video
 
+import android.graphics.Bitmap
+import android.util.Size
+import androidx.core.graphics.createBitmap
 import com.azure.android.communication.calling.RawVideoFrameBuffer
 import com.azure.android.communication.calling.VideoStreamFormat
+import com.azure.android.communication.calling.VideoStreamPixelFormat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import media.valo.tower_android.model.CallQualityLevel
 import media.valo.tower_android.utils.AppScope
 import media.valo.tower_android.utils.allocateBuffers
+import media.valo.tower_android.utils.planeSizes
+import java.nio.ByteBuffer
+import java.nio.ByteOrder
 import javax.inject.Inject
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
@@ -35,6 +43,11 @@ class RandomVideoDataSource @Inject constructor(
     override var format: VideoStreamFormat? = null
 
     override val shouldMirrorPreview = false
+
+    override val photoSize: Size = Size(
+        CallQualityLevel.VERY_HIGH.videoStreamFormat.width,
+        CallQualityLevel.VERY_HIGH.videoStreamFormat.height
+    )
 
     private var videoFrameIterator: Job? = null
 
@@ -70,6 +83,19 @@ class RandomVideoDataSource @Inject constructor(
     }
 
     override fun switchSource() = Unit
+
+    override fun takePhoto(): Bitmap? {
+        val buffer = ByteBuffer.allocateDirect(
+            photoSize.width * photoSize.height * VideoStreamPixelFormat.RGBA.planeSizes[0].toInt()
+        )
+        buffer.order(ByteOrder.nativeOrder())
+        buffer.put(Random.nextBytes(buffer.capacity()))
+
+        val bitmap = createBitmap(photoSize.width, photoSize.height)
+        bitmap.copyPixelsFromBuffer(buffer)
+
+        return bitmap
+    }
 
     override fun rotationFor(orientation: Int): Int = 0
 

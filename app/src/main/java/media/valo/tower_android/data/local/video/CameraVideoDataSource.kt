@@ -7,19 +7,26 @@
 package media.valo.tower_android.data.local.video
 
 import android.Manifest
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.ImageFormat
 import android.hardware.camera2.CameraCaptureSession
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraManager
+import android.media.Image
 import android.media.ImageReader
 import android.os.Handler
 import android.os.HandlerThread
+import android.util.Size
 import androidx.annotation.RequiresPermission
+import androidx.core.util.component1
+import androidx.core.util.component2
 import com.azure.android.communication.calling.RawVideoFrameBuffer
 import com.azure.android.communication.calling.VideoStreamFormat
 import com.azure.android.communication.calling.VideoStreamPixelFormat
 import io.ktor.util.moveToByteArray
+import media.valo.tower_android.model.CallQualityLevel
 import media.valo.tower_android.utils.allocateBuffers
 import media.valo.tower_android.utils.isEven
 import javax.inject.Inject
@@ -46,6 +53,12 @@ class CameraVideoDataSource @Inject constructor(
 
     override val shouldMirrorPreview: Boolean by this::isCameraFacingUser
 
+    override var photoSize: Size = Size(
+        CallQualityLevel.VERY_HIGH.videoStreamFormat.width,
+        CallQualityLevel.VERY_HIGH.videoStreamFormat.height
+    )
+        private set
+
     private val lensFacing: Int get() = if (isCameraFacingUser) {
         CameraCharacteristics.LENS_FACING_FRONT
     } else {
@@ -55,7 +68,9 @@ class CameraVideoDataSource @Inject constructor(
     private var isCameraFacingUser = false
     private var sensorOrientation: Int = 0
     private var cameraDevice: CameraDevice? = null
-    private var imageReader: ImageReader? = null
+    private var videoImageReader: ImageReader? = null
+    private var photoImageReader: ImageReader? = null
+    private var latestImage: Image? = null
     private var cameraCaptureSession: CameraCaptureSession? = null
     private var cameraThread: HandlerThread? = null
     private var cameraHandler: Handler? = null
@@ -104,6 +119,16 @@ class CameraVideoDataSource @Inject constructor(
         openCamera()
     }
 
+    override fun takePhoto(): Bitmap? {
+        val image = latestImage
+        if (image == null) {
+            println("No photo to take")
+            return null
+        }
+        val bytes = image.planes[0].buffer.moveToByteArray()
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+    }
+
     override fun rotationFor(orientation: Int): Int {
         return (sensorOrientation + orientation * if (isCameraFacingUser) 1 else -1) % FULL_ROTATION
     }
@@ -122,6 +147,10 @@ class CameraVideoDataSource @Inject constructor(
 
         val characteristics = cameraManager.getCameraCharacteristics(cameraId)
         sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 0
+        photoSize = characteristics
+            .get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)!!
+            .getOutputSizes(ImageFormat.JPEG)!!
+            .maxBy { (width, height) -> width * height }
 
         cameraManager.openCamera(
             cameraId,
@@ -175,8 +204,8 @@ class CameraVideoDataSource @Inject constructor(
         check(format.pixelFormat == VideoStreamPixelFormat.NV12) { "Pixel format must be NV12." }
         check(format.width.isEven && format.height.isEven) { "Width and height must be divisible by 2." }
 
-        val imageReader = ImageReader.newInstance(format.width, format.height, ImageFormat.YUV_420_888, 2)
-        imageReader.setOnImageAvailableListener(
+        val videoImageReader = ImageReader.newInstance(format.width, format.height, ImageFormat.YUV_420_888, 2)
+        videoImageReader.setOnImageAvailableListener(
             { reader ->
                 val image = reader.acquireLatestImage()
                 if (image == null) {
@@ -210,14 +239,29 @@ class CameraVideoDataSource @Inject constructor(
             },
             imageReaderHandler
         )
-        this.imageReader = imageReader
+        this.videoImageReader = videoImageReader
+
+        val photoImageReader = ImageReader.newInstance(photoSize.width, photoSize.height, ImageFormat.JPEG, 3)
+        photoImageReader.setOnImageAvailableListener(
+            { reader ->
+                val previousImage = latestImage
+                val newImage = reader.acquireLatestImage()
+                if (newImage != null) {
+                    latestImage = newImage
+                    previousImage?.close()
+                }
+            },
+            imageReaderHandler
+        )
+        this.photoImageReader = photoImageReader
 
         val captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_RECORD)
-        captureRequestBuilder.addTarget(imageReader.surface)
+        captureRequestBuilder.addTarget(videoImageReader.surface)
+        captureRequestBuilder.addTarget(photoImageReader.surface)
 
         @Suppress("DEPRECATION")
         cameraDevice.createCaptureSession(
-            listOf(imageReader.surface),
+            listOf(videoImageReader.surface, photoImageReader.surface),
             object: CameraCaptureSession.StateCallback() {
 
                 override fun onConfigured(session: CameraCaptureSession) {
@@ -236,10 +280,14 @@ class CameraVideoDataSource @Inject constructor(
     }
 
     private fun stopCaptureSession() {
-        imageReader?.setOnImageAvailableListener(null, null)
+        videoImageReader?.setOnImageAvailableListener(null, null)
+        photoImageReader?.setOnImageAvailableListener(null, null)
+        latestImage?.close()
         cameraCaptureSession?.stopRepeating()
 
-        imageReader = null
+        videoImageReader = null
+        photoImageReader = null
+        latestImage = null
         cameraCaptureSession = null
     }
 
