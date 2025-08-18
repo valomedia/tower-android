@@ -80,6 +80,7 @@ class CameraVideoDataSource @Inject constructor(
 
     @RequiresPermission(Manifest.permission.CAMERA)
     override fun start(callback: (RawVideoFrameBuffer) -> Unit) {
+        stop()
         this.callback = callback
 
         val cameraThread = HandlerThread("CameraThread").apply { start() }
