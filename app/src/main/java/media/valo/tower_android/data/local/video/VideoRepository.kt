@@ -40,4 +40,5 @@ class VideoRepository @Inject constructor(
     fun takePhoto() = videoDataSource.takePhoto()
 
     fun rotationFor(orientation: Int): Int = videoDataSource.rotationFor(orientation)
+
 }
