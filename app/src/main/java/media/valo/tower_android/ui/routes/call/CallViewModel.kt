@@ -57,7 +57,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import media.valo.tower_android.R
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
@@ -65,7 +64,6 @@ import media.valo.tower_android.data.local.video.VideoRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
 import media.valo.tower_android.model.DataMessage
-import media.valo.tower_android.model.ErrorMessage
 import media.valo.tower_android.model.Message
 import media.valo.tower_android.utils.AppScope
 import media.valo.tower_android.utils.sendMessage
@@ -190,8 +188,6 @@ class CallViewModel @Inject constructor(
      */
     var isRequestingLocationUpdates by mutableStateOf(false)
 
-    var isSwitchingCamera by mutableStateOf(false)
-
     private var callClient: CallClient? = null
 
     private var callAgent: CallAgent? = null
@@ -281,16 +277,6 @@ class CallViewModel @Inject constructor(
     }
 
     /**
-     * Switch cameras.
-     *
-     * This will switch to the next available camera. If the user isn't on a call, or the camera
-     * isn't active, or no other camera is available, this will do nothing.
-     */
-    fun switchSource() {
-        currentVideoStream?.switchSource(getNextAvailableCamera())
-    }
-
-    /**
      * Start rendering the preview for the video stream.
      *
      * @param activity  The current Activity, used to access the ui thread.
@@ -302,19 +288,6 @@ class CallViewModel @Inject constructor(
         val preview = videoFrameSender.enable(activity)
         activity.runOnUiThread { previewContainer.addView(preview) }
     }
-
-    /**
-     * Send a Message through the durable data channel.
-     *
-     * @param message The Message to send.
-     */
-    fun sendMessage(message: Message) = dataChannelSender?.sendMessage(
-        when (message) {
-            is DataMessage -> json.encodeToString(message)
-            is ErrorMessage -> json.encodeToString(message)
-        }
-            .toByteArray(Charsets.UTF_8)
-    )
 
     fun startLocationUpdates(onLocationSettingsChangeNeeded: (ResolvableApiException) -> Unit) {
         val locationCallback = object : LocationCallback() {
@@ -492,19 +465,6 @@ class CallViewModel @Inject constructor(
 
         sessionState = AssistanceSessionState.DISCONNECTED
         isRequestingLocationUpdates = false
-    }
-
-    private fun getNextAvailableCamera(): VideoDeviceInfo? {
-        val availableCameras = deviceManager?.cameras ?: emptyList<VideoDeviceInfo>()
-        if (availableCameras.isEmpty()) {
-            return null
-        }
-        for (i in availableCameras.indices) {
-            if (currentCamera?.id == availableCameras[i].id) {
-                return availableCameras[(i + 1) % availableCameras.size]
-            }
-        }
-        return availableCameras[0]
     }
 
     private fun getCameraFacing(@Suppress("SameParameterValue") cameraFacing: CameraFacing): VideoDeviceInfo? {
