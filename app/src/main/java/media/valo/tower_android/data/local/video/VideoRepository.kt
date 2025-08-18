@@ -6,6 +6,7 @@
 
 package media.valo.tower_android.data.local.video
 
+import android.util.Size
 import com.azure.android.communication.calling.RawVideoFrameBuffer
 import com.azure.android.communication.calling.VideoStreamFormat
 import javax.inject.Inject
@@ -30,6 +31,8 @@ class VideoRepository @Inject constructor(
     var format: VideoStreamFormat? by videoDataSource::format
 
     val shouldMirrorPreview: Boolean by videoDataSource::shouldMirrorPreview
+
+    val photoSize: Size by videoDataSource::photoSize
 
     fun start(callback: (RawVideoFrameBuffer) -> Unit) = videoDataSource.start(callback)
 
