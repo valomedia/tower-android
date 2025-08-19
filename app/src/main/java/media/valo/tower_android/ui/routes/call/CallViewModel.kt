@@ -277,10 +277,13 @@ class CallViewModel @Inject constructor(
     }
 
     /**
-     * Start rendering the preview for the video stream.
+     * Start sending video frames.
      *
-     * @param activity  The current Activity, used to access the ui thread.
-     * @param previewContainer The ViewGroup to render the preview into.
+     * This will start the transmission of video frames to the server, along with the necessary
+     * orientation events, and begin rendering the video preview in the given `previewContainer`.
+     *
+     * @param activity          The current Activity, used to access the ui thread.
+     * @param previewContainer  The ViewGroup to render the preview into.
      */
     fun enableVideoFrameSender(activity: Activity, previewContainer: ViewGroup) {
         val videoFrameSender = videoFrameSender

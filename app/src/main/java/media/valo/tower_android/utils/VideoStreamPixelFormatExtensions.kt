@@ -17,7 +17,7 @@ import com.azure.android.communication.calling.VideoStreamPixelFormat
 //
 
 /**
- * The number of bytes per pixel for each plane of this pixel format.
+ * The number of bytes per pixel for each buffer of this pixel format.
  */
 val VideoStreamPixelFormat.planeSizes: List<Float> get() = when (this) {
     VideoStreamPixelFormat.NV12 -> listOf(1.0f, 0.5f)

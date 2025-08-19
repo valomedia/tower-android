@@ -41,6 +41,11 @@ import javax.inject.Inject
 
 private const val FULL_ROTATION = 360
 
+/**
+ * A `VideoDataSource` fed by a camera.
+ *
+ * @param cameraManager `CameraManager` dependency.
+ */
 class CameraVideoDataSource @Inject constructor(
     private val cameraManager: CameraManager
 ): VideoDataSource {

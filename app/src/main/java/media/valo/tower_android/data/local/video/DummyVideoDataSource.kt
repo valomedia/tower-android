@@ -19,6 +19,9 @@ import com.azure.android.communication.calling.VideoStreamFormat
 //      * Jean-Pierre Höhmann
 //
 
+/**
+ * A dummy implementation of `VideoDataSource`.
+ */
 class DummyVideoDataSource : VideoDataSource {
 
     override var format: VideoStreamFormat? = null

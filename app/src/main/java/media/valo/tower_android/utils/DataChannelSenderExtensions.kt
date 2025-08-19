@@ -24,6 +24,11 @@ private const val TAG = "VideoFrameSender"
 
 val json = JsonModule().provideJson()
 
+/**
+ * Send a Message through the data channel.
+ *
+ * @param message The Message to send.
+ */
 fun DataChannelSender.sendMessage(message: Message) {
     sendMessage(
         when (message) {

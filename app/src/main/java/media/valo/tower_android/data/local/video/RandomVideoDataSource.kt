@@ -36,6 +36,11 @@ import kotlin.time.Duration.Companion.seconds
 //      * Jean-Pierre Höhmann
 //
 
+/**
+ * A `VideoDataSource` that output random noise.
+ *
+ * @param appScope `AppScope` dependency.
+ */
 class RandomVideoDataSource @Inject constructor(
     @AppScope private val appScope: CoroutineScope
 ): VideoDataSource {

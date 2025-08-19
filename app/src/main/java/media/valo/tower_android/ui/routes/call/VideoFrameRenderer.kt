@@ -38,8 +38,17 @@ private const val RGBX_PIXEL_STRIDE = 4
 private const val RGBA_PIXEL_STRIDE = 4
 private const val ROTATION_STEP = 90
 
+/**
+ * Renders a preview of the video into a `SurfaceView`.
+ *
+ * @param activity      The `Activity` the view should be rendered into.
+ * @param scalingMode   Whether to fill the View by cropping the video, or scale the video to fit.
+ */
 class VideoFrameRenderer(private val activity: Activity, private val scalingMode: ScalingMode) {
 
+    /**
+     * The view the video will be rendered into.
+     */
     val view: SurfaceView = {
         val surfaceView = SurfaceView(activity)
         surfaceView.layoutParams = ViewGroup.LayoutParams(
@@ -49,6 +58,13 @@ class VideoFrameRenderer(private val activity: Activity, private val scalingMode
         surfaceView
     }()
 
+    /**
+     * Render the given frame into the `view`.
+     *
+     * @param rawVideoFrameBuffer   The video frame to render.
+     * @param rotationAngle         The number of degrees of clockwise rotation to apply before rendering.
+     * @param mirror                Whether to mirror the video frame before rendering.
+     */
     fun render(rawVideoFrameBuffer: RawVideoFrameBuffer, rotationAngle: Int = 0, mirror: Boolean = false) {
         val format = rawVideoFrameBuffer.streamFormat
 
