@@ -29,7 +29,6 @@ import com.azure.android.communication.calling.CallAgent
 import com.azure.android.communication.calling.CallClient
 import com.azure.android.communication.calling.CallState
 import com.azure.android.communication.calling.CameraFacing
-import com.azure.android.communication.calling.CreateViewOptions
 import com.azure.android.communication.calling.DataChannelCallFeature
 import com.azure.android.communication.calling.DataChannelPriority
 import com.azure.android.communication.calling.DataChannelReceiver
@@ -40,10 +39,8 @@ import com.azure.android.communication.calling.DataChannelSenderOptions
 import com.azure.android.communication.calling.DeviceManager
 import com.azure.android.communication.calling.Features
 import com.azure.android.communication.calling.IncomingCall
-import com.azure.android.communication.calling.LocalVideoStream
 import com.azure.android.communication.calling.OutgoingVideoOptions
 import com.azure.android.communication.calling.PropertyChangedListener
-import com.azure.android.communication.calling.ScalingMode
 import com.azure.android.communication.calling.VideoDeviceInfo
 import com.azure.android.communication.calling.VideoStreamRenderer
 import com.azure.android.communication.common.CommunicationTokenCredential
@@ -60,16 +57,16 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import media.valo.tower_android.R
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
+import media.valo.tower_android.data.local.video.VideoRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
 import media.valo.tower_android.model.DataMessage
-import media.valo.tower_android.model.ErrorMessage
 import media.valo.tower_android.model.Message
 import media.valo.tower_android.utils.AppScope
+import media.valo.tower_android.utils.sendMessage
 import javax.inject.Inject
 
 //
@@ -158,6 +155,7 @@ private const val TAG = "CallViewModel"
 class CallViewModel @Inject constructor(
     private val towerRepository: TowerRepository,
     private val profileRepository: ProfileRepository,
+    private val videoRepository: VideoRepository,
     private val json: Json,
     @ApplicationContext private val context: Context,
     private val fusedLocationClient: FusedLocationProviderClient,
@@ -190,8 +188,6 @@ class CallViewModel @Inject constructor(
      */
     var isRequestingLocationUpdates by mutableStateOf(false)
 
-    var isSwitchingCamera by mutableStateOf(false)
-
     private var callClient: CallClient? = null
 
     private var callAgent: CallAgent? = null
@@ -204,7 +200,7 @@ class CallViewModel @Inject constructor(
 
     private var currentCamera: VideoDeviceInfo? = null
 
-    private var currentVideoStream: LocalVideoStream? = null
+    private var videoFrameSender: VideoFrameSender? = null
 
     private var previewRenderer: VideoStreamRenderer? = null
 
@@ -281,54 +277,27 @@ class CallViewModel @Inject constructor(
     }
 
     /**
-     * Switch cameras.
+     * Start sending video frames.
      *
-     * This will switch to the next available camera. If the user isn't on a call, or the camera
-     * isn't active, or no other camera is available, this will do nothing.
+     * This will start the transmission of video frames to the server, along with the necessary
+     * orientation events, and begin rendering the video preview in the given `previewContainer`.
+     *
+     * @param activity          The current Activity, used to access the ui thread.
+     * @param previewContainer  The ViewGroup to render the preview into.
      */
-    fun switchSource() {
-        currentVideoStream?.switchSource(getNextAvailableCamera())
+    fun enableVideoFrameSender(activity: Activity, previewContainer: ViewGroup) {
+        val videoFrameSender = videoFrameSender
+        if (videoFrameSender == null) { return }
+        val preview = videoFrameSender.enable(activity)
+        activity.runOnUiThread { previewContainer.addView(preview) }
     }
-
-    /**
-     * Start rendering the preview for the video stream.
-     *
-     * @param activity  The current Activity, used to access the ui thread.
-     * @param container The ViewGroup to render the preview into.
-     */
-    fun showPreview(activity: Activity, container: ViewGroup) {
-        if (currentVideoStream == null) { return }
-        previewRenderer?.dispose()
-        val previewRenderer = VideoStreamRenderer(currentVideoStream, activity)
-        this.previewRenderer = previewRenderer
-
-        val preview = previewRenderer.createView(CreateViewOptions(ScalingMode.FIT))
-        preview?.tag = 0
-
-        activity.runOnUiThread {
-            container.addView(preview)
-        }
-    }
-
-    /**
-     * Send a Message through the durable data channel.
-     *
-     * @param message The Message to send.
-     */
-    fun sendMessage(message: Message) = dataChannelSender?.sendMessage(
-        when (message) {
-            is DataMessage -> json.encodeToString(message)
-            is ErrorMessage -> json.encodeToString(message)
-        }
-            .toByteArray(Charsets.UTF_8)
-    )
 
     fun startLocationUpdates(onLocationSettingsChangeNeeded: (ResolvableApiException) -> Unit) {
         val locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 val location = locationResult.lastLocation
                 location ?: return
-                sendMessage(DataMessage.LocationEvent(location))
+                dataChannelSender?.sendMessage(DataMessage.LocationEvent(location))
             }
         }
 
@@ -427,10 +396,10 @@ class CallViewModel @Inject constructor(
         sessionState = AssistanceSessionState.CONNECTING
         currentCamera = getCameraFacing(CameraFacing.BACK)
         cameraFacingUser = false
-        currentVideoStream = LocalVideoStream(currentCamera, context)
+        videoFrameSender = VideoFrameSender(videoRepository)
         val acceptCallOptions = AcceptCallOptions()
         val outgoingVideoOptions = OutgoingVideoOptions()
-        outgoingVideoOptions.setOutgoingVideoStreams(listOf(currentVideoStream))
+        outgoingVideoOptions.setOutgoingVideoStreams(listOf(videoFrameSender?.rawOutgoingVideoStream))
         acceptCallOptions.outgoingVideoOptions = outgoingVideoOptions
         ringbackSound?.pause()
         try {
@@ -482,6 +451,7 @@ class CallViewModel @Inject constructor(
     private fun disposeSession() {
         callClient?.dispose()
         callAgent?.dispose()
+        videoFrameSender?.disable()
         previewRenderer?.dispose()
 
         callClient = null
@@ -490,7 +460,7 @@ class CallViewModel @Inject constructor(
         audioManager = null
         call = null
         currentCamera = null
-        currentVideoStream = null
+        videoFrameSender = null
         previewRenderer = null
         dataChannelCallFeature = null
         dataChannelSender = null
@@ -498,19 +468,6 @@ class CallViewModel @Inject constructor(
 
         sessionState = AssistanceSessionState.DISCONNECTED
         isRequestingLocationUpdates = false
-    }
-
-    private fun getNextAvailableCamera(): VideoDeviceInfo? {
-        val availableCameras = deviceManager?.cameras ?: emptyList<VideoDeviceInfo>()
-        if (availableCameras.isEmpty()) {
-            return null
-        }
-        for (i in availableCameras.indices) {
-            if (currentCamera?.id == availableCameras[i].id) {
-                return availableCameras[(i + 1) % availableCameras.size]
-            }
-        }
-        return availableCameras[0]
     }
 
     private fun getCameraFacing(@Suppress("SameParameterValue") cameraFacing: CameraFacing): VideoDeviceInfo? {
@@ -559,7 +516,10 @@ class CallViewModel @Inject constructor(
         this.dataChannelSender = dataChannelSender
 
         delay(DATA_CHANNEL_MESSAGE_BURST_DELAY_MILLIS)
-        sendMessage(DataMessage.UserHelloEvent(profileRepository.getUserProfile()))
+        videoFrameSender?.startSendingOrientationEvents(dataChannelSender)
+
+        delay(DATA_CHANNEL_MESSAGE_BURST_DELAY_MILLIS)
+        dataChannelSender?.sendMessage(DataMessage.UserHelloEvent(profileRepository.getUserProfile()))
     }
 
     private fun handleLocationRequest() {
@@ -573,28 +533,12 @@ class CallViewModel @Inject constructor(
         // the button for the assistant). Instead we will always send a normal response, causing the
         // button to be re-enabled for the assistant, even though we don't know whether there is any
         // point in pushing it again.
-        sendMessage(DataMessage.LocationResponse())
+        dataChannelSender?.sendMessage(DataMessage.LocationResponse())
     }
 
     private fun handleSwitchCameraRequest() {
-        //bool to disable the composable calling the previewrenderer, to prevent the view getting
-        //called again before we are finished rotating
-        isSwitchingCamera = true
-
-        //dispose preview renderer to prevent multiple processes (switching camera and rotating phone)
-        //trying to access our videostream at the same time, which would lead to the app crashing
-        previewRenderer?.dispose()
-
-        if (!cameraFacingUser){
-            cameraFacingUser = true
-            currentCamera = getCameraFacing(CameraFacing.FRONT)
-        } else {
-            cameraFacingUser = false
-            currentCamera = getCameraFacing(CameraFacing.BACK)
-        }
-        currentVideoStream?.switchSource(currentCamera)
-        isSwitchingCamera = false
-        sendMessage(DataMessage.SwitchCameraResponse())
+        videoRepository.switchSource()
+        dataChannelSender?.sendMessage(DataMessage.SwitchCameraResponse())
     }
 
 }

@@ -38,6 +38,7 @@ class JsonModule() {
                 subclass(DataMessage.LocationRequest::class)
                 subclass(DataMessage.LocationResponse::class)
                 subclass(DataMessage.LocationEvent::class)
+                subclass(DataMessage.OrientationEvent::class)
                 subclass(DataMessage.UserHelloEvent::class)
                 subclass(DataMessage.SwitchCameraRequest::class)
                 subclass(DataMessage.SwitchCameraResponse::class)

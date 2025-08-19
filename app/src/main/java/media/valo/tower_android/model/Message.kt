@@ -130,6 +130,20 @@ sealed class DataMessage: Message() {
     }
 
     /**
+     * An orientationEvent data message.
+     *
+     * This is sent once when the call starts and then during the call whenever the device is
+     * rotated.
+     *
+     * @param rotationAngle     Device rotation clockwise relative to landscape left, rounded to a multiple of 90.
+     */
+    @Serializable
+    @SerialName("orientationEvent")
+    data class OrientationEvent(
+        @Required val rotationAngle: Int
+    ): DataMessage()
+
+    /**
      * A userHelloEvent data message.
      *
      * This is sent once when the call starts to transmit all the information the assistant needs
