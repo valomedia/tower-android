@@ -74,6 +74,7 @@ class VideoFrameSender(
     
     fun startSendingOrientationEvents(dataChannelSender: DataChannelSender) {
         this.dataChannelSender = dataChannelSender
+        rotation = null
     }
 
     private fun start() {
