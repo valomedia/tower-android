@@ -77,6 +77,14 @@ class VideoFrameSender(
         rotation = null
     }
 
+    /**
+     * Stop sending orientation events.
+     */
+    fun stopSendingOrientationEvents() {
+        dataChannelSender = null
+        rotation = null
+    }
+
     private fun start() {
         Log.d(TAG, "Video stream started")
         videoRepository.start { frame ->
