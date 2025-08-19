@@ -117,6 +117,9 @@ class VideoFrameSender(
 
     private fun stop() {
         Log.d(TAG, "Video stream stopping")
+        stopSendingOrientationEvents()
+        previewRenderer = null
+        activity = null
         videoRepository.stop()
     }
 
