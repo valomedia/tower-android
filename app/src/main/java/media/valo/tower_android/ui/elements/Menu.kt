@@ -106,16 +106,7 @@ fun Menu(
                     }
                 }
             )
-            NavigationDrawerItem(
-                label = { Text(text = "Anrufhistorie") },
-                selected = currentBackStackEntry?.destination?.hasRoute<CallHistoryScreen>() == true,
-                onClick = {
-                    scope.launch {
-                        drawerState.close()
-                        navController.navigate(route = CallHistoryScreen)
-                    }
-                }
-            )
+
             NavigationDrawerItem(
                 label = { Text(text = "Benutzerprofil") },
                 selected = currentBackStackEntry?.destination?.hasRoute<ProfileScreen>() == true,
