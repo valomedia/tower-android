@@ -46,7 +46,6 @@ import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataS
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.local.preferences.settings.DummySettingsDataSource
 import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
-import media.valo.tower_android.ui.routes.call_history.CallHistoryScreen
 import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.ui.routes.profile.ProfileScreen
 import media.valo.tower_android.ui.theme.TowerTheme
