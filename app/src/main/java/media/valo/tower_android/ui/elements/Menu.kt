@@ -106,7 +106,6 @@ fun Menu(
                     }
                 }
             )
-
             NavigationDrawerItem(
                 label = { Text(text = "Benutzerprofil") },
                 selected = currentBackStackEntry?.destination?.hasRoute<ProfileScreen>() == true,
