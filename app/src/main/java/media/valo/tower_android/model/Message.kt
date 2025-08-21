@@ -8,6 +8,8 @@ package media.valo.tower_android.model
 
 import android.location.Location
 import android.os.Build
+import io.ktor.http.Url
+import kotlinx.datetime.Instant
 import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.Required
 import kotlinx.serialization.SerialName
@@ -49,6 +51,20 @@ object MessageSerializer: JsonContentPolymorphicSerializer<Message>(Message::cla
  */
 @Serializable(with = DataMessageSerializer::class)
 sealed class DataMessage: Message() {
+
+    @Serializable
+    @SerialName("capturePhotoRequest")
+    data class CapturePhotoRequest(
+        val uploadUrl: Url,
+        val key: String,
+        val expiresOn: Instant
+    ): DataMessage()
+
+    @Serializable
+    @SerialName("capturePhotoResponse")
+    data class CapturePhotoResponse(
+        val key: String
+    ): DataMessage()
 
     /**
      * A locationRequest data message.
@@ -203,7 +219,14 @@ sealed class ErrorMessage: Message() {
     @SerialName("errorEvent")
     data class ErrorEvent(
         val error: String,
-        val localizedError: String?
+        val localizedError: String? = null
+    ): ErrorMessage()
+
+    @Serializable
+    @SerialName("capturePhotoResponse")
+    data class CapturePhotoResponse(
+        val error: String,
+        val localizedError: String? = null
     ): ErrorMessage()
 
 }
