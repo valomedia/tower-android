@@ -7,6 +7,9 @@
 package media.valo.tower_android.ui.routes.call
 
 import android.app.Activity
+import android.graphics.Bitmap
+import android.graphics.Bitmap.createBitmap
+import android.graphics.Matrix
 import android.util.Log
 import android.view.SurfaceView
 import com.azure.android.communication.calling.CallingCommunicationException
@@ -16,10 +19,23 @@ import com.azure.android.communication.calling.RawOutgoingVideoStreamOptions
 import com.azure.android.communication.calling.ScalingMode
 import com.azure.android.communication.calling.VideoStreamState
 import com.azure.android.communication.calling.VirtualOutgoingVideoStream
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.ServerResponseException
+import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.request.headers
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.http.HttpHeaders
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import media.valo.tower_android.data.local.video.VideoRepository
 import media.valo.tower_android.model.CallQualityLevel
 import media.valo.tower_android.model.DataMessage
+import media.valo.tower_android.model.ErrorMessage
+import media.valo.tower_android.utils.AppScope
 import media.valo.tower_android.utils.sendMessage
+import java.io.ByteArrayOutputStream
 
 //
 //  VideoFrameSender.kt
@@ -31,6 +47,7 @@ import media.valo.tower_android.utils.sendMessage
 
 private const val TAG = "VideoFrameSender"
 private const val ROTATION_STEP = 90
+private const val JPEG_QUALITY = 50
 
 /**
  * Sends video frames to the server, dispatches orientation events and renders a preview.
@@ -43,7 +60,8 @@ private const val ROTATION_STEP = 90
  * @param videoRepository   The `VideoRepository` to pull the video from.
  */
 class VideoFrameSender(
-    private val videoRepository: VideoRepository
+    private val videoRepository: VideoRepository,
+    @AppScope private val appScope: CoroutineScope
 ) {
 
     /**
@@ -68,6 +86,11 @@ class VideoFrameSender(
             }
         }
         virtualOutgoingVideoStream
+    }
+
+    private val httpClient: HttpClient = HttpClient(OkHttp) {
+        expectSuccess = true
+        install(Logging)
     }
 
     private var rotation: Int? = null
@@ -126,6 +149,55 @@ class VideoFrameSender(
     fun stopSendingOrientationEvents() {
         dataChannelSender = null
         rotation = null
+    }
+
+    fun handleSwitchCameraRequest() {
+        videoRepository.switchSource()
+        dataChannelSender?.sendMessage(DataMessage.SwitchCameraResponse())
+    }
+
+    fun handleCapturePhotoRequest(capturePhotoRequest: DataMessage.CapturePhotoRequest) {
+        val bitmap = videoRepository.takePhoto()
+        if (bitmap == null) {
+            dataChannelSender?.sendMessage(ErrorMessage.CapturePhotoResponse(error = "Photo capture failed"))
+            return
+        }
+
+        appScope.launch {
+            val matrix = Matrix()
+            matrix.setRotate(rotation?.toFloat() ?: 0f)
+
+            val byteArrayOutputStream = ByteArrayOutputStream()
+            createBitmap(
+                bitmap,
+                0,
+                0,
+                bitmap.width,
+                bitmap.height,
+                matrix,
+                false
+            )
+                .compress(
+                    Bitmap.CompressFormat.JPEG,
+                    JPEG_QUALITY,
+                    byteArrayOutputStream
+                )
+
+            val bytes = byteArrayOutputStream.toByteArray()
+
+            try {
+                httpClient.put(capturePhotoRequest.uploadUrl) {
+                    headers {
+                        append(HttpHeaders.ContentType, "image/jpeg")
+                    }
+                    setBody(bytes)
+                }
+            } catch (_: ServerResponseException) {
+                dataChannelSender?.sendMessage(ErrorMessage.CapturePhotoResponse(error = "Photo upload failed"))
+                return@launch
+            }
+            dataChannelSender?.sendMessage(DataMessage.CapturePhotoResponse(key = capturePhotoRequest.key))
+        }
     }
 
     private fun start() {

@@ -396,7 +396,10 @@ class CallViewModel @Inject constructor(
         sessionState = AssistanceSessionState.CONNECTING
         currentCamera = getCameraFacing(CameraFacing.BACK)
         cameraFacingUser = false
-        videoFrameSender = VideoFrameSender(videoRepository)
+        videoFrameSender = VideoFrameSender(
+            videoRepository = videoRepository,
+            appScope = appScope
+        )
         val acceptCallOptions = AcceptCallOptions()
         val outgoingVideoOptions = OutgoingVideoOptions()
         outgoingVideoOptions.setOutgoingVideoStreams(listOf(videoFrameSender?.rawOutgoingVideoStream))
@@ -499,7 +502,8 @@ class CallViewModel @Inject constructor(
 
                 when (message) {
                     is DataMessage.LocationRequest -> handleLocationRequest()
-                    is DataMessage.SwitchCameraRequest -> handleSwitchCameraRequest()
+                    is DataMessage.SwitchCameraRequest -> videoFrameSender?.handleSwitchCameraRequest()
+                    is DataMessage.CapturePhotoRequest -> videoFrameSender?.handleCapturePhotoRequest(message)
                     else -> {}
                 }
             })
@@ -534,11 +538,6 @@ class CallViewModel @Inject constructor(
         // button to be re-enabled for the assistant, even though we don't know whether there is any
         // point in pushing it again.
         dataChannelSender?.sendMessage(DataMessage.LocationResponse())
-    }
-
-    private fun handleSwitchCameraRequest() {
-        videoRepository.switchSource()
-        dataChannelSender?.sendMessage(DataMessage.SwitchCameraResponse())
     }
 
 }
