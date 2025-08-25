@@ -136,7 +136,7 @@ class CameraVideoDataSource @Inject constructor(
     }
 
     override fun rotationFor(orientation: Int): Int {
-        return (sensorOrientation + orientation * if (isCameraFacingUser) 1 else -1) % FULL_ROTATION
+        return (FULL_ROTATION + sensorOrientation + orientation * if (isCameraFacingUser) 1 else -1) % FULL_ROTATION
     }
 
     @RequiresPermission(Manifest.permission.CAMERA)
