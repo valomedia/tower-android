@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -68,16 +68,12 @@ fun DatePickerField(
     enabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
-    var selectedDate by remember { mutableStateOf(value) }
     var showModal by remember { mutableStateOf(false) }
 
-    LaunchedEffect(selectedDate) {
-        showModal = false
-        onValueChange(selectedDate)
-    }
+    LaunchedEffect(value) { showModal = false }
 
     OutlinedTextField(
-        value = selectedDate?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)) ?: "",
+        value = value?.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG)) ?: "",
         onValueChange = {},
         label = label,
         readOnly = true,
@@ -89,12 +85,9 @@ fun DatePickerField(
             )
         },
         trailingIcon = {
-            if (selectedDate != null) {
+            if (value != null) {
                 IconButton(
-                    onClick = {
-                        showModal = false
-                        selectedDate = null
-                    },
+                    onClick = { onValueChange(null) },
                     enabled = enabled
                 ) {
                     Icon(
@@ -104,7 +97,7 @@ fun DatePickerField(
                 }
             }
         },
-        modifier = modifier.pointerInput(selectedDate) {
+        modifier = modifier.pointerInput(value) {
             awaitEachGesture {
                 awaitFirstDown(pass = PointerEventPass.Initial)
                 val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
@@ -117,11 +110,8 @@ fun DatePickerField(
 
     if (enabled && showModal) {
         DatePickerModal(
-            value = selectedDate,
-            onDateSelected = { date ->
-                selectedDate = date
-                onValueChange(date)
-            },
+            value = value,
+            onDateSelected = { date -> onValueChange(date) },
             onDismiss = { showModal = false }
         )
     }
