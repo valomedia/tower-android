@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -63,14 +63,13 @@ inline fun <reified T : Enum<T>> EnumPicker(
     enabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
-    var selectedValue by remember { mutableStateOf(value) }
     var showDropdown by remember { mutableStateOf(false) }
 
-    LaunchedEffect(selectedValue) { onValueChange(selectedValue) }
+    LaunchedEffect(value) { showDropdown = false }
 
     Box(modifier = modifier) {
         OutlinedTextField(
-            value = selectedValue?.toString() ?: "Keine Angabe",
+            value = value?.toString() ?: "Keine Angabe",
             onValueChange = {},
             label = label,
             readOnly = true,
@@ -82,12 +81,9 @@ inline fun <reified T : Enum<T>> EnumPicker(
                 )
             },
             trailingIcon = {
-                if (selectedValue != null) {
+                if (value != null) {
                     IconButton(
-                        onClick = {
-                            showDropdown = false
-                            selectedValue = null
-                        },
+                        onClick = { onValueChange(null) },
                         enabled = enabled
                     ) {
                         Icon(
@@ -99,7 +95,7 @@ inline fun <reified T : Enum<T>> EnumPicker(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .pointerInput(selectedValue) {
+                .pointerInput(value) {
                     awaitEachGesture {
                         awaitFirstDown(pass = PointerEventPass.Initial)
                         val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
@@ -118,10 +114,7 @@ inline fun <reified T : Enum<T>> EnumPicker(
                 for (t in enumEntries<T>()) {
                     DropdownMenuItem(
                         text = { Text(t.toString()) },
-                        onClick = {
-                            selectedValue = t
-                            showDropdown = false
-                        }
+                        onClick = { onValueChange(t) }
                     )
                 }
             }
