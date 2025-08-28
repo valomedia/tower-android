@@ -19,6 +19,9 @@ build/
 /gradlew
 /gradlew.bat
 
+# Release
+/app/release
+
 # Local configuration file (sdk path, etc.)
 local.properties
 
