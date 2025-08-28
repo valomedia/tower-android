@@ -227,7 +227,7 @@ private fun NormalUi(
                 icon = { Icon(Icons.Filled.Phone, "Auflegen") },
                 text = { Text(text = "Auflegen") },
                 containerColor = Color.Red,
-                modifier = Modifier.padding(8.dp)
+                modifier = Modifier.padding(16.dp)
             )
         }
     }
