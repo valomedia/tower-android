@@ -63,12 +63,13 @@ fun RequirePermissions(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Logo(modifier = Modifier.weight(1f).padding(8.dp))
+            Logo(modifier = Modifier.padding(8.dp))
             Text(rationale, color = if (permissionStates.shouldShowRationale) Color.Red else Color.Unspecified)
             ExtendedFloatingActionButton(
                 onClick = { permissionStates.launchMultiplePermissionRequest() },
                 icon = { Icon(Icons.AutoMirrored.Filled.ArrowForward, "Weiter")},
-                text = { Text("Weiter") }
+                text = { Text("Weiter") },
+                modifier = Modifier.padding(16.dp)
             )
         }
     }
