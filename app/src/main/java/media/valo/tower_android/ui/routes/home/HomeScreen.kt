@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2025.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -68,7 +68,7 @@ fun HomeScreen(
             },
             icon = { Icon(Icons.Filled.Call, "Jetzt anrufen") },
             text = { Text(text = "Jetzt anrufen") },
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(16.dp)
         )
     }
 }
