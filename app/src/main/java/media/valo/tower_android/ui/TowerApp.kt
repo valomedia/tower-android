@@ -32,11 +32,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import media.valo.tower_android.ui.elements.AppBar
+import media.valo.tower_android.ui.elements.AppBarViewModel
 import media.valo.tower_android.ui.elements.Menu
 import media.valo.tower_android.ui.elements.RequirePermissions
 import media.valo.tower_android.ui.routes.about.AboutScreen
@@ -150,10 +152,12 @@ fun TowerApp(navController: NavHostController) {
                 composable<ClosedScreen> {
                     backStackEntry ->
                     val closedScreen: ClosedScreen = backStackEntry.toRoute()
+                    val repo = hiltViewModel<AppBarViewModel>().getProfileRepository()
                     ClosedScreen(
                         modifier = modifier,
                         navController = navController,
-                        currentSchedule = closedScreen.currentSchedule
+                        currentSchedule = closedScreen.currentSchedule,
+                        profileRepository = repo
                     )
                 }
                 composable<OutdatedAppVersionScreen> {
