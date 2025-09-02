@@ -41,6 +41,9 @@ class AppBarViewModel @Inject constructor(
      */
     val userIdFlow: Flow<String?> = credentialRepository.userIdFlow
 
+    /** Give other classes read-only access to the profile repo. */
+    fun getProfileRepository(): ProfileRepository = profileRepository
+
     /**
      * Log out the user.
      *
