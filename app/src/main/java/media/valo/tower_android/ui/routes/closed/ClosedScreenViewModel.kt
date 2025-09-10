@@ -16,10 +16,10 @@ package media.valo.tower_android.ui.screens.closed
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
+import javax.inject.Inject
 
 /**
  * `ViewModel` for `ClosedScreen`.
