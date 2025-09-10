@@ -30,11 +30,12 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
-import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.ui.routes.home.HomeScreen
+import media.valo.tower_android.ui.screens.closed.ClosedScreenViewModel
 
 //
 //  ConnectionError.kt
@@ -66,7 +67,7 @@ fun ClosedScreen(
     currentSchedule: String,
     userFirstName: String? = null,
     userEmail: String? = null,
-    profileRepository: ProfileRepository
+    viewModel: ClosedScreenViewModel = hiltViewModel()
 ) {
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
@@ -110,15 +111,15 @@ fun ClosedScreen(
             Button(
                 onClick = {
                     scope.launch {
-                        val email = userEmail ?: profileRepository.getEmail()
-                        val first = userFirstName ?: profileRepository.getFirstName()
+                        val email = userEmail ?: viewModel.getEmail()
+                        val first = userFirstName ?: viewModel.getFirstName()
 
                         val uri = "https://tower-assist.de/terminvereinbarung/"
                             .toUri()
                             .buildUpon()
                             .apply {
                                 if (!email.isNullOrBlank())  appendQueryParameter("email", email)
-                                if (!first.isNullOrBlank()) appendQueryParameter("firstname", first)
+                                if (!first.isNullOrBlank())  appendQueryParameter("firstname", first)
                             }
                             .build()
 
