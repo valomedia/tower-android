@@ -29,10 +29,6 @@ class ClosedScreenViewModel @Inject constructor(
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
 
-    /** Fast getters for Compose previews or already-known values. */
-    val firstNameFlow = profileRepository.firstNameFlow
-    val emailFlow     = profileRepository.emailFlow
-
     /** Suspend functions for “grab it right now” use-cases. */
     suspend fun getFirstName(): String? = withContext(Dispatchers.IO) {
         profileRepository.getFirstName()
