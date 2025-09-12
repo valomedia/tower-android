@@ -23,4 +23,6 @@ class DummyNewsletterDataSource: NewsletterDataSource {
 
     override suspend fun subscribe() = false
 
+    override suspend fun addContactOnly(): Boolean = true
+
 }
