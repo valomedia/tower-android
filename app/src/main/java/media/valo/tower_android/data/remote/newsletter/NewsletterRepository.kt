@@ -33,4 +33,6 @@ class NewsletterRepository @Inject constructor(
      */
     suspend fun subscribe() = newsletterDataSource.subscribe()
 
+    suspend fun addContactOnly() = newsletterDataSource.addContactOnly()
+
 }
