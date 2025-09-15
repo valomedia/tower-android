@@ -112,14 +112,14 @@ fun ClosedScreen(
                 onClick = {
                     scope.launch {
                         val email = userEmail ?: viewModel.getEmail()
-                        val first = userFirstName ?: viewModel.getFirstName()
+                        val firstName = userFirstName ?: viewModel.getFirstName()
 
                         val uri = "https://tower-assist.de/terminvereinbarung/"
                             .toUri()
                             .buildUpon()
                             .apply {
                                 if (!email.isNullOrBlank())  appendQueryParameter("email", email)
-                                if (!first.isNullOrBlank())  appendQueryParameter("firstname", first)
+                                if (!firstName.isNullOrBlank())  appendQueryParameter("firstname", firstName)
                             }
                             .build()
 
