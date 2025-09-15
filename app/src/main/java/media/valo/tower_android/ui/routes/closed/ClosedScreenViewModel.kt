@@ -23,6 +23,11 @@ import javax.inject.Inject
 
 /**
  * `ViewModel` for `ClosedScreen`.
+ *
+ * Provides read-only accessors to selected profile fields so the screen can prefill
+ * contact forms or deep links without owning the `ProfileRepository`.
+ *
+ * @param profileRepository `ProfileRepository` dependency.
  */
 @HiltViewModel
 class ClosedScreenViewModel @Inject constructor(
@@ -30,10 +35,17 @@ class ClosedScreenViewModel @Inject constructor(
 ) : ViewModel() {
 
     /** Suspend functions for “grab it right now” use-cases. */
+
+    /**
+     * Get the first name (if any).
+     */
     suspend fun getFirstName(): String? = withContext(Dispatchers.IO) {
         profileRepository.getFirstName()
     }
 
+    /**
+     * Get the e-mail address (if any).
+     */
     suspend fun getEmail(): String? = withContext(Dispatchers.IO) {
         profileRepository.getEmail()
     }
