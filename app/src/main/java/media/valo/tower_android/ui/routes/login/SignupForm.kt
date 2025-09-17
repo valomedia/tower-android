@@ -137,7 +137,7 @@ fun SignupForm(
                 modifier = Modifier.padding(8.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
-                ) {
+            ) {
                 Checkbox(
                     checked = wantsNewsletter && email.isNotEmpty(),
                     onCheckedChange = { wantsNewsletter = !wantsNewsletter },
@@ -160,13 +160,8 @@ fun SignupForm(
                         viewModel.setLastName(lastName)
                         viewModel.setEmail(email)
 
-                        if (wantsNewsletter && email.isNotEmpty()) {
-                            val newsletterSignup = viewModel.appScope.launch { viewModel.subscribeToNewsletter() }
-                            newsletterSignup.join()
-                        } else {
-                            val contactsOnly = viewModel.appScope.launch { viewModel.addContactOnly() }
-                            contactsOnly.join()
-                        }
+                        val signupJob = viewModel.appScope.launch { viewModel.submitSignup(wantsNewsletter) }
+                        signupJob.join()
 
                         navController.navigate(route = LoadingScreen)
                     }

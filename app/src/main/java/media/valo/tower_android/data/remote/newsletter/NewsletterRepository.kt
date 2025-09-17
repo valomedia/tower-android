@@ -26,13 +26,11 @@ class NewsletterRepository @Inject constructor(
 ) {
 
     /**
-     * Make a post to the newsletter endpoint, containing the users first name, email adress and second name if set.
+     * Make a post to the appropriate endpoint, containing the users first name, email adress and second name if set.
      *
-     * This will make a post to the newsletter endpoint, returning 'true' when the call succeeds (meaning
-     * the user got signed up for the newsletter), and throwing + returning false otherwise.
+     * If `wantsNewsletter` is `true`, this posts to the newsletter endpoint (user subscribes).
+     * If `wantsNewsletter` is `false`, this posts to the contacts-only endpoint.
      */
-    suspend fun subscribe() = newsletterDataSource.subscribe()
-
-    suspend fun addContactOnly() = newsletterDataSource.addContactOnly()
+    suspend fun subscribe(wantsNewsletter: Boolean) = newsletterDataSource.subscribe(wantsNewsletter)
 
 }
