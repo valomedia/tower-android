@@ -12,7 +12,6 @@ import kotlinx.coroutines.CoroutineScope
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.newsletter.NewsletterRepository
 import media.valo.tower_android.utils.AppScope
-import java.util.regex.Pattern
 import javax.inject.Inject
 
 //
@@ -78,8 +77,11 @@ class SignupFormViewModel @Inject constructor(
     suspend fun setEmail(email: String?) = profileRepository.setEmail(email)
 
     /**
-     * Post a request to subscribe to the newsletter to the newsletter endpoint,
+     * Post a request to either the newsletter or the contacts-only endpoint,
      * handing over first name, email and optionally last name.
+     *
+     * @param wantsNewsletter `true` to subscribe to the newsletter, `false` to only add a contact.
      */
-    suspend fun subscribeToNewsletter() = newsletterRepository.subscribe()
+    suspend fun submitSignup(wantsNewsletter: Boolean) = newsletterRepository.subscribe(wantsNewsletter)
+
 }

@@ -21,6 +21,6 @@ package media.valo.tower_android.data.remote.newsletter
  */
 class DummyNewsletterDataSource: NewsletterDataSource {
 
-    override suspend fun subscribe() = false
+    override suspend fun subscribe(wantsNewsletter: Boolean): Boolean = false
 
 }

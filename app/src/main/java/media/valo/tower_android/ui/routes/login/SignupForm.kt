@@ -6,6 +6,7 @@
 
 package media.valo.tower_android.ui.routes.login
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,9 +15,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -125,7 +126,7 @@ fun SignupForm(
                 value = email,
                 onValueChange = { email = it },
                 label = { Text("Email") },
-                placeholder = { Text("Optional, für Newsletter erforderlich") },
+                placeholder = { Text("Erforderlich") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier
@@ -136,7 +137,7 @@ fun SignupForm(
                 modifier = Modifier.padding(8.dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
-                ) {
+            ) {
                 Checkbox(
                     checked = wantsNewsletter && email.isNotEmpty(),
                     onCheckedChange = { wantsNewsletter = !wantsNewsletter },
@@ -148,22 +149,22 @@ fun SignupForm(
                     modifier = Modifier
                 )
             }
-            Button(
-                enabled = firstName.isNotBlank() && !isLoading,
+            ExtendedFloatingActionButton(
                 onClick = {
+                    if (firstName.isBlank() || email.isBlank() || isLoading) return@ExtendedFloatingActionButton
+
                     scope.launch {
                         isLoading = true
                         isSigningUp = true
                         viewModel.setFirstName(firstName)
                         viewModel.setLastName(lastName)
                         viewModel.setEmail(email)
-                        if (wantsNewsletter && email.isNotEmpty()) {
-                            val newsletterSignup = viewModel.appScope.launch{ viewModel.subscribeToNewsletter() }
-                            newsletterSignup.join()
-                        }
+
+                        val signupJob = viewModel.appScope.launch { viewModel.submitSignup(wantsNewsletter) }
+                        signupJob.join()
+
                         navController.navigate(route = LoadingScreen)
                     }
-
                 },
                 modifier = Modifier.padding(8.dp)
             ) {
@@ -187,6 +188,7 @@ fun SignupForm(
  */
 @Preview(showBackground = true, locale = "de-rDE")
 @Composable
+@SuppressLint("ViewModelConstructorInComposable")
 fun SignupFormPreview() {
     val previewScope = CoroutineScopeModule().provideCoroutineScope()
     SignupForm(
