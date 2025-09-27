@@ -127,13 +127,8 @@ fun ContactScreen(
                 text = "Tower Fernassistanz ist ein Angebot von:",
                 modifier = Modifier.padding(8.dp)
             )
-            Text(
-                text = "Bathildisheim e.V.",
-                modifier = Modifier.padding(8.dp)
-            )
             val mapsUrl =
                 "https://maps.google.com/?q=Bathildisheim%20e.V.%20Bathildisstraße%207,%2034454%20Bad%20Arolsen"
-
             Text(
                 text = buildAnnotatedString {
                     withLink(
@@ -146,23 +141,11 @@ fun ContactScreen(
                                 )
                             )
                         )
-                    ) { append("Bathildisstraße 7") }
-                },
-                modifier = Modifier.padding(8.dp)
-            )
-            Text(
-                text = buildAnnotatedString {
-                    withLink(
-                        LinkAnnotation.Url(
-                            mapsUrl,
-                            TextLinkStyles(
-                                style = SpanStyle(
-                                    color = Color.Blue,
-                                    textDecoration = TextDecoration.Underline
-                                )
-                            )
-                        )
-                    ) { append("34454 Bad Arolsen") }
+                    ) {
+                        append("Bathildisheim e.V.\n")
+                        append("Bathildisstraße 7\n")
+                        append("34454 Bad Arolsen")
+                    }
                 },
                 modifier = Modifier.padding(8.dp)
             )
