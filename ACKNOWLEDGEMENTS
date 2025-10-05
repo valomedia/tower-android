@@ -5,8 +5,9 @@ app/src/main/res/raw/call_end_tone.mp3
 app/src/main/res/raw/call_error_tone.mp3
 app/src/main/res/raw/call_ringback_tone.mp3
 app/src/main/res/raw/call_start_tone.mp3
+app/src/main/res/raw/camera_switch_tone.mp3
 
 Sound Effects by freesound_community from Pixabay are covered under the Pixabay Content License
 https://pixabay.com/service/terms/
 
-app/src/main/res/raw camera_shutter_tone.mp3
+app/src/main/res/raw/camera_shutter_tone.mp3
