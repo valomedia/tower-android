@@ -214,6 +214,8 @@ class CallViewModel @Inject constructor(
 
     private var errorSound: MediaPlayer? = null
 
+    private var shutterSound: MediaPlayer? = null
+
     private var cameraSwitchSound: MediaPlayer? = null
 
     private var dataChannelCallFeature: DataChannelCallFeature? = null
@@ -345,12 +347,14 @@ class CallViewModel @Inject constructor(
         val startSound = MediaPlayer.create(context, R.raw.call_start_tone, audioAttributes, audioSessionId)
         val endSound = MediaPlayer.create(context, R.raw.call_end_tone, audioAttributes, audioSessionId)
         val errorSound = MediaPlayer.create(context, R.raw.call_error_tone, audioAttributes, audioSessionId)
+        val shutterSound = MediaPlayer.create(context, R.raw.camera_shutter_tone, audioAttributes, audioSessionId)
         val cameraSwitchSound = MediaPlayer.create(context, R.raw.camera_switch_tone, audioAttributes, audioSessionId)
 
         this.ringbackSound = ringbackSound
         this.startSound = startSound
         this.endSound = endSound
         this.errorSound = errorSound
+        this.shutterSound = shutterSound
         this.cameraSwitchSound = cameraSwitchSound
     }
 
@@ -506,6 +510,11 @@ class CallViewModel @Inject constructor(
 
                 when (message) {
                     is DataMessage.LocationRequest -> handleLocationRequest()
+                    is DataMessage.SwitchCameraRequest -> videoFrameSender?.handleSwitchCameraRequest()
+                    is DataMessage.CapturePhotoRequest -> {
+                        shutterSound?.start()
+                        videoFrameSender?.handleCapturePhotoRequest(message)
+                    }
                     is DataMessage.SwitchCameraRequest -> {
                         cameraSwitchSound?.start()
                         videoFrameSender?.handleSwitchCameraRequest()
