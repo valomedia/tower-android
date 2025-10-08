@@ -245,6 +245,13 @@ sealed class ErrorMessage: Message() {
         val localizedError: String? = null
     ): ErrorMessage()
 
+    @Serializable
+    @SerialName("toggleTorchResponse")
+    data class ToggleTorchResponse(
+        val error: String,
+        val localizedError: String? = null
+    ) : ErrorMessage()
+
 }
 
 /**
