@@ -44,10 +44,13 @@ class JsonModule() {
                 subclass(DataMessage.UserHelloEvent::class)
                 subclass(DataMessage.SwitchCameraRequest::class)
                 subclass(DataMessage.SwitchCameraResponse::class)
+                subclass(DataMessage.ToggleTorchRequest::class)
+                subclass(DataMessage.ToggleTorchResponse::class)
             }
             polymorphic(ErrorMessage::class) {
                 subclass(ErrorMessage.ErrorEvent::class)
                 subclass(ErrorMessage.CapturePhotoResponse::class)
+                subclass(ErrorMessage.ToggleTorchResponse::class)
             }
         }
     }
