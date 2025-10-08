@@ -152,6 +152,11 @@ class VideoFrameSender(
     }
 
     fun handleSwitchCameraRequest() {
+        // Torch must be off when the camera changes per README
+        try {
+            if (videoRepository.isTorchEnabled()) videoRepository.setTorchEnabled(false)
+        } catch (_: Exception) { /* best effort */ }
+
         videoRepository.switchSource()
         dataChannelSender?.sendMessage(DataMessage.SwitchCameraResponse())
     }
@@ -230,9 +235,31 @@ class VideoFrameSender(
         }
     }
 
+    fun handleToggleTorchRequest() {
+        try {
+            val newState = !videoRepository.isTorchEnabled()
+            videoRepository.setTorchEnabled(newState)
+            dataChannelSender?.sendMessage(DataMessage.ToggleTorchResponse())
+        } catch (e: Exception) {
+            dataChannelSender?.sendMessage(
+                ErrorMessage.ToggleTorchResponse(
+                    error = e.message ?: "Torch toggle failed",
+                    localizedError = null
+                )
+            )
+        }
+    }
+
+    fun turnTorchOff() {
+        try {
+            if (videoRepository.isTorchEnabled()) videoRepository.setTorchEnabled(false)
+        } catch (_: Exception) { }
+    }
+
     private fun stop() {
         Log.d(TAG, "Video stream stopping")
         stopSendingOrientationEvents()
+        turnTorchOff()
         previewRenderer = null
         activity = null
         videoRepository.stop()
