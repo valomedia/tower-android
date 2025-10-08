@@ -109,6 +109,8 @@ class CameraVideoDataSource @Inject constructor(
     override fun stop() {
         stopCaptureSession()
 
+        cameraHandler?.removeCallbacksAndMessages(null)
+
         cameraDevice?.close()
         cameraThread?.quitSafely()
         imageReaderThread?.quitSafely()
