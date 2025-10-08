@@ -204,19 +204,26 @@ class CameraVideoDataSource @Inject constructor(
      * Enable or disable the device torch while the capture session is running.
      */
     fun setTorchEnabled(enabled: Boolean) {
-        torchEnabled = enabled && flashAvailable
+        torchEnabled = enabled
         if (!flashAvailable) return
 
         val builder = captureRequestBuilder
         val session = cameraCaptureSession
         if (builder != null && session != null) {
             val action = Runnable {
+                // If the session/builder got replaced (camera switch), do nothing.
+                if (session !== cameraCaptureSession || builder !== captureRequestBuilder) return@Runnable
+
                 builder.set(
                     CaptureRequest.FLASH_MODE,
                     if (torchEnabled) CaptureRequest.FLASH_MODE_TORCH else CaptureRequest.FLASH_MODE_OFF
                 )
-                // we intentionally ignore the Int return value here
-                session.setRepeatingRequest(builder.build(), null, cameraHandler)
+                // Ignore if the camera got closed between here and the call.
+                try {
+                    session.setRepeatingRequest(builder.build(), null, cameraHandler)
+                } catch (_: IllegalStateException) {
+                    // no-op: camera/session was closed or in error state
+                }
             }
 
             val handler = cameraHandler
