@@ -456,6 +456,7 @@ class CallViewModel @Inject constructor(
         callAgent?.dispose()
         videoFrameSender?.disable()
         previewRenderer?.dispose()
+        videoFrameSender?.turnTorchOff()
 
         callClient = null
         callAgent = null
