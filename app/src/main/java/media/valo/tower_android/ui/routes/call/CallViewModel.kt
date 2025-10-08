@@ -504,6 +504,7 @@ class CallViewModel @Inject constructor(
                     is DataMessage.LocationRequest -> handleLocationRequest()
                     is DataMessage.SwitchCameraRequest -> videoFrameSender?.handleSwitchCameraRequest()
                     is DataMessage.CapturePhotoRequest -> videoFrameSender?.handleCapturePhotoRequest(message)
+                    is DataMessage.ToggleTorchRequest -> videoFrameSender?.handleToggleTorchRequest()
                     else -> {}
                 }
             })
