@@ -109,4 +109,33 @@ class VideoRepository @Inject constructor(
      */
     fun rotationFor(orientation: Int): Int = videoDataSource.rotationFor(orientation)
 
+    /**
+     * Enable or disable the device torch (flashlight) if available.
+     *
+     * @param enabled true to turn on, false to turn off
+     */
+    fun setTorchEnabled(enabled: Boolean) {
+        val cameraSource = (videoDataSource as? CameraVideoDataSource)
+        if (cameraSource == null) {
+            if (enabled) { throw IllegalStateException("Torch not supported for this video source.") }
+            return
+        }
+        if (enabled && !cameraSource.isTorchAvailable()) {
+            throw IllegalStateException("Torch not available on this camera.")
+        }
+        cameraSource.setTorchEnabled(enabled)
+    }
+
+    /**
+     * Whether the device torch is currently enabled.
+     */
+    fun isTorchEnabled(): Boolean =
+        (videoDataSource as? CameraVideoDataSource)?.isTorchEnabled() ?: false
+
+    /**
+     * Whether the current camera source supports a torch.
+     */
+    fun isTorchAvailable(): Boolean =
+        (videoDataSource as? CameraVideoDataSource)?.isTorchAvailable() ?: false
+
 }

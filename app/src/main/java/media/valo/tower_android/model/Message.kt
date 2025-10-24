@@ -90,6 +90,22 @@ sealed class DataMessage: Message() {
     class LocationResponse(): DataMessage()
 
     /**
+     * Sent by tower-staff to toggle the device flashlight.
+     * Payload is always an empty object.
+     */
+    @Serializable
+    @SerialName("toggleTorchRequest")
+    class ToggleTorchRequest() : DataMessage()
+
+    /**
+     * Sent by the caller app in response to toggleTorchRequest.
+     * Empty object on success, error-shaped object on failure.
+     */
+    @Serializable
+    @SerialName("toggleTorchResponse")
+    class ToggleTorchResponse() : DataMessage()
+
+    /**
      * A locationEvent data message.
      *
      * This is sent repeatedly once the assistant has requested location access. It contains most
@@ -228,6 +244,13 @@ sealed class ErrorMessage: Message() {
         val error: String,
         val localizedError: String? = null
     ): ErrorMessage()
+
+    @Serializable
+    @SerialName("toggleTorchResponse")
+    data class ToggleTorchResponse(
+        val error: String,
+        val localizedError: String? = null
+    ) : ErrorMessage()
 
 }
 

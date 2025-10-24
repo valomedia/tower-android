@@ -464,6 +464,7 @@ class CallViewModel @Inject constructor(
         callAgent?.dispose()
         videoFrameSender?.disable()
         previewRenderer?.dispose()
+        videoFrameSender?.turnTorchOff()
 
         callClient = null
         callAgent = null
@@ -520,6 +521,7 @@ class CallViewModel @Inject constructor(
                         videoFrameSender?.handleSwitchCameraRequest()
                     }
                     is DataMessage.CapturePhotoRequest -> videoFrameSender?.handleCapturePhotoRequest(message)
+                    is DataMessage.ToggleTorchRequest -> videoFrameSender?.handleToggleTorchRequest()
                     else -> {}
                 }
             })

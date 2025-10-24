@@ -14,6 +14,7 @@ import android.hardware.camera2.CameraCaptureSession
 import android.hardware.camera2.CameraCharacteristics
 import android.hardware.camera2.CameraDevice
 import android.hardware.camera2.CameraManager
+import android.hardware.camera2.CaptureRequest
 import android.media.Image
 import android.media.ImageReader
 import android.os.Handler
@@ -82,6 +83,10 @@ class CameraVideoDataSource @Inject constructor(
     private var imageReaderThread: HandlerThread? = null
     private var imageReaderHandler: Handler? = null
     private var callback: ((RawVideoFrameBuffer) -> Unit)? = null
+    private var captureRequestBuilder: CaptureRequest.Builder? = null
+    private var torchEnabled: Boolean = false
+    private var currentCameraId: String? = null
+    private var flashAvailable: Boolean = false
 
     @RequiresPermission(Manifest.permission.CAMERA)
     override fun start(callback: (RawVideoFrameBuffer) -> Unit) {
@@ -103,6 +108,8 @@ class CameraVideoDataSource @Inject constructor(
 
     override fun stop() {
         stopCaptureSession()
+
+        cameraHandler?.removeCallbacksAndMessages(null)
 
         cameraDevice?.close()
         cameraThread?.quitSafely()
@@ -151,7 +158,10 @@ class CameraVideoDataSource @Inject constructor(
         // No cameras available, so don't produce video
         if (cameraId == null) { return }
 
+        // + keep track of the active id and whether it has a flash
+        currentCameraId = cameraId
         val characteristics = cameraManager.getCameraCharacteristics(cameraId)
+        flashAvailable = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE) == true
         sensorOrientation = characteristics.get(CameraCharacteristics.SENSOR_ORIENTATION) ?: 0
         photoSize = characteristics
             .get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP)!!
@@ -189,6 +199,47 @@ class CameraVideoDataSource @Inject constructor(
         stopCaptureSession()
         cameraDevice?.close()
     }
+
+    /**
+     * Enable or disable the device torch while the capture session is running.
+     */
+    fun setTorchEnabled(enabled: Boolean) {
+        torchEnabled = enabled
+        if (!flashAvailable) return
+
+        val builder = captureRequestBuilder
+        val session = cameraCaptureSession
+        if (builder != null && session != null) {
+            val action = Runnable {
+                // If the session/builder got replaced (camera switch), do nothing.
+                if (session !== cameraCaptureSession || builder !== captureRequestBuilder) return@Runnable
+
+                builder.set(
+                    CaptureRequest.FLASH_MODE,
+                    if (torchEnabled) CaptureRequest.FLASH_MODE_TORCH else CaptureRequest.FLASH_MODE_OFF
+                )
+                // Ignore if the camera got closed between here and the call.
+                try {
+                    session.setRepeatingRequest(builder.build(), null, cameraHandler)
+                } catch (_: IllegalStateException) {
+                    // no-op: camera/session was closed or in error state
+                }
+            }
+
+            val handler = cameraHandler
+            if (handler != null) {
+                handler.post(action)
+            } else {
+                action.run()
+            }
+        }
+    }
+
+    /** Whether torch is currently requested to be on. */
+    fun isTorchEnabled(): Boolean = torchEnabled
+
+    /** Whether the active camera source reports a flash unit. */
+    fun isTorchAvailable(): Boolean = flashAvailable
 
     private fun updateCaptureSession() {
         val callback = callback
@@ -265,6 +316,14 @@ class CameraVideoDataSource @Inject constructor(
         captureRequestBuilder.addTarget(videoImageReader.surface)
         captureRequestBuilder.addTarget(photoImageReader.surface)
 
+        // + ensure AE is on and apply current torch state
+        captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON)
+        captureRequestBuilder.set(
+            CaptureRequest.FLASH_MODE,
+            if (torchEnabled && flashAvailable) CaptureRequest.FLASH_MODE_TORCH else CaptureRequest.FLASH_MODE_OFF
+        )
+        this.captureRequestBuilder = captureRequestBuilder
+
         @Suppress("DEPRECATION")
         cameraDevice.createCaptureSession(
             listOf(videoImageReader.surface, photoImageReader.surface),
@@ -295,6 +354,7 @@ class CameraVideoDataSource @Inject constructor(
         photoImageReader = null
         latestImage = null
         cameraCaptureSession = null
+        captureRequestBuilder = null
     }
 
 }
