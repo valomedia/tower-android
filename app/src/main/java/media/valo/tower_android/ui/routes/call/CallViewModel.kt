@@ -55,6 +55,7 @@ import com.google.android.gms.location.SettingsClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -226,6 +227,12 @@ class CallViewModel @Inject constructor(
 
     private var cameraFacingUser = false
 
+    private var sessionGeneration: Long = 0L
+
+    private var startSessionJob: Job? = null
+
+    private var keepaliveJob: Job? = null
+
     /**
      * Start the assistance session.
      *
@@ -235,23 +242,43 @@ class CallViewModel @Inject constructor(
      * @param onCallError   Callback to invoke if establishing the call fails.
      */
     fun startSession(onCallError: (() -> Unit) = {}) {
+        cancelSessionJobs()
+        val sessionGeneration = nextSessionGeneration()
+
         sessionState = AssistanceSessionState.INITIALIZING
         this.onCallError = onCallError
 
         configureAudio()
         ringbackSound?.start()
 
-        appScope.launch {
+        startSessionJob = appScope.launch {
             try {
-                createAgent(createSession()).addOnIncomingCallListener { incomingCall ->
-                    appScope.launch { handleIncomingCall(incomingCall) }
+                val credential = createSession(sessionGeneration) ?: return@launch
+                if (!isSessionActive(sessionGeneration)) { return@launch }
+
+                val callAgent = createAgent(credential)
+                if (!isSessionActive(sessionGeneration)) {
+                    disposeSession()
+                    return@launch
                 }
+
+                callAgent.addOnIncomingCallListener { incomingCall ->
+                    if (!isSessionActive(sessionGeneration)) {
+                        incomingCall.reject()
+                        return@addOnIncomingCallListener
+                    }
+                    appScope.launch { handleIncomingCall(incomingCall, sessionGeneration) }
+                }
+
+                if (!isSessionActive(sessionGeneration)) { return@launch }
                 sessionState = AssistanceSessionState.WAITING
             } catch (_: Exception) {
-                onCallError()
-                disposeSession()
-                ringbackSound?.pause()
-                errorSound?.start()
+                if (isSessionActive(sessionGeneration)) {
+                    onCallError()
+                    disposeSession()
+                    ringbackSound?.pause()
+                    errorSound?.start()
+                }
             }
         }
     }
@@ -263,11 +290,14 @@ class CallViewModel @Inject constructor(
      * assistance request, if the user is still waiting to be served.
      */
     fun endSession() {
+        invalidateSession()
+
         val call = this.call
         if (call != null) {
             call.hangUp()
         } else {
-            if (sessionState == AssistanceSessionState.WAITING) {
+            if (sessionState == AssistanceSessionState.WAITING
+                || sessionState == AssistanceSessionState.INITIALIZING) {
                 // Tell the backend we're gone. It's ok if this fails, the backend will notice on
                 // its own eventually.
                 appScope.launch {
@@ -358,18 +388,31 @@ class CallViewModel @Inject constructor(
         this.cameraSwitchSound = cameraSwitchSound
     }
 
-    private suspend fun createSession(): CommunicationTokenCredential {
+    private suspend fun createSession(
+        sessionGeneration: Long
+    ): CommunicationTokenCredential? {
         val requestAssistanceResponse = towerRepository.requestAssistance()
+        if (!isSessionActive(sessionGeneration)) {
+            try { towerRepository.cancelAssistance() } catch (_: Exception) { }
+            return null
+        }
         if (requestAssistanceResponse.keepaliveInterval != null) {
-            this.appScope.launch { sendKeepalives(requestAssistanceResponse.keepaliveInterval) }
+            keepaliveJob?.cancel()
+            keepaliveJob = this.appScope.launch {
+                sendKeepalives(
+                    requestAssistanceResponse.keepaliveInterval,
+                    sessionGeneration
+                )
+            }
         }
         return CommunicationTokenCredential(requestAssistanceResponse.userToken.token)
     }
 
-    private suspend fun sendKeepalives(keepAliveInterval: Int) {
+    private suspend fun sendKeepalives(keepAliveInterval: Int, sessionGeneration: Long) {
         val keepAliveIntervalMillis = keepAliveInterval * 1000L
         delay(keepAliveIntervalMillis)
-        while (this.sessionState == AssistanceSessionState.WAITING) {
+        while (isSessionActive(sessionGeneration)
+            && this.sessionState == AssistanceSessionState.WAITING) {
             try {
                 towerRepository.awaitAssistance()
             } catch (_: Exception) {
@@ -377,14 +420,16 @@ class CallViewModel @Inject constructor(
                 // already accepted the request and is still in the process of picking up though, so
                 // give it a little time.
                 delay(keepAliveIntervalMillis)
-                if (this.sessionState == AssistanceSessionState.WAITING) {
-                    // If we still haven't heard from the assistant by now, we probably have
-                    // a connection issue.
-                    onCallError()
-                    disposeSession()
-                    this.ringbackSound?.pause()
-                    this.errorSound?.start()
+                if (!isSessionActive(sessionGeneration)
+                    || this.sessionState != AssistanceSessionState.WAITING) {
+                    return
                 }
+                // If we still haven't heard from the assistant by now, we probably have
+                // a connection issue.
+                onCallError()
+                disposeSession()
+                this.ringbackSound?.pause()
+                this.errorSound?.start()
             }
             delay(keepAliveIntervalMillis)
         }
@@ -400,7 +445,12 @@ class CallViewModel @Inject constructor(
         return callAgent
     }
 
-    private fun handleIncomingCall(incomingCall: IncomingCall) {
+    private fun handleIncomingCall(incomingCall: IncomingCall, sessionGeneration: Long) {
+        if (!isSessionActive(sessionGeneration)) {
+            incomingCall.reject()
+            return
+        }
+
         sessionState = AssistanceSessionState.CONNECTING
         currentCamera = getCameraFacing(CameraFacing.BACK)
         cameraFacingUser = false
@@ -420,6 +470,13 @@ class CallViewModel @Inject constructor(
             disposeSession()
             onCallError()
             this.errorSound?.start()
+            return
+        }
+
+        if (!isSessionActive(sessionGeneration)) {
+            call?.hangUp()
+            disposeSession()
+            return
         }
 
         // Switch to speakerphone if possible.
@@ -460,6 +517,8 @@ class CallViewModel @Inject constructor(
     }
 
     private fun disposeSession() {
+        invalidateSession()
+
         callClient?.dispose()
         callAgent?.dispose()
         videoFrameSender?.disable()
@@ -480,6 +539,26 @@ class CallViewModel @Inject constructor(
 
         sessionState = AssistanceSessionState.DISCONNECTED
         isRequestingLocationUpdates = false
+    }
+
+    private fun nextSessionGeneration(): Long {
+        sessionGeneration += 1
+        return sessionGeneration
+    }
+
+    private fun isSessionActive(sessionGeneration: Long): Boolean =
+        this.sessionGeneration == sessionGeneration
+
+    private fun cancelSessionJobs() {
+        startSessionJob?.cancel()
+        startSessionJob = null
+        keepaliveJob?.cancel()
+        keepaliveJob = null
+    }
+
+    private fun invalidateSession() {
+        sessionGeneration += 1
+        cancelSessionJobs()
     }
 
     private fun getCameraFacing(@Suppress("SameParameterValue") cameraFacing: CameraFacing): VideoDeviceInfo? {
