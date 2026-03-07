@@ -1,14 +1,13 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2026.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
 
 package media.valo.tower_android.model
 
-import kotlin.time.Clock
-import kotlinx.datetime.Instant
 import kotlinx.serialization.Serializable
+import kotlin.time.Clock
 
 //
 //  UserToken.java
@@ -30,7 +29,7 @@ import kotlinx.serialization.Serializable
 data class UserToken(
     val user: User,
     val token: String,
-    val expiresOn: Instant
+    val expiresOn: kotlin.time.Instant
 )
 
 /**
