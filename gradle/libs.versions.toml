@@ -32,7 +32,7 @@ ktor = "3.3.0"
 slf4jAndroid = "1.7.36"
 coroutines = "1.10.2"
 azureCommunication = "2.14.0"
-kotlinxDatetime = "0.6.1"
+kotlinxDatetime = "0.7.1"
 accompanist = "0.37.3"
 playServicesLocation = "21.3.0"
 

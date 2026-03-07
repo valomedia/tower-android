@@ -6,9 +6,8 @@
 
 package media.valo.tower_android.model
 
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.Instant
-import kotlinx.datetime.serializers.InstantIso8601Serializer
 import kotlinx.serialization.Serializable
 
 //
@@ -31,7 +30,6 @@ import kotlinx.serialization.Serializable
 data class UserToken(
     val user: User,
     val token: String,
-    @Serializable(InstantIso8601Serializer::class)
     val expiresOn: Instant
 )
 
