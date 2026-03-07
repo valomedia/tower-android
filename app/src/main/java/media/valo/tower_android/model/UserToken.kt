@@ -26,6 +26,7 @@ import kotlinx.serialization.Serializable
  * @param token     The access token issued for the user.
  * @param expiresOn The expiry time of the token.
  */
+@OptIn(kotlin.time.ExperimentalTime::class)
 @Serializable
 data class UserToken(
     val user: User,
@@ -37,6 +38,7 @@ data class UserToken(
 /**
  * A dummy instance of `UserToken`.
  */
+@OptIn(kotlin.time.ExperimentalTime::class)
 val dummyUserToken = UserToken(
     user = dummyUser,
     token = "",

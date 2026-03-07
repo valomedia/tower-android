@@ -52,6 +52,7 @@ object MessageSerializer: JsonContentPolymorphicSerializer<Message>(Message::cla
 @Serializable(with = DataMessageSerializer::class)
 sealed class DataMessage: Message() {
 
+    @OptIn(kotlin.time.ExperimentalTime::class)
     @Serializable
     @SerialName("capturePhotoRequest")
     data class CapturePhotoRequest(
