@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2025.                                                        *
+ * Copyright (c) 2025-2026.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -9,7 +9,6 @@ package media.valo.tower_android.model
 import android.location.Location
 import android.os.Build
 import io.ktor.http.Url
-import kotlinx.datetime.Instant
 import kotlinx.serialization.PolymorphicSerializer
 import kotlinx.serialization.Required
 import kotlinx.serialization.SerialName
@@ -52,12 +51,13 @@ object MessageSerializer: JsonContentPolymorphicSerializer<Message>(Message::cla
 @Serializable(with = DataMessageSerializer::class)
 sealed class DataMessage: Message() {
 
+    @OptIn(kotlin.time.ExperimentalTime::class)
     @Serializable
     @SerialName("capturePhotoRequest")
     data class CapturePhotoRequest(
         val uploadUrl: Url,
         val key: String,
-        val expiresOn: Instant
+        val expiresOn: kotlin.time.Instant
     ): DataMessage()
 
     @Serializable
