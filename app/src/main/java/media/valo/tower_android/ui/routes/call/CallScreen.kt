@@ -34,6 +34,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,6 +58,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.R
+import media.valo.tower_android.billing.SubscriptionViewModel
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.local.video.RandomVideoDataSource
@@ -107,6 +110,8 @@ fun CallScreen(
     val activity = LocalActivity.current
     val accessibilityManager =
         context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
+    val subscriptionViewModel: SubscriptionViewModel = hiltViewModel()
+    val subscriptionState by subscriptionViewModel.uiState.collectAsState()
     val locationPermissionState = rememberMultiplePermissionsState(
         listOf(
             android.Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -124,12 +129,23 @@ fun CallScreen(
     }
 
     LaunchedEffect(Unit) {
-        if (viewModel.sessionState == AssistanceSessionState.DISCONNECTED) {
+        subscriptionViewModel.refresh()
+    }
+
+    LaunchedEffect(subscriptionState.isEntitled, viewModel.sessionState) {
+        if (subscriptionState.isEntitled
+                && viewModel.sessionState == AssistanceSessionState.DISCONNECTED) {
             viewModel.startSession {
                 viewModel.appScope.launch {
                     snackbarHostState.showSnackbar("Anruf fehlgeschlagen, bitte erneut versuchen.")
                 }
             }
+        }
+    }
+
+    LaunchedEffect(subscriptionState.isLoading, subscriptionState.isEntitled) {
+        if (!subscriptionState.isLoading && !subscriptionState.isEntitled) {
+            navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
         }
     }
 
