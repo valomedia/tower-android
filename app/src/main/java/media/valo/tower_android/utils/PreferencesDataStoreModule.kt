@@ -32,6 +32,7 @@ import javax.inject.Singleton
 private const val SETTINGS_DATA_STORE = "settings"
 private const val CREDENTIALS_DATA_STORE = "credentials"
 private const val PROFILE_DATA_STORE = "profile"
+private const val SUBSCRIPTION_DATA_STORE = "subscription"
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
@@ -44,6 +45,10 @@ annotation class CredentialsDataStore
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class ProfileDataStore
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class SubscriptionDataStore
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -74,6 +79,15 @@ class PreferencesDataStoreModule() {
         @ApplicationContext context: Context
     ): DataStore<Preferences> {
         return createPreferenceDataStore(context, PROFILE_DATA_STORE)
+    }
+
+    @SubscriptionDataStore
+    @Provides
+    @Singleton
+    fun provideSubscriptionDataStore(
+        @ApplicationContext context: Context
+    ): DataStore<Preferences> {
+        return createPreferenceDataStore(context, SUBSCRIPTION_DATA_STORE)
     }
 
     private fun createPreferenceDataStore(context: Context, name: String): DataStore<Preferences> {
