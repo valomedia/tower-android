@@ -33,6 +33,9 @@ android {
         targetSdk = 36
         versionCode = 14
         versionName = "1.1.1"
+        buildConfigField("String", "TOWER_BILLING_PRODUCT_ID", "\"tower_26_launch_monthly\"")
+        buildConfigField("String", "TOWER_BILLING_BASE_PLAN_ID", "\"\"")
+        buildConfigField("String", "TOWER_BILLING_OFFER_ID", "\"\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -102,6 +105,7 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     implementation(libs.accompanist.permissions)
     implementation(libs.play.services.location)
+    implementation(libs.billing)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
