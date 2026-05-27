@@ -1,0 +1,35 @@
+/******************************************************************************
+ * Copyright (c) 2024-2025.                                                   *
+ * valo.media GmbH                                                            *
+ * All rights reserved.                                                       *
+ ******************************************************************************/
+
+package media.valo.tower_android.data.local.preferences.loading
+
+//
+//  LoadingDataSource.kt
+//  Tower_Android
+//
+//  Created by:
+//      * jan Hofherr
+//
+
+/**
+ * A data source for information about the user.
+ */
+interface LoadingDataSource {
+
+    /**
+     * The version on the last login.
+     *
+     * This will be `null` when the pp is started for the first time.
+     */
+    val lastLoginAppVersion: String?
+
+    /**
+     * Change the version on the last login.
+     *
+     * @param current version.
+     */
+    suspend fun setLastLoginAppVersion(version: String?)
+}

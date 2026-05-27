@@ -189,6 +189,13 @@ fun AppBar(
                                     expanded = false
                                 }
                             )
+                            DropdownMenuItem(
+                                text = { Text("Neuigkeiten") },
+                                onClick = {
+                                    navController.navigate(route = NewsScreen)
+                                    expanded = false
+                                }
+                            )
                             if (isLoggedIn) {
                                 HorizontalDivider()
                                 DropdownMenuItem(

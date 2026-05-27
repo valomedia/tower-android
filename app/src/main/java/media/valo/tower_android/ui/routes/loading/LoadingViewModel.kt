@@ -36,7 +36,8 @@ import javax.inject.Inject
 class LoadingViewModel @Inject constructor(
     private val towerRepository: TowerRepository,
     private val credentialRepository: CredentialRepository,
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val loadingRepository: LoadingRepository
 ) : ViewModel() {
 
     private var indexResponse: IndexResponse? = null
@@ -82,6 +83,17 @@ class LoadingViewModel @Inject constructor(
         get() = BuildConfig.VERSION_NAME.substringBefore(".").toInt()
 
     /**
+     * The version of the app.
+     */
+    val appVersion
+        get() = BuildConfig.VERSION_NAME
+
+    /**
+     * The version of the app in the last session.
+     */
+    val lastLoginAppVersion: String? = viewModelScope.launch { loadingRepository.getLastLoginAppVersion() }
+
+    /**
      * Check whether the user has provided all required profile information.
      */
     suspend fun hasProfile(): Boolean = profileRepository.hasProfile()
@@ -102,4 +114,19 @@ class LoadingViewModel @Inject constructor(
             return false
         }
     }
+
+    /**
+     * Get the version on the last login (if any).
+     *
+     * @return The version on the last login , or `null` if it is unset (first login).
+     */
+    suspend fun getLastLoginAppVersion(): String? = loadingRepository.getLastLoginAppVersion()
+
+    /**
+     * Change the version on the last login.
+     *
+     * @param Current version.
+     */
+    fun setLastLoginAppVersion(version: String?) =
+        viewModelScope.launch { loadingRepository.setLastLoginAppVersion(version) }
 }

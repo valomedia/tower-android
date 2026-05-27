@@ -69,6 +69,8 @@ fun LoadingScreen(
         val schedule = viewModel.schedule
         val backendMajorVersion = viewModel.backendMajorVersion
         val appMajorVersion = viewModel.appMajorVersion
+        val appVersion = viewModel.appVersion
+        val lastLoginAppVersion = viewModel.lastLoginAppVersion
 
         /**
          * Wether the app needs to be updated.
@@ -81,11 +83,23 @@ fun LoadingScreen(
             backendMajorVersion > appMajorVersion || backendMajorVersion == -1
         } else {null}
 
+        /**
+         * Wether the app is opened the first time.
+         */
+        val firstLogin = if(!lastLoginAppVersion)
+
+        /**
+         * Wether the app is opened the first time after updating.
+         */
+        val hasNewFeatures = if (appVersion != lastLoginAppVersion)
+
+        viewModel.setLastLoginAppVersion(appVersion);
 
         when {
             isAppUpdateNeeded == true -> navController.navigate(route = OutdatedAppVersionScreen) { popUpTo(navController.graph.id) }
             !isConnected || !viewModel.hasProfile() || isServiceOpen == null || schedule == null || isAppUpdateNeeded == null -> navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
             !isServiceOpen -> navController.navigate(route = ClosedScreen(currentSchedule = schedule)) { popUpTo(navController.graph.id) }
+            hasNewFeatures && !firstLogin -> navController.navigate(route = NewsScreen) { popUpTo(navController.graph.id) }
             else -> navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
         }
     }
@@ -111,7 +125,8 @@ fun LoadingScreenPreview() {
             viewModel = LoadingViewModel(
                 towerRepository = TowerRepository(DummyTowerDataSource()),
                 credentialRepository = CredentialRepository(DummyCredentialDataSource()),
-                profileRepository = ProfileRepository(DummyProfileDataSource())
+                profileRepository = ProfileRepository(DummyProfileDataSource()),
+                loadingRepository = LoadingRepository(DummyLoadingDataSource())
             ),
             modifier = Modifier
                 .padding(innerPadding)

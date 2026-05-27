@@ -147,6 +147,11 @@ fun TowerApp(navController: NavHostController) {
                         modifier = modifier
                     )
                 }
+                composable<NewsScreen> {
+                    NewsScreen(
+                        modifier = modifier
+                    )
+                }
                 composable<ClosedScreen> {
                     backStackEntry ->
                     val closedScreen: ClosedScreen = backStackEntry.toRoute()
