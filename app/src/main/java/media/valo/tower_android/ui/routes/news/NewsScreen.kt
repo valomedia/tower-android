@@ -46,27 +46,34 @@ fun NewsScreen(
 ) {
     val scrollState = rememberScrollState()
 
+    Text(
+        style = MaterialTheme.typography.titleLarge,
+        text = "Neuigkeiten",
+        modifier = Modifier.padding(8.dp)
+    )
     Column(
         modifier = modifier.verticalScroll(scrollState),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = AbsoluteAlignment.Left
     ) {
         Text(
-            "Neuigkeiten",
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleMedium,
+            text = "1.1.0",
             modifier = Modifier.padding(8.dp)
         )
-        /*Text(
-            "Version1"
+        Text(
+            "- Termine können jetzt auch außerhalb der Öffnungszeiten vereinbart werden." + "\n" +
+            "- Die Eingabe der E-Mail Adresse ist verpflichtend." + "\n" +
+            "- Der Kontaktbildschirm ist noch barrierefreier." + "\n" +
+            "- Wenn während einem Anruf der/die Assistent/in die Kamera wechselt oder ein Foto aufnimmt, gibt es einen Signalton." + "\n" +
+            "- Der/Die Assistent/in kann bei einem Anruf die Taschenlampe einschalten, um besser sehen zu können.",
+            modifier = Modifier.padding(8.dp)
+        )
+        /*HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+        Text(
+            "ältereVersion"
         )
         Text(
-            "Änderungen1"
-        )
-        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-        Text(
-            "Version2"
-        )
-        Text(
-            "Änderungen2"
+            "ältereÄnderungen"
         )*/
     }
 }
