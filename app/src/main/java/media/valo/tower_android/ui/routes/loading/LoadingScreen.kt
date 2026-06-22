@@ -32,6 +32,8 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.credentials.DummyCredentialDataSource
+import media.valo.tower_android.data.local.preferences.loading.DummyLoadingDataSource
+import media.valo.tower_android.data.local.preferences.loading.LoadingRepository
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.DummyTowerDataSource
@@ -41,6 +43,7 @@ import media.valo.tower_android.ui.elements.Logo
 import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.ui.routes.closed.ClosedScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
+import media.valo.tower_android.ui.routes.news.NewsScreen
 import media.valo.tower_android.ui.routes.outdated.OutdatedAppVersionScreen
 
 /**
@@ -70,10 +73,10 @@ fun LoadingScreen(
         val backendMajorVersion = viewModel.backendMajorVersion
         val appMajorVersion = viewModel.appMajorVersion
         val appVersion = viewModel.appVersion
-        val lastLoginAppVersion = viewModel.lastLoginAppVersion
+        val lastLoginAppVersion = viewModel.getLastLoginAppVersion()
 
         /**
-         * Wether the app needs to be updated.
+         * Whether the app needs to be updated.
          *
          * The app needs to be updated if:
          * - the backend major version is greater than the app major version
@@ -84,16 +87,16 @@ fun LoadingScreen(
         } else {null}
 
         /**
-         * Wether the app is opened the first time.
+         * Whether the app is opened the first time.
          */
-        val firstLogin = if(!lastLoginAppVersion)
+        val firstLogin = lastLoginAppVersion.isNullOrEmpty()
 
         /**
-         * Wether the app is opened the first time after updating.
+         * Whether the app is opened the first time after updating.
          */
-        val hasNewFeatures = if (appVersion != lastLoginAppVersion)
+        val hasNewFeatures = appVersion != lastLoginAppVersion
 
-        viewModel.setLastLoginAppVersion(appVersion);
+        viewModel.setLastLoginAppVersion(appVersion)
 
         when {
             isAppUpdateNeeded == true -> navController.navigate(route = OutdatedAppVersionScreen) { popUpTo(navController.graph.id) }

@@ -30,12 +30,12 @@ class LoadingRepository @Inject constructor(
      *
      * @return The version on the last login , or `null` if it is unset (first login).
      */
-    suspend fun getLastLoginAppVersion(): String? = loginDataSource.lastLoginAppVersion
+    suspend fun getLastLoginAppVersion(): String? = loadingDataSource.lastLoginAppVersionFlow.firstOrNull()
 
     /**
      * Change the version on the last login.
      *
      * @param Current version.
      */
-    suspend fun setLastLoginAppVersion(version: String?) = loginDataSource.setLastLoginAppVersion(version)
+    suspend fun setLastLoginAppVersion(version: String?) = loadingDataSource.setLastLoginAppVersion(version)
 }

@@ -17,6 +17,9 @@ package media.valo.tower_android.data.local.preferences.loading
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import media.valo.tower_android.utils.SettingsDataStore
 import media.valo.tower_android.utils.get
 import media.valo.tower_android.utils.set
@@ -28,12 +31,12 @@ import javax.inject.Inject
  * @param dataStore `DataStore` dependency.
  */
 class DataStoreLoadingDataSource @Inject constructor(
-    @LodaingDataStore private val dataStore: DataStore<Preferences>
+    @LoadingDataStore private val dataStore: DataStore<Preferences>
 ) : LoadingDataSource {
 
     private val lastLoginAppVersionKey: Preferences.Key<String> = stringPreferencesKey("lastLoginAppVersion")
 
-    override val lastLoginAppVersion: String? = dataStore.get(lastLoginAppVersionKey)
+    override val lastLoginAppVersionFlow: Flow<String?> = dataStore.get(lastLoginAppVersionKey)
 
     override suspend fun setLastLoginAppVersion(version: String?) =
         dataStore.set(lastLoginAppVersionKey, version)

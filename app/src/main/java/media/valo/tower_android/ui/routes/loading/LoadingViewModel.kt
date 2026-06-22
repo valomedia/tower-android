@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import media.valo.tower_android.BuildConfig
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
+import media.valo.tower_android.data.local.preferences.loading.LoadingRepository
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.IndexResponse
@@ -89,11 +90,6 @@ class LoadingViewModel @Inject constructor(
         get() = BuildConfig.VERSION_NAME
 
     /**
-     * The version of the app in the last session.
-     */
-    val lastLoginAppVersion: String? = viewModelScope.launch { loadingRepository.getLastLoginAppVersion() }
-
-    /**
      * Check whether the user has provided all required profile information.
      */
     suspend fun hasProfile(): Boolean = profileRepository.hasProfile()
@@ -125,8 +121,8 @@ class LoadingViewModel @Inject constructor(
     /**
      * Change the version on the last login.
      *
-     * @param Current version.
+     * @param version Current version.
      */
-    fun setLastLoginAppVersion(version: String?) =
-        viewModelScope.launch { loadingRepository.setLastLoginAppVersion(version) }
+    suspend fun setLastLoginAppVersion(version: String?) =
+        loadingRepository.setLastLoginAppVersion(version)
 }

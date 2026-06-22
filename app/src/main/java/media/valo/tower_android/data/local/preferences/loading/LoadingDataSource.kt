@@ -6,6 +6,8 @@
 
 package media.valo.tower_android.data.local.preferences.loading
 
+import kotlinx.coroutines.flow.Flow
+
 //
 //  LoadingDataSource.kt
 //  Tower_Android
@@ -22,14 +24,14 @@ interface LoadingDataSource {
     /**
      * The version on the last login.
      *
-     * This will be `null` when the pp is started for the first time.
+     * This will be `null` when the app is started for the first time.
      */
-    val lastLoginAppVersion: String?
+    val lastLoginAppVersionFlow: Flow<String?>
 
     /**
      * Change the version on the last login.
      *
-     * @param current version.
+     * @param version  current version.
      */
     suspend fun setLastLoginAppVersion(version: String?)
 }
