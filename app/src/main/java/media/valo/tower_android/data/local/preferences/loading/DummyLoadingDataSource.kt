@@ -6,6 +6,9 @@
 
 package media.valo.tower_android.data.local.preferences.loading
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+
 //
 //  DummyLoadingDataSource.kt
 //  Tower_Android
@@ -21,7 +24,7 @@ package media.valo.tower_android.data.local.preferences.loading
  */
 class DummyLoadingDataSource : LoadingDataSource {
 
-    override val lastLoginAppVersion: String? = null
+    override val lastLoginAppVersionFlow: Flow<String?> = flow { emit(null) }
 
     override suspend fun setLastLoginAppVersion(version: String?) = Unit
 

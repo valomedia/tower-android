@@ -14,6 +14,7 @@ package media.valo.tower_android.data.local.preferences.loading
 //      * Jan Hofherr
 //
 
+import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 
 /**
