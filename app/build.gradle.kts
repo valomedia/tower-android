@@ -68,6 +68,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 
     project.tasks.preBuild.dependsOn(":wrapper")
 }
@@ -103,6 +108,8 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.play.services.location)
     testImplementation(libs.junit)
+    testImplementation(libs.androidx.test.core)
+    testImplementation(libs.robolectric)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
