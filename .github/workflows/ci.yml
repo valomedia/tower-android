@@ -1,4 +1,4 @@
-name: Unit tests
+name: CI
 
 on:
   pull_request:
@@ -16,19 +16,19 @@ jobs:
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@main
+        uses: actions/checkout@v7
 
       - name: Set up JDK
-        uses: actions/setup-java@main
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 17
 
       - name: Set up Android SDK
-        uses: android-actions/setup-android@main
+        uses: android-actions/setup-android@v4
 
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@main
+        uses: gradle/actions/setup-gradle@v6
         with:
           gradle-version: 8.13
 
