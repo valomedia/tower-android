@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    name: Run unit tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: 8.13
+
+      - name: Run unit tests
+        run: gradle testDebugUnitTest --no-daemon
+
+      - name: Verify Robolectric tests ran
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test_results_dir="app/build/test-results/testDebugUnitTest"
+          if [[ ! -d "${test_results_dir}" ]]; then
+            echo "::error::Missing unit-test results at ${test_results_dir}"
+            exit 1
+          fi
+
+          for test_class in \
+            AndroidManifestRobolectricTest \
+            DataStoreCredentialDataSourceRobolectricTest \
+            DataStoreProfileDataSourceRobolectricTest \
+            DataStoreSettingsDataSourceRobolectricTest
+          do
+            if ! grep -R --include='TEST-*.xml' -q "${test_class}" "${test_results_dir}"; then
+              echo "::error::${test_class} did not run during testDebugUnitTest"
+              exit 1
+            fi
+          done
