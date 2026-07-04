@@ -34,3 +34,26 @@ jobs:
 
       - name: Run unit tests
         run: gradle testDebugUnitTest --no-daemon
+
+      - name: Verify Robolectric tests ran
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test_results_dir="app/build/test-results/testDebugUnitTest"
+          if [[ ! -d "${test_results_dir}" ]]; then
+            echo "::error::Missing unit-test results at ${test_results_dir}"
+            exit 1
+          fi
+
+          for test_class in \
+            AndroidManifestRobolectricTest \
+            DataStoreCredentialDataSourceRobolectricTest \
+            DataStoreProfileDataSourceRobolectricTest \
+            DataStoreSettingsDataSourceRobolectricTest
+          do
+            if ! grep -R --include='TEST-*.xml' -q "${test_class}" "${test_results_dir}"; then
+              echo "::error::${test_class} did not run during testDebugUnitTest"
+              exit 1
+            fi
+          done
