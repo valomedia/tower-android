@@ -105,6 +105,7 @@ fun CallScreen(
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val activity = LocalActivity.current
+    val statusMessage = viewModel.sessionStatusMessage
     val accessibilityManager =
         context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
     val locationPermissionState = rememberMultiplePermissionsState(
@@ -137,7 +138,10 @@ fun CallScreen(
         if (viewModel.sessionState == AssistanceSessionState.DISCONNECTED) {
             navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
         }
-        announceStateChange(context, accessibilityManager, viewModel.sessionState.toString())
+    }
+
+    LaunchedEffect(statusMessage) {
+        announceStateChange(context, accessibilityManager, statusMessage)
     }
 
     LaunchedEffect(
@@ -218,7 +222,7 @@ private fun NormalUi(
                 )
             }
             Text(
-                viewModel.sessionState.toString(),
+                viewModel.sessionStatusMessage,
                 modifier = Modifier
                     .padding(8.dp)
                     .semantics { invisibleToUser() })

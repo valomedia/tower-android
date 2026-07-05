@@ -61,6 +61,8 @@ class TowerRepository @Inject constructor(
      *
      * This will inform the backend, that the caller is still on the line, so the assistance request
      * doesn't time out.
+     *
+     * @return The current position in the assistance queue.
      */
     suspend fun awaitAssistance() = towerDataSource.awaitAssistance()
 

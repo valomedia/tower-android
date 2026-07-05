@@ -65,6 +65,7 @@ import media.valo.tower_android.data.local.video.VideoRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
 import media.valo.tower_android.model.DataMessage
+import media.valo.tower_android.model.toDisplayString
 import media.valo.tower_android.model.Message
 import media.valo.tower_android.utils.AppScope
 import media.valo.tower_android.utils.sendMessage
@@ -182,6 +183,18 @@ class CallViewModel @Inject constructor(
     var sessionState by mutableStateOf(AssistanceSessionState.DISCONNECTED)
 
     /**
+     * The zero-indexed position of the user in the assistance queue, if known.
+     */
+    var queuePosition by mutableStateOf<Int?>(null)
+        private set
+
+    /**
+     * The user-facing status message for the current assistance session.
+     */
+    val sessionStatusMessage: String
+        get() = sessionState.toDisplayString(queuePosition)
+
+    /**
      * Whether the assistant has requested the user's location.
      *
      * This is true, if location has been requested by the assistant, but location data is not (yet)
@@ -246,6 +259,7 @@ class CallViewModel @Inject constructor(
         val sessionGeneration = nextSessionGeneration()
 
         sessionState = AssistanceSessionState.INITIALIZING
+        queuePosition = null
         this.onCallError = onCallError
 
         configureAudio()
@@ -414,7 +428,12 @@ class CallViewModel @Inject constructor(
         while (isSessionActive(sessionGeneration)
             && this.sessionState == AssistanceSessionState.WAITING) {
             try {
-                towerRepository.awaitAssistance()
+                val reportedQueuePosition = towerRepository.awaitAssistance().position
+                if (!isSessionActive(sessionGeneration)
+                    || this.sessionState != AssistanceSessionState.WAITING) {
+                    return
+                }
+                this.queuePosition = reportedQueuePosition
             } catch (_: Exception) {
                 // Got an error updating the request. This might be because this assistant has
                 // already accepted the request and is still in the process of picking up though, so
@@ -452,6 +471,7 @@ class CallViewModel @Inject constructor(
         }
 
         sessionState = AssistanceSessionState.CONNECTING
+        queuePosition = null
         currentCamera = getCameraFacing(CameraFacing.BACK)
         cameraFacingUser = false
         videoFrameSender = VideoFrameSender(
@@ -537,6 +557,7 @@ class CallViewModel @Inject constructor(
         dataChannelSender = null
         dataChannelReceiver = null
 
+        queuePosition = null
         sessionState = AssistanceSessionState.DISCONNECTED
         isRequestingLocationUpdates = false
     }

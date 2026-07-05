@@ -40,3 +40,16 @@ enum class AssistanceSessionState {
     }
 
 }
+
+/**
+ * Returns the user-facing status message for the current assistance session.
+ *
+ * @param queuePosition The zero-indexed queue position, if the backend has reported it.
+ */
+fun AssistanceSessionState.toDisplayString(queuePosition: Int?): String =
+    when {
+        this != AssistanceSessionState.WAITING || queuePosition == null -> toString()
+        queuePosition == 0 -> "Wir sind gleich für dich da"
+        queuePosition == 1 -> "Eine Person vor dir"
+        else -> "$queuePosition Personen vor dir"
+    }
