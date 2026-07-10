@@ -35,6 +35,31 @@ jobs:
       - name: Build debug app
         run: gradle assembleDebug --no-daemon
 
+  lint:
+    name: Run Android lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v6
+        with:
+          gradle-version: 8.13
+
+      - name: Run Android lint
+        run: gradle lintDebug --no-daemon
+
   unit-tests:
     name: Run unit tests
     runs-on: ubuntu-latest
