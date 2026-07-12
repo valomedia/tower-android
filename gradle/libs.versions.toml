@@ -4,14 +4,6 @@
 # All rights reserved.                                                         #
 ################################################################################
 
-##
-##  libs.versions.toml
-##  Tower_Android
-##
-##  Created by:
-##      * Jean-Pierre Höhmann
-##
-
 [versions]
 agp = "8.13.0"
 kotlin = "2.2.20"

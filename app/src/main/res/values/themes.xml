@@ -6,14 +6,6 @@
   ~ All rights reserved.                                                      ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<!--
-  - themes.xml
-  - Tower_Android
-  -
-  - Created by:
-  -     * Jean-Pierre Höhmann
-  -->
-
 <resources>
 
     <style name="Theme.Tower_Android" parent="android:Theme.Material.Light.NoActionBar" />

@@ -8,14 +8,6 @@ package media.valo.tower_android.model
 
 import kotlinx.serialization.Serializable
 
-//
-//  RegisterUserResponse.java
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 /**
  * The data returned by the `/registerUser`-endpoint.
  *

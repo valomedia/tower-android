@@ -6,15 +6,6 @@
 
 package media.valo.tower_android.ui.routes.loading
 
-//
-//  LoadingScreen.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//      * mvlexs
-//
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

@@ -37,14 +37,6 @@ import media.valo.tower_android.utils.AppScope
 import media.valo.tower_android.utils.sendMessage
 import java.io.ByteArrayOutputStream
 
-//
-//  VideoFrameSender.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 private const val TAG = "VideoFrameSender"
 private const val ROTATION_STEP = 90
 private const val JPEG_QUALITY = 50

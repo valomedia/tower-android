@@ -6,14 +6,6 @@
 
 package media.valo.tower_android.utils
 
-//
-//  IntExtensions.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 /**
  * Whether the `Int` is divisible by two.
  */

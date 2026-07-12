@@ -29,15 +29,6 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
 
-//
-//  ConnectionError.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//      * mvlexs
-//
-
 /**
  * A message telling the user that the app could not connect to the service, with a button to retry.
  *

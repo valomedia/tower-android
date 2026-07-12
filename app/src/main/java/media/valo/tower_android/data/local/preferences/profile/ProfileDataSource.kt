@@ -6,14 +6,6 @@
 
 package media.valo.tower_android.data.local.preferences.profile
 
-//
-//  ProfileDataSource.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDate
 import media.valo.tower_android.model.Gender

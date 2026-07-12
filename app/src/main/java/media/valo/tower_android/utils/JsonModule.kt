@@ -18,14 +18,6 @@ import media.valo.tower_android.model.DataMessage
 import media.valo.tower_android.model.ErrorMessage
 import javax.inject.Singleton
 
-//
-//  JsonModule.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 @Module
 @InstallIn(SingletonComponent::class)
 class JsonModule() {

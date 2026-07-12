@@ -13,14 +13,6 @@ import androidx.datastore.preferences.core.Preferences
 import java.io.File
 import kotlinx.coroutines.CoroutineScope
 
-//
-//  RobolectricTestDataStores.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Yatsar (Agent)
-//
-
 fun createTemporaryPreferencesDataStore(
     context: Context,
     scope: CoroutineScope,

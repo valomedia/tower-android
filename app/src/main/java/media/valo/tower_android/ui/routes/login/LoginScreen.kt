@@ -6,14 +6,6 @@
 
 package media.valo.tower_android.ui.routes.login
 
-//
-//  LoginScreen.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth

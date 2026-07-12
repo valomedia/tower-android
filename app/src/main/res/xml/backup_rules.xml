@@ -6,12 +6,4 @@
   ~ All rights reserved.                                                      ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<!--
-  - backup_rules.xml
-  - Tower_Android
-  -
-  - Created by:
-  -     * Jean-Pierre Höhmann
-  -->
-
 <full-backup-content />

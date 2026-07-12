@@ -4,14 +4,6 @@
   ~ All rights reserved.                                                      ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<!--
-  - strings.xml
-  - Tower_Android
-  -
-  - Created by:
-  -     * Jean-Pierre Höhmann
-  -->
-
 <resources>
     <string name="app_name">Tower Fernassistenz</string>
 </resources>

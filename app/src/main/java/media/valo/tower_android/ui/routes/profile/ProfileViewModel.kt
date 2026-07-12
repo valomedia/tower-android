@@ -6,14 +6,6 @@
 
 package media.valo.tower_android.ui.routes.profile
 
-//
-//  ProfileViewModel.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.datetime.LocalDate

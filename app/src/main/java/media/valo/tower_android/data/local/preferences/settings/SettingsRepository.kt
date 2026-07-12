@@ -6,14 +6,6 @@
 
 package media.valo.tower_android.data.local.preferences.settings
 
-//
-//  SettingsRepository.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map

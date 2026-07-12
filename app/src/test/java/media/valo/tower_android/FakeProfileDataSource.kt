@@ -6,14 +6,6 @@
 
 package media.valo.tower_android
 
-//
-//  FakeProfileDataSource.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.datetime.LocalDate

@@ -11,14 +11,6 @@ import com.azure.android.communication.calling.VideoStreamPixelFormat
 import com.azure.android.communication.calling.VideoStreamResolution
 import media.valo.tower_android.utils.width
 
-//
-//  CallQualityLevel.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 /**
  * The various video format the stream will switch to depending on the quality of the connection.
  */

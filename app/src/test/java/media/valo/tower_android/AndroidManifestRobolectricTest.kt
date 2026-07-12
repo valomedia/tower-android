@@ -17,14 +17,6 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
-//
-//  AndroidManifestRobolectricTest.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Yatsar (Agent)
-//
-
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class)
 class AndroidManifestRobolectricTest {

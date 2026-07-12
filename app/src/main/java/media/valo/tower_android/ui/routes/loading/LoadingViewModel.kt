@@ -6,15 +6,6 @@
 
 package media.valo.tower_android.ui.routes.loading
 
-//
-//  LoadingViewModel.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//      * mvlexs
-//
-
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import media.valo.tower_android.BuildConfig

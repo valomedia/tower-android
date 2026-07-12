@@ -6,14 +6,6 @@
   ~ All rights reserved.                                                      ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<!--
-  - logo.xml
-  - Tower_Android
-  -
-  - Created by:
-  -     * Jean-Pierre Höhmann
-  -->
-
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="283dp"
     android:height="283dp"

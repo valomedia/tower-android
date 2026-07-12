@@ -14,14 +14,6 @@ import kotlinx.serialization.json.JsonTransformingSerializer
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
-//
-//  JsonPropertyClassDiscriminationSerializer.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 /**
  * Modify a polymorphic JSON serializer to use an object property as a class discriminator.
  *

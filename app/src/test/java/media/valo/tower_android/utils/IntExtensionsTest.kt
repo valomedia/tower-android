@@ -10,14 +10,6 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
-//
-//  IntExtensionsTest.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Yatsar (Agent)
-//
-
 class IntExtensionsTest {
 
     @Test

@@ -4,14 +4,6 @@
 # All rights reserved.                                                         #
 ################################################################################
 
-##
-##  .gitignore
-##  Tower_Android
-##
-##  Created by:
-##      * Jean-Pierre Höhmann
-##
-
 # Gradle
 .gradle/
 build/

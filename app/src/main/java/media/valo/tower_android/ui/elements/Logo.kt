@@ -6,14 +6,6 @@
 
 package media.valo.tower_android.ui.elements
 
-//
-//  Logo.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

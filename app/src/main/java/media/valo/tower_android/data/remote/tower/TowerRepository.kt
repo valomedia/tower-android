@@ -6,14 +6,6 @@
 
 package media.valo.tower_android.data.remote.tower
 
-//
-//  TowerRepository.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 import javax.inject.Inject
 
 /**

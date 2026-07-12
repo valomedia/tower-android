@@ -8,14 +8,6 @@ package media.valo.tower_android.data.remote.newsletter
 
 import javax.inject.Inject
 
-//
-//  NewsletterRepository.kt
-//  Tower_Android
-//
-//  Created by:
-//      * mvlexs
-//
-
 /**
  * A repository for the Newsletter signup api.
  *

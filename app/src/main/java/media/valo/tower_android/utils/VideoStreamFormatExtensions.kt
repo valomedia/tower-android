@@ -11,14 +11,6 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import kotlin.math.ceil
 
-//
-//  VideoStreamFormatExtensions.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 /**
  * Allocate the buffers needed to produce a `RawVideoFrameBuffer` with this format.
  *

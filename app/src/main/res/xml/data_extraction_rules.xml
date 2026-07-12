@@ -6,14 +6,6 @@
   ~ All rights reserved.                                                      ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<!--
-  - data_extraction_rules.xml
-  - Tower_Android
-  -
-  - Created by:
-  -     * Jean-Pierre Höhmann
-  -->
-
 <data-extraction-rules>
     <cloud-backup />
 </data-extraction-rules>

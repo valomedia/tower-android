@@ -6,14 +6,6 @@
 
 package media.valo.tower_android.model
 
-//
-//  HttpTowerDataSource.kt
-//  Tower_Android
-//
-//  Created by:
-//      * mvlexs
-//
-
 import kotlinx.serialization.Serializable
 
 /**

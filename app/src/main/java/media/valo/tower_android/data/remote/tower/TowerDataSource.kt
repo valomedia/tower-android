@@ -10,15 +10,6 @@ import media.valo.tower_android.model.IndexResponse
 import media.valo.tower_android.model.RegisterUserResponse
 import media.valo.tower_android.model.RequestAssistanceResponse
 
-//
-//  TowerDataSource.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//      * mvlexs
-//
-
 /**
  * A data source representing the TOWER api.
  */

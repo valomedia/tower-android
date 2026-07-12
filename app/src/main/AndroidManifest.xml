@@ -6,15 +6,6 @@
   ~ All rights reserved.                                                      ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
-<!--
-  - AndroidManifest.xml
-  - Tower_Android
-  -
-  - Created by:
-  -     * Jean-Pierre Höhmann
-  -     * mvlexs
-  -->
-
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="media.valo.tower_android">

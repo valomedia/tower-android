@@ -10,14 +10,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
 
-//
-//  BooleanExtensionsTest.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Yatsar (Agent)
-//
-
 class BooleanExtensionsTest {
 
     @Test

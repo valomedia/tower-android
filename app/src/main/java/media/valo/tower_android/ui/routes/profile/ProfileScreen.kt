@@ -6,14 +6,6 @@
 
 package media.valo.tower_android.ui.routes.profile
 
-//
-//  ProfileScreen.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

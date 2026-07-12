@@ -69,15 +69,6 @@ import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.utils.CoroutineScopeModule
 import media.valo.tower_android.utils.JsonModule
 
-//
-//  CallScreen.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//      * mvlexs
-//
-
 private const val REQUEST_CHECK_SETTINGS = 1
 
 /**

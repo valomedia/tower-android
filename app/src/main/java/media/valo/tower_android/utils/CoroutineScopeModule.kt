@@ -6,14 +6,6 @@
 
 package media.valo.tower_android.utils
 
-//
-//  CoroutineScopeModule.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

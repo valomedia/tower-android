@@ -48,15 +48,6 @@ import media.valo.tower_android.ui.elements.Logo
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
 import media.valo.tower_android.utils.CoroutineScopeModule
 
-//
-//  SignupForm.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//      * mvlexs
-//
-
 /**
  * A form for entering name and e-mail, shown to the user when first opening the app.
  *

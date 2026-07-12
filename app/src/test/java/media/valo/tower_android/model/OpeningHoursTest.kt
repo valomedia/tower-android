@@ -14,14 +14,6 @@ import kotlinx.serialization.json.JsonPrimitive
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-//
-//  OpeningHoursTest.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Yatsar (Agent)
-//
-
 class OpeningHoursTest {
 
     @Test

@@ -11,14 +11,6 @@ import android.util.Size
 import com.azure.android.communication.calling.RawVideoFrameBuffer
 import com.azure.android.communication.calling.VideoStreamFormat
 
-//
-//  DummyVideoDataSource.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 /**
  * A dummy implementation of `VideoDataSource`.
  */

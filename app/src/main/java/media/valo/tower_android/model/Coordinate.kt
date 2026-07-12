@@ -9,14 +9,6 @@ package media.valo.tower_android.model
 import android.location.Location
 import kotlinx.serialization.Serializable
 
-//
-//  Coordinate.kt
-//  Tower_Android
-//
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
-
 /**
  * A latitude and longitude.
  *
