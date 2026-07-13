@@ -4,6 +4,11 @@
   ~ All rights reserved.                                                      ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
+<!--
+  - strings.xml
+  - Tower_Android
+  -->
+
 <resources>
     <string name="app_name">Tower Fernassistenz</string>
 </resources>

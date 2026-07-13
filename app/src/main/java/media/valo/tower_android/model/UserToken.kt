@@ -9,6 +9,11 @@ package media.valo.tower_android.model
 import kotlinx.serialization.Serializable
 import kotlin.time.Clock
 
+//
+//  UserToken.java
+//  Tower_Android
+//
+
 /**
  * A user associated with an access token.
  *

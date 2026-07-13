@@ -6,6 +6,11 @@
 
 package media.valo.tower_android.data.local.preferences
 
+//
+//  PreferencesManager.kt
+//  Tower_Android
+//
+
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.local.preferences.settings.SettingsRepository

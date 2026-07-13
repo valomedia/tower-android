@@ -32,6 +32,11 @@ import media.valo.tower_android.utils.allocateBuffers
 import media.valo.tower_android.utils.isEven
 import javax.inject.Inject
 
+//
+//  CameraVideoDataSource.kt
+//  Tower_Android
+//
+
 private const val FULL_ROTATION = 360
 
 /**

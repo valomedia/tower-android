@@ -4,6 +4,11 @@
 # All rights reserved.                                                         #
 ################################################################################
 
+##
+##  proguard-rules.pro
+##  Tower_Android
+##
+
 #
 # Project specific ProGuard rules.
 #

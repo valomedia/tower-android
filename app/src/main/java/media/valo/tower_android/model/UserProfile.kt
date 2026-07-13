@@ -9,6 +9,11 @@ package media.valo.tower_android.model
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
+//
+//  UserProfile.kt
+//  Tower_Android
+//
+
 /**
  * The profile information of the user, as provided to the assistant.
  *

@@ -8,6 +8,11 @@ package media.valo.tower_android.utils
 
 import com.azure.android.communication.calling.VideoStreamResolution
 
+//
+//  VideoStreamResolutionExtensions.kt
+//  Tower_Android
+//
+
 /**
  * The width in pixels of the video resolution standard.
  */

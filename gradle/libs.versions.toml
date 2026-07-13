@@ -4,6 +4,11 @@
 # All rights reserved.                                                         #
 ################################################################################
 
+##
+##  libs.versions.toml
+##  Tower_Android
+##
+
 [versions]
 agp = "8.13.0"
 kotlin = "2.2.20"

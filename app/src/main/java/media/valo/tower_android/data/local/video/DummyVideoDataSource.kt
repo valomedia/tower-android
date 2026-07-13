@@ -11,6 +11,11 @@ import android.util.Size
 import com.azure.android.communication.calling.RawVideoFrameBuffer
 import com.azure.android.communication.calling.VideoStreamFormat
 
+//
+//  DummyVideoDataSource.kt
+//  Tower_Android
+//
+
 /**
  * A dummy implementation of `VideoDataSource`.
  */

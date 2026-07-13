@@ -4,6 +4,11 @@
 # All rights reserved.                                                         #
 ################################################################################
 
+##
+##  .gitignore
+##  Tower_Android
+##
+
 # Gradle
 .gradle/
 build/

@@ -10,6 +10,11 @@ import kotlinx.serialization.Required
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.BuildConfig
 
+//
+//  ClientInfo.java
+//  Tower_Android
+//
+
 /**
  * Information about the app.
  *

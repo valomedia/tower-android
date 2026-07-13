@@ -6,6 +6,11 @@
 
 package media.valo.tower_android
 
+//
+//  MainActivity.kt
+//  Tower_Android
+//
+
 import android.app.PictureInPictureParams
 import android.content.pm.PackageManager
 import android.os.Bundle

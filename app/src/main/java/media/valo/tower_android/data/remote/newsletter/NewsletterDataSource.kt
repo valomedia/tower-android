@@ -6,6 +6,10 @@
 
 package media.valo.tower_android.data.remote.newsletter
 
+//
+//  NewsletterDataSource.kt
+//  Tower_Android
+//
 /**
  * A data source representing the Newsletter signup api.
  */

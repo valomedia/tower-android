@@ -6,6 +6,11 @@
   ~ All rights reserved.                                                      ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
+<!--
+  - data_extraction_rules.xml
+  - Tower_Android
+  -->
+
 <data-extraction-rules>
     <cloud-backup />
 </data-extraction-rules>

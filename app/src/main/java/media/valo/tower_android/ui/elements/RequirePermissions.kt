@@ -24,6 +24,11 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 
+//
+//  RequirePermissions.kt
+//  Tower_Android
+//
+
 /**
  * Wrapper for any functionality that requires permissions.
  *

@@ -13,6 +13,11 @@ import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.utils.NewsletterHttpClient
 import javax.inject.Inject
 
+//
+//  HttpNewsletterDataSource.kt
+//  Tower_Android
+//
+
 /**
  * A `NewsletterDataSource` backed by a `HttpClient`.
  *

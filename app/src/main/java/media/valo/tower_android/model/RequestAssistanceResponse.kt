@@ -8,6 +8,11 @@ package media.valo.tower_android.model
 
 import kotlinx.serialization.Serializable
 
+//
+//  RequestAssistanceResponse.java
+//  Tower_Android
+//
+
 /**
  * The data returned by the `/requestAssistance`-endpoint.
  *

@@ -6,6 +6,11 @@
 
 package media.valo.tower_android.ui.elements
 
+//
+//  AppBar.kt
+//  Tower_Android
+//
+
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons

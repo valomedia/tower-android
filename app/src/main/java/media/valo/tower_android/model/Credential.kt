@@ -6,6 +6,11 @@
 
 package media.valo.tower_android.model
 
+//
+//  Credential.kt
+//  Tower_Android
+//
+
 /**
  * A username and password.
  *

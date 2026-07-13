@@ -6,6 +6,11 @@
 
 package media.valo.tower_android.utils
 
+//
+//  BooleanExtensions.kt
+//  Tower_Android
+//
+
 /**
  * Acts as identity for true Booleans, returns null for false Booleans.
  *

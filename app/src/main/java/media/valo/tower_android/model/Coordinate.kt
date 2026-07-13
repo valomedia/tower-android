@@ -9,6 +9,11 @@ package media.valo.tower_android.model
 import android.location.Location
 import kotlinx.serialization.Serializable
 
+//
+//  Coordinate.kt
+//  Tower_Android
+//
+
 /**
  * A latitude and longitude.
  *

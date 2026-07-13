@@ -24,6 +24,11 @@ import java.nio.ByteOrder
 import kotlin.math.max
 import kotlin.math.min
 
+//
+//  VideoFrameRenderer.kt
+//  Tower_Android
+//
+
 private const val BGRX_PIXEL_STRIDE = 4
 private const val BGR24_PIXEL_STRIDE = 3
 private const val RGBX_PIXEL_STRIDE = 4

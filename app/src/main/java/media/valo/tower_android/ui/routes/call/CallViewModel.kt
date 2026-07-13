@@ -70,6 +70,11 @@ import media.valo.tower_android.utils.AppScope
 import media.valo.tower_android.utils.sendMessage
 import javax.inject.Inject
 
+//
+//  CallViewModel.kt
+//  Tower_Android
+//
+
 /**
  * The id for the data channel everything except photos is transmitted over
  */

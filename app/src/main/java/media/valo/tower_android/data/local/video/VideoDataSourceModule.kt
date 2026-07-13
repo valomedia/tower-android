@@ -11,6 +11,11 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
+//
+//  VideoDataSourceModule.kt
+//  Tower_Android
+//
+
 @Module
 @InstallIn(SingletonComponent::class)
 interface VideoDataSourceModule {

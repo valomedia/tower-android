@@ -14,6 +14,11 @@ import kotlinx.serialization.json.JsonPrimitive
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
+//
+//  OpeningHoursTest.kt
+//  Tower_Android
+//
+
 class OpeningHoursTest {
 
     @Test

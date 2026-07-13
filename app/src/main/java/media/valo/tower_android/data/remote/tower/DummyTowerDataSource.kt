@@ -10,6 +10,11 @@ import media.valo.tower_android.model.dummyIndexResponse
 import media.valo.tower_android.model.dummyRegisterUserResponse
 import media.valo.tower_android.model.dummyRequestAssistanceResponse
 
+//
+//  DummyTowerDataSource.kt
+//  Tower_Android
+//
+
 /**
  * A dummy implementation of `TowerDataSource`.
  *

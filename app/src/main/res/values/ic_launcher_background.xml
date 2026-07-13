@@ -6,6 +6,11 @@
   ~ All rights reserved.                                                      ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
+<!--
+  - ic_launcher_background.xml
+  - Tower_Android
+  -->
+
 <resources>
     <color name="ic_launcher_background">#FFFFFF</color>
 </resources>

@@ -6,6 +6,11 @@
 
 package media.valo.tower_android.ui.routes.loading
 
+//
+//  LoadingViewModel.kt
+//  Tower_Android
+//
+
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import media.valo.tower_android.BuildConfig

@@ -14,6 +14,11 @@ import media.valo.tower_android.data.remote.newsletter.NewsletterRepository
 import media.valo.tower_android.utils.AppScope
 import javax.inject.Inject
 
+//
+//  SignupFormViewModel.kt
+//  Tower_Android
+//
+
 /**
  * ViewModel for SignupForm.
  *

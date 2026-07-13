@@ -28,6 +28,11 @@ import javax.inject.Inject
 import kotlin.random.Random
 import kotlin.time.Duration.Companion.seconds
 
+//
+//  RandomVideoDataSource.kt
+//  Tower_Android
+//
+
 /**
  * A `VideoDataSource` that output random noise.
  *

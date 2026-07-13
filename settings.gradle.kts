@@ -4,6 +4,11 @@
  * All rights reserved.                                                       *
  ******************************************************************************/
 
+//
+//  settings.gradle.kts
+//  Tower_Android
+//
+
 pluginManagement {
     repositories {
         google {

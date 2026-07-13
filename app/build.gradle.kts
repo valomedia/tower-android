@@ -4,6 +4,11 @@
  * All rights reserved.                                                       *
  ******************************************************************************/
 
+//
+//  build.gradle.kts
+//  Tower_Android
+//
+
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 
 plugins {

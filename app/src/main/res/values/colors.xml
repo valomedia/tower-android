@@ -6,6 +6,11 @@
   ~ All rights reserved.                                                      ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
+<!--
+  - colors.xml
+  - Tower_Android
+  -->
+
 <resources>
     <color name="cyan_60">#FF4EACA7</color>
     <color name="black">#FF000000</color>

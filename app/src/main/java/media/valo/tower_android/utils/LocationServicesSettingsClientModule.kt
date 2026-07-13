@@ -15,6 +15,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+//
+//  LocationServicesSettingsClientModule.kt
+//  Tower_Android
+//
+
 @Module
 @InstallIn(SingletonComponent::class)
 class LocationServicesSettingsClientModule {

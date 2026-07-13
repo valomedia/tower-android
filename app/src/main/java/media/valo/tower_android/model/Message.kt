@@ -19,6 +19,11 @@ import kotlinx.serialization.json.jsonObject
 import media.valo.tower_android.utils.JsonPropertyClassDiscriminationSerializer
 import media.valo.tower_android.utils.then
 
+//
+//  Message.kt
+//  Tower_Android
+//
+
 /**
  * A data channel message.
  */

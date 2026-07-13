@@ -37,6 +37,11 @@ import kotlinx.serialization.Serializable
 import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.ui.screens.closed.ClosedScreenViewModel
 
+//
+//  ConnectionError.kt
+//  Tower_Android
+//
+
 /**
  * Object for the navigation destination for the currently closed screen.
  */
