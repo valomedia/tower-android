@@ -10,9 +10,6 @@ package media.valo.tower_android
 //  TowerAndroidApplication.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 import android.app.Application
 import android.content.Context

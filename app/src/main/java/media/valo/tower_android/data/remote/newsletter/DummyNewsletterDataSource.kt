@@ -10,9 +10,6 @@ package media.valo.tower_android.data.remote.newsletter
 //  DummyHttpNewsletterDataSource.kt
 //  Tower_Android
 //
-//  Created by:
-//      * mvlexs
-//
 
 /**
  * A dummy implementation of `NewsletterDataSource`.

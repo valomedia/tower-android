@@ -36,9 +36,6 @@ import javax.inject.Inject
 //  CameraVideoDataSource.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 private const val FULL_ROTATION = 360
 

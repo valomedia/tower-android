@@ -14,9 +14,6 @@ import org.junit.Test
 //  IntExtensionsTest.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Yatsar (Agent)
-//
 
 class IntExtensionsTest {
 

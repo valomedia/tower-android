@@ -18,9 +18,6 @@ import javax.inject.Inject
 //  SignupFormViewModel.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 /**
  * ViewModel for SignupForm.

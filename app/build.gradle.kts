@@ -8,9 +8,6 @@
 //  build.gradle.kts
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 

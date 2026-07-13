@@ -15,9 +15,6 @@ import javax.inject.Inject
 //  VideoRepository.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 /**
  * A repository for video streams.

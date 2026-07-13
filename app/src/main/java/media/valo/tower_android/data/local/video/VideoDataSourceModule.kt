@@ -15,9 +15,6 @@ import dagger.hilt.components.SingletonComponent
 //  VideoDataSourceModule.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 @Module
 @InstallIn(SingletonComponent::class)

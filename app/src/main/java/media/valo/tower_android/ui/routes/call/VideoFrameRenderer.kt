@@ -28,9 +28,6 @@ import kotlin.math.min
 //  VideoFrameRenderer.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 private const val BGRX_PIXEL_STRIDE = 4
 private const val BGR24_PIXEL_STRIDE = 3

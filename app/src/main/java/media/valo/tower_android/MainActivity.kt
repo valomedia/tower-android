@@ -10,10 +10,6 @@ package media.valo.tower_android
 //  MainActivity.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//      * mvlexs
-//
 
 import android.app.PictureInPictureParams
 import android.content.pm.PackageManager

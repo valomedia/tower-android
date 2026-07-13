@@ -12,9 +12,6 @@ import kotlinx.serialization.Serializable
 //  RequestAssistanceResponse.java
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 /**
  * The data returned by the `/requestAssistance`-endpoint.

@@ -8,9 +8,6 @@
 ##  libs.versions.toml
 ##  Tower_Android
 ##
-##  Created by:
-##      * Jean-Pierre Höhmann
-##
 
 [versions]
 agp = "8.13.0"

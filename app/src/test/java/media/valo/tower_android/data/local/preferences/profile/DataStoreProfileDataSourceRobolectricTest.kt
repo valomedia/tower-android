@@ -30,9 +30,6 @@ import org.robolectric.annotation.Config
 //  DataStoreProfileDataSourceRobolectricTest.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Yatsar (Agent)
-//
 
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class)
