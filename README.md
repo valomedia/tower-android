@@ -19,7 +19,7 @@ gradlew build
 You can run Android lint locally with:
 
 ```shell
-gradlew lintDebug --no-daemon
+./gradlew lintDebug --no-daemon
 ```
 
 The gradle wrapper and the gradle version it uses will automatically be updated to the correct
