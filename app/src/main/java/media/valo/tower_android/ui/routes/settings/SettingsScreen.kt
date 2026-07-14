@@ -14,6 +14,7 @@ package media.valo.tower_android.ui.routes.settings
 //      * Jean-Pierre Höhmann
 //
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -95,6 +96,7 @@ fun SettingsScreen(
  */
 @Preview(showBackground = true, showSystemUi = true, locale = "de-rDE")
 @Composable
+@SuppressLint("ViewModelConstructorInComposable")
 fun SettingsScreenPreview() {
     AppBarPreview { innerPadding ->
         SettingsScreen(

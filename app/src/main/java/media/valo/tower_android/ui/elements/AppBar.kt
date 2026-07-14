@@ -14,6 +14,7 @@ package media.valo.tower_android.ui.elements
 //      * Jean-Pierre Höhmann
 //
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
@@ -222,6 +223,7 @@ fun AppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(locale = "de-rDE")
 @Composable
+@SuppressLint("ViewModelConstructorInComposable")
 fun AppBarPreview(content: @Composable ((PaddingValues) -> Unit) = {}) {
     val viewModel = AppBarViewModel(
         CredentialRepository(DummyCredentialDataSource()),

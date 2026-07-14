@@ -14,6 +14,7 @@ package media.valo.tower_android.ui.routes.login
 //      * Jean-Pierre Höhmann
 //
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -108,6 +109,7 @@ fun LoginScreen(
  */
 @Preview(showBackground = true, showSystemUi = true, locale = "de-rDE")
 @Composable
+@SuppressLint("ViewModelConstructorInComposable")
 fun LoginScreenPreview() {
     AppBarPreview { innerPadding ->
         LoginScreen(
