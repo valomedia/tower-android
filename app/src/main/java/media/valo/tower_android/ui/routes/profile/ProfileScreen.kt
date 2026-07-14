@@ -11,6 +11,7 @@ package media.valo.tower_android.ui.routes.profile
 //  Tower_Android
 //
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -163,6 +164,7 @@ fun ProfileScreen(
  */
 @Preview(showBackground = true, showSystemUi = true, locale = "de-rDE")
 @Composable
+@SuppressLint("ViewModelConstructorInComposable")
 fun ProfileScreenPreview() {
     AppBarPreview { innerPadding ->
         ProfileScreen(

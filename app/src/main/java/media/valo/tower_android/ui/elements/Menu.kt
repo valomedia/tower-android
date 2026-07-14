@@ -11,6 +11,7 @@ package media.valo.tower_android.ui.elements
 //  Tower_Android
 //
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.DrawerState
@@ -121,6 +122,7 @@ fun Menu(
  */
 @Preview(showBackground = true, locale = "de-rDE")
 @Composable
+@SuppressLint("ViewModelConstructorInComposable")
 fun MenuPreview() {
     val viewModel = MenuViewModel(
         preferencesManager = PreferencesManager(

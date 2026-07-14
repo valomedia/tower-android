@@ -6,6 +6,7 @@
 
 package media.valo.tower_android.ui.routes.call
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.res.Configuration
@@ -311,6 +312,7 @@ private fun announceStateChange(
  */
 @Preview(showBackground = true, showSystemUi = true, locale = "de-rDE")
 @Composable
+@SuppressLint("ViewModelConstructorInComposable")
 fun CallScreenPreview() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val appScope = CoroutineScopeModule().provideCoroutineScope()
