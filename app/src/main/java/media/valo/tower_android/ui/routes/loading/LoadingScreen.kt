@@ -87,22 +87,18 @@ fun LoadingScreen(
         } else {null}
 
         /**
-         * Whether the app is opened the first time.
-         */
-        val firstLogin = lastLoginAppVersion.isNullOrEmpty()
-
-        /**
          * Whether the app is opened the first time after updating.
          */
         val hasNewFeatures = appVersion != lastLoginAppVersion
-
-        viewModel.setLastLoginAppVersion(appVersion)
 
         when {
             isAppUpdateNeeded == true -> navController.navigate(route = OutdatedAppVersionScreen) { popUpTo(navController.graph.id) }
             !isConnected || !viewModel.hasProfile() || isServiceOpen == null || schedule == null || isAppUpdateNeeded == null -> navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
             !isServiceOpen -> navController.navigate(route = ClosedScreen(currentSchedule = schedule)) { popUpTo(navController.graph.id) }
-            hasNewFeatures && !firstLogin -> navController.navigate(route = NewsScreen) { popUpTo(navController.graph.id) }
+            hasNewFeatures -> {
+                viewModel.setLastLoginAppVersion(appVersion)
+                navController.navigate(route = NewsScreen) { popUpTo(navController.graph.id) }
+            }
             else -> navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
         }
     }

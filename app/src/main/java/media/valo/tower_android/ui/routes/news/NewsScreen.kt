@@ -16,6 +16,7 @@ package media.valo.tower_android.ui.routes.news
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -23,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.AbsoluteAlignment
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,35 +48,40 @@ fun NewsScreen(
 ) {
     val scrollState = rememberScrollState()
 
-    Text(
-        style = MaterialTheme.typography.titleLarge,
-        text = "Neuigkeiten",
-        modifier = Modifier.padding(8.dp)
-    )
     Column(
-        modifier = modifier.verticalScroll(scrollState),
-        horizontalAlignment = AbsoluteAlignment.Left
+        modifier = modifier.verticalScroll(scrollState).padding(horizontal = 6.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            style = MaterialTheme.typography.titleMedium,
-            text = "1.1.0",
+            style = MaterialTheme.typography.titleLarge,
+            text = "Neuigkeiten",
             modifier = Modifier.padding(8.dp)
         )
-        Text(
-            "- Termine können jetzt auch außerhalb der Öffnungszeiten vereinbart werden." + "\n" +
-            "- Die Eingabe der E-Mail Adresse ist verpflichtend." + "\n" +
-            "- Der Kontaktbildschirm ist noch barrierefreier." + "\n" +
-            "- Wenn während einem Anruf der/die Assistent/in die Kamera wechselt oder ein Foto aufnimmt, gibt es einen Signalton." + "\n" +
-            "- Der/Die Assistent/in kann bei einem Anruf die Taschenlampe einschalten, um besser sehen zu können.",
-            modifier = Modifier.padding(8.dp)
-        )
-        /*HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+
+        Column(
+            horizontalAlignment = AbsoluteAlignment.Left
+        ) {
+            Text(
+                style = MaterialTheme.typography.titleMedium,
+                text = "1.1.0",
+                modifier = Modifier.padding(8.dp)
+            )
+            Text(
+                "- Termine können jetzt auch außerhalb der Öffnungszeiten vereinbart werden." + "\n" +
+                        "- Die Eingabe der E-Mail Adresse ist verpflichtend." + "\n" +
+                        "- Der Kontaktbildschirm ist noch barrierefreier." + "\n" +
+                        "- Wenn während einem Anruf der/die Assistent/in die Kamera wechselt oder ein Foto aufnimmt, gibt es einen Signalton." + "\n" +
+                        "- Der/Die Assistent/in kann bei einem Anruf die Taschenlampe einschalten, um besser sehen zu können.",
+                modifier = Modifier.padding(8.dp)
+            )
+            /*HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
         Text(
             "ältereVersion"
         )
         Text(
             "ältereÄnderungen"
         )*/
+        }
     }
 }
 
