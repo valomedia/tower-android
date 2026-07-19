@@ -10,11 +10,8 @@ package media.valo.tower_android.ui.routes.loading
 //  LoadingScreen.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//      * mvlexs
-//
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -105,6 +102,7 @@ fun LoadingScreen(
  */
 @Preview(showBackground = true, showSystemUi = true, locale = "de-rDE")
 @Composable
+@SuppressLint("ViewModelConstructorInComposable")
 fun LoadingScreenPreview() {
     AppBarPreview { innerPadding ->
         LoadingScreen(

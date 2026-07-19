@@ -12,9 +12,6 @@ import com.azure.android.communication.calling.VideoStreamPixelFormat
 //  VideoStreamPixelFormatExtensions.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 /**
  * The number of bytes per pixel for each buffer of this pixel format.

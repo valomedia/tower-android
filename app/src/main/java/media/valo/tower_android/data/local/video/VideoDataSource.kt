@@ -15,9 +15,6 @@ import com.azure.android.communication.calling.VideoStreamFormat
 //  VideoDataSource.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 /**
  * A data source for a video stream.

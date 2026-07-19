@@ -10,9 +10,6 @@ package media.valo.tower_android.ui.theme
 //  Theme.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

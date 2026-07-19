@@ -15,9 +15,6 @@ import dagger.hilt.components.SingletonComponent
 //  NewsletterDataSourceModule.kt
 //  Tower_Android
 //
-//  Created by:
-//      * mvlexs
-//
 
 @Module
 @InstallIn(SingletonComponent::class)

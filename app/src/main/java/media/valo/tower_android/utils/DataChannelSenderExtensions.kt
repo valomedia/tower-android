@@ -16,9 +16,6 @@ import media.valo.tower_android.model.Message
 //  DataChannelSenderExtensions.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 private const val TAG = "VideoFrameSender"
 

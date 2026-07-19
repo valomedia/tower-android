@@ -13,9 +13,6 @@ import kotlinx.serialization.Serializable
 //  Coordinate.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 /**
  * A latitude and longitude.

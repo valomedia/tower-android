@@ -10,10 +10,6 @@ package media.valo.tower_android.ui
 //  TowerApp.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//      * mvlexs
-//
 
 import android.Manifest
 import androidx.compose.foundation.layout.fillMaxSize

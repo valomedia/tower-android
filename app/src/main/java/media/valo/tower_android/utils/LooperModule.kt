@@ -17,9 +17,6 @@ import javax.inject.Singleton
 //  LooperModule.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 @Module
 @InstallIn(SingletonComponent::class)

@@ -10,9 +10,6 @@ package media.valo.tower_android.data.remote.newsletter
 //  NewsletterDataSource.kt
 //  Tower_Android
 //
-//  Created by:
-//      * mvlexs
-//
 /**
  * A data source representing the Newsletter signup api.
  */

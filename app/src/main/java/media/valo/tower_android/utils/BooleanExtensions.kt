@@ -10,9 +10,6 @@ package media.valo.tower_android.utils
 //  BooleanExtensions.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 /**
  * Acts as identity for true Booleans, returns null for false Booleans.

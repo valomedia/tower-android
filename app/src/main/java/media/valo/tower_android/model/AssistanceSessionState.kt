@@ -10,9 +10,6 @@ package media.valo.tower_android.model
 //  AssistanceSessionState.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 /**
  * An enum representing the lifecycle of an assistance session.

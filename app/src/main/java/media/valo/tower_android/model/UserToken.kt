@@ -13,9 +13,6 @@ import kotlin.time.Clock
 //  UserToken.java
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 /**
  * A user associated with an access token.

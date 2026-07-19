@@ -10,9 +10,6 @@ package media.valo.tower_android.utils
 //  DataStoreExtensions.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences

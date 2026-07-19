@@ -10,9 +10,6 @@ package media.valo.tower_android.utils
 //  PreferencesDataStoreModule.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 import android.content.Context
 import androidx.datastore.core.DataStore

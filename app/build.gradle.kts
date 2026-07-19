@@ -8,9 +8,6 @@
 //  build.gradle.kts
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 import com.android.build.gradle.internal.tasks.factory.dependsOn
 
@@ -31,8 +28,8 @@ android {
         applicationId = "media.valo.tower_android"
         minSdk = 30
         targetSdk = 36
-        versionCode = 14
-        versionName = "1.1.1"
+        versionCode = 15
+        versionName = "1.1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

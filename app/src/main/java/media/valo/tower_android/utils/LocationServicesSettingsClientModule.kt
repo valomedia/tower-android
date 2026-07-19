@@ -19,9 +19,6 @@ import javax.inject.Singleton
 //  LocationServicesSettingsClientModule.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 @Module
 @InstallIn(SingletonComponent::class)

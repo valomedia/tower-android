@@ -28,9 +28,6 @@ import org.robolectric.annotation.Config
 //  DataStoreCredentialDataSourceRobolectricTest.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Yatsar (Agent)
-//
 
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class)

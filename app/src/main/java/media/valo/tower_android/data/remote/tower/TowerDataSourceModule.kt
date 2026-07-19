@@ -10,9 +10,6 @@ package media.valo.tower_android.data.remote.tower
 //  TowerDataSourceModule.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 import dagger.Binds
 import dagger.Module
