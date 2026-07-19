@@ -7,7 +7,7 @@
 package media.valo.tower_android.ui.screens.closed
 
 //
-//  AppBarViewModel.kt
+//  ClosedScreenViewModel.kt
 //  Tower_Android
 //
 //  Created by:
