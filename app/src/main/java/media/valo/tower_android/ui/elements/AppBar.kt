@@ -11,7 +11,6 @@ package media.valo.tower_android.ui.elements
 //  Tower_Android
 //
 
-import android.annotation.SuppressLint
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material.icons.Icons
@@ -188,7 +187,6 @@ fun AppBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(locale = "de-rDE")
 @Composable
-@SuppressLint("ViewModelConstructorInComposable")
 fun AppBarPreview(content: @Composable ((PaddingValues) -> Unit) = {}) {
     val scrollBehavior =
         TopAppBarDefaults.exitUntilCollapsedScrollBehavior(rememberTopAppBarState())
