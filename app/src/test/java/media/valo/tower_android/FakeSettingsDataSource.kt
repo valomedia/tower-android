@@ -31,4 +31,8 @@ class FakeSettingsDataSource : SettingsDataSource {
 
     override suspend fun setApiEndpoint(apiEndpoint: String?) = Unit
 
+    override val lastLoginAppVersionFlow: Flow<String?> = flow { emit(null) }
+
+    override suspend fun setLastLoginAppVersion(version: String?) = Unit
+
 }
