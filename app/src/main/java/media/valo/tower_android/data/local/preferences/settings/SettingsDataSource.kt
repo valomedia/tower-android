@@ -39,4 +39,18 @@ interface SettingsDataSource {
      */
     suspend fun setApiEndpoint(apiEndpoint: String?)
 
+    /**
+     * The version on the last login.
+     *
+     * This will be `null` when the app is started for the first time.
+     */
+    val lastLoginAppVersionFlow: Flow<String?>
+
+    /**
+     * Change the version on the last login.
+     *
+     * @param version  current version.
+     */
+    suspend fun setLastLoginAppVersion(version: String?)
+
 }

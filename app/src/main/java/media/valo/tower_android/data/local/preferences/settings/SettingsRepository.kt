@@ -58,4 +58,17 @@ class SettingsRepository @Inject constructor(
     suspend fun setApiEndpoint(apiEndpoint: String?) =
         settingsDataSource.setApiEndpoint(apiEndpoint)
 
+    /**
+     * Get the version on the last login (if any).
+     *
+     * @return The version on the last login , or `null` if it is unset (first login).
+     */
+    suspend fun getLastLoginAppVersion(): String? = settingsDataSource.lastLoginAppVersionFlow.firstOrNull()
+
+    /**
+     * Change the version of the last login.
+     *
+     * @param version  Current version.
+     */
+    suspend fun setLastLoginAppVersion(version: String?) = settingsDataSource.setLastLoginAppVersion(version)
 }

@@ -18,10 +18,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import media.valo.tower_android.utils.LoadingDataStore
-import media.valo.tower_android.utils.SettingsDataStore
 import media.valo.tower_android.utils.get
 import media.valo.tower_android.utils.set
 import javax.inject.Inject

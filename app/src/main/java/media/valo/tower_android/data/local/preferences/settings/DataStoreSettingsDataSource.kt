@@ -39,4 +39,10 @@ class DataStoreSettingsDataSource @Inject constructor(
     override suspend fun setApiEndpoint(apiEndpoint: String?) =
         dataStore.set(apiEndpointKey, apiEndpoint)
 
+    private val lastLoginAppVersionKey: Preferences.Key<String> = stringPreferencesKey("lastLoginAppVersion")
+
+    override val lastLoginAppVersionFlow: Flow<String?> = dataStore.get(lastLoginAppVersionKey)
+
+    override suspend fun setLastLoginAppVersion(version: String?) =
+        dataStore.set(lastLoginAppVersionKey, version)
 }

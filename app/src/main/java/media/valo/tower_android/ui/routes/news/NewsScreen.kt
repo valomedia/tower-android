@@ -16,7 +16,6 @@ package media.valo.tower_android.ui.routes.news
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -28,7 +27,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import kotlinx.serialization.Serializable
+import media.valo.tower_android.data.local.preferences.settings.DummySettingsDataSource
+import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
 import media.valo.tower_android.ui.elements.AppBarPreview
 
 /**
@@ -40,10 +42,12 @@ object NewsScreen
 /**
  * Screen with new changes to the app.
  *
+ * @param viewModel `NewsViewModel` dependency.
  * @param modifier  `Modifier` for this element.
  */
 @Composable
 fun NewsScreen(
+    viewModel: NewsViewModel = hiltViewModel(),
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -93,6 +97,7 @@ fun NewsScreen(
 fun NewsScreenPreview() {
     AppBarPreview { innerPadding ->
         NewsScreen(
+            viewModel = NewsViewModel(settingsRepository = SettingsRepository(DummySettingsDataSource())),
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(8.dp)

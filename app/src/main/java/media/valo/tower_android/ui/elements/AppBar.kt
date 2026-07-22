@@ -129,6 +129,7 @@ fun AppBar(
                         if (currentDestination?.hasRoute<SettingsScreen>() != true
                             && currentDestination?.hasRoute<AboutScreen>() != true
                             && currentDestination?.hasRoute<ContactScreen>() != true
+                            && currentDestination?.hasRoute<NewsScreen>() != true
                         ) {
                             IconButton(
                                 onClick = {

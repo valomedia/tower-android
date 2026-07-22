@@ -21,6 +21,7 @@ import media.valo.tower_android.BuildConfig
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.loading.LoadingRepository
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
+import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.IndexResponse
 import media.valo.tower_android.model.Status
@@ -32,13 +33,14 @@ import javax.inject.Inject
  * @param towerRepository       `TowerRepository` dependency.
  * @param credentialRepository  `CredentialRepository` dependency.
  * @param profileRepository     `ProfileRepository` dependency.
+ * @param settingsRepository    `SettingsRepository` dependency.
  */
 @HiltViewModel
 class LoadingViewModel @Inject constructor(
     private val towerRepository: TowerRepository,
     private val credentialRepository: CredentialRepository,
     private val profileRepository: ProfileRepository,
-    private val loadingRepository: LoadingRepository
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     private var indexResponse: IndexResponse? = null
@@ -116,7 +118,7 @@ class LoadingViewModel @Inject constructor(
      *
      * @return The version on the last login , or `null` if it is unset (first login).
      */
-    suspend fun getLastLoginAppVersion(): String? = loadingRepository.getLastLoginAppVersion()
+    suspend fun getLastLoginAppVersion(): String? = settingsRepository.getLastLoginAppVersion()
 
     /**
      * Change the version on the last login.
@@ -124,5 +126,5 @@ class LoadingViewModel @Inject constructor(
      * @param version Current version.
      */
     suspend fun setLastLoginAppVersion(version: String?) =
-        loadingRepository.setLastLoginAppVersion(version)
+        settingsRepository.setLastLoginAppVersion(version)
 }

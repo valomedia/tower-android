@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.Flow
 //
 
 /**
- * A data source for information about the user.
+ * A data source for information for the app loading.
  */
 interface LoadingDataSource {
 

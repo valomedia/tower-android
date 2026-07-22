@@ -36,6 +36,8 @@ import media.valo.tower_android.data.local.preferences.loading.DummyLoadingDataS
 import media.valo.tower_android.data.local.preferences.loading.LoadingRepository
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
+import media.valo.tower_android.data.local.preferences.settings.DummySettingsDataSource
+import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
 import media.valo.tower_android.data.remote.tower.DummyTowerDataSource
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.ui.elements.AppBarPreview
@@ -99,7 +101,10 @@ fun LoadingScreen(
                 viewModel.setLastLoginAppVersion(appVersion)
                 navController.navigate(route = NewsScreen) { popUpTo(navController.graph.id) }
             }
-            else -> navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
+            else -> {
+                viewModel.setLastLoginAppVersion(appVersion)
+                navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
+            }
         }
     }
 
@@ -125,7 +130,7 @@ fun LoadingScreenPreview() {
                 towerRepository = TowerRepository(DummyTowerDataSource()),
                 credentialRepository = CredentialRepository(DummyCredentialDataSource()),
                 profileRepository = ProfileRepository(DummyProfileDataSource()),
-                loadingRepository = LoadingRepository(DummyLoadingDataSource())
+                settingsRepository = SettingsRepository(DummySettingsDataSource()),
             ),
             modifier = Modifier
                 .padding(innerPadding)
