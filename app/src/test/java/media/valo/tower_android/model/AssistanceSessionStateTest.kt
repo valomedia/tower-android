@@ -7,6 +7,7 @@
 package media.valo.tower_android.model
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Test
 
 //
@@ -57,6 +58,24 @@ class AssistanceSessionStateTest {
             "Anrufaufbau…",
             AssistanceSessionState.CONNECTING.toDisplayString(3)
         )
+    }
+
+    @Test
+    fun `non-waiting status does not keep queue position`() {
+        val status = AssistanceSessionStatus.of(AssistanceSessionState.CONNECTING)
+
+        assertEquals(AssistanceSessionState.CONNECTING, status.state)
+        assertNull(status.queuePosition)
+        assertEquals("Anrufaufbau…", status.displayString)
+    }
+
+    @Test
+    fun `waiting status keeps queue position with state`() {
+        val status = AssistanceSessionStatus.waiting(2)
+
+        assertEquals(AssistanceSessionState.WAITING, status.state)
+        assertEquals(2, status.queuePosition)
+        assertEquals("2 Personen vor dir", status.displayString)
     }
 
 }

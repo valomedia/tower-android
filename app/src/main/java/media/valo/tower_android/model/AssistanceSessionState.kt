@@ -42,6 +42,41 @@ enum class AssistanceSessionState {
 }
 
 /**
+ * The user-visible assistance session status.
+ *
+ * @property state          The lifecycle state of the assistance session.
+ * @property queuePosition  The zero-indexed queue position, if the backend has reported it.
+ */
+data class AssistanceSessionStatus private constructor(
+    val state: AssistanceSessionState,
+    val queuePosition: Int?
+) {
+
+    /**
+     * The user-facing status message for the current assistance session.
+     */
+    val displayString: String
+        get() = state.toDisplayString(queuePosition)
+
+    companion object {
+
+        /**
+         * Creates a status for a state that does not include queue information.
+         */
+        fun of(state: AssistanceSessionState): AssistanceSessionStatus =
+            AssistanceSessionStatus(state, null)
+
+        /**
+         * Creates a waiting status with the reported queue position, if known.
+         */
+        fun waiting(queuePosition: Int? = null): AssistanceSessionStatus =
+            AssistanceSessionStatus(AssistanceSessionState.WAITING, queuePosition)
+
+    }
+
+}
+
+/**
  * Returns the user-facing status message for the current assistance session.
  *
  * @param queuePosition The zero-indexed queue position, if the backend has reported it.
