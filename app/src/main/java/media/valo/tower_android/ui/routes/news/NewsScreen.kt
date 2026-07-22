@@ -14,6 +14,7 @@ package media.valo.tower_android.ui.routes.news
 //      * Jan Hofherr
 //
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -94,6 +95,7 @@ fun NewsScreen(
  */
 @Preview(showBackground = true, showSystemUi = true, locale = "de-rDE")
 @Composable
+@SuppressLint("ViewModelConstructorInComposable")
 fun NewsScreenPreview() {
     AppBarPreview { innerPadding ->
         NewsScreen(
