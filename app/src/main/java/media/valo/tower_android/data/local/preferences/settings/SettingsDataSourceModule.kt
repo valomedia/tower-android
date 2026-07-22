@@ -18,8 +18,6 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import media.valo.tower_android.data.local.preferences.loading.DataStoreLoadingDataSource
-import media.valo.tower_android.data.local.preferences.loading.LoadingDataSource
 
 @Module
 @InstallIn(SingletonComponent::class)
