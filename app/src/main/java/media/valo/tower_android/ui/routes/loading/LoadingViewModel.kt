@@ -19,7 +19,6 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import media.valo.tower_android.BuildConfig
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
-import media.valo.tower_android.data.local.preferences.loading.LoadingRepository
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository

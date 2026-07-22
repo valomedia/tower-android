@@ -32,8 +32,6 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.credentials.DummyCredentialDataSource
-import media.valo.tower_android.data.local.preferences.loading.DummyLoadingDataSource
-import media.valo.tower_android.data.local.preferences.loading.LoadingRepository
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.local.preferences.settings.DummySettingsDataSource
