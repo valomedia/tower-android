@@ -65,8 +65,8 @@ import media.valo.tower_android.data.local.video.VideoRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.AssistanceSessionState
 import media.valo.tower_android.model.AssistanceSessionStatus
-import media.valo.tower_android.model.Message
 import media.valo.tower_android.model.DataMessage
+import media.valo.tower_android.model.Message
 import media.valo.tower_android.utils.AppScope
 import media.valo.tower_android.utils.sendMessage
 import javax.inject.Inject
