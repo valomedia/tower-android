@@ -47,7 +47,7 @@ enum class AssistanceSessionState {
  * @property state          The lifecycle state of the assistance session.
  * @property queuePosition  The zero-indexed queue position, if the backend has reported it.
  */
-data class AssistanceSessionStatus private constructor(
+class AssistanceSessionStatus private constructor(
     val state: AssistanceSessionState,
     val queuePosition: Int?
 ) {
