@@ -34,6 +34,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -105,7 +106,11 @@ fun CallScreen(
     val scrollState = rememberScrollState()
     val context = LocalContext.current
     val activity = LocalActivity.current
+    val sessionState = viewModel.sessionState
     val statusMessage = viewModel.sessionStatusMessage
+    val skipInitialDisconnectedAnnouncement = remember {
+        mutableStateOf(sessionState == AssistanceSessionState.DISCONNECTED)
+    }
     val accessibilityManager =
         context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager?
     val locationPermissionState = rememberMultiplePermissionsState(
@@ -134,13 +139,19 @@ fun CallScreen(
         }
     }
 
-    LaunchedEffect(viewModel.sessionState) {
+    LaunchedEffect(sessionState) {
         if (viewModel.sessionState == AssistanceSessionState.DISCONNECTED) {
             navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
         }
     }
 
-    LaunchedEffect(statusMessage) {
+    LaunchedEffect(sessionState, statusMessage) {
+        if (skipInitialDisconnectedAnnouncement.value
+            && sessionState == AssistanceSessionState.DISCONNECTED) {
+            skipInitialDisconnectedAnnouncement.value = false
+            return@LaunchedEffect
+        }
+        skipInitialDisconnectedAnnouncement.value = false
         announceStateChange(context, accessibilityManager, statusMessage)
     }
 
