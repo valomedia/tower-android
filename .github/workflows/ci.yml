@@ -100,7 +100,10 @@ jobs:
             AndroidManifestRobolectricTest \
             DataStoreCredentialDataSourceRobolectricTest \
             DataStoreProfileDataSourceRobolectricTest \
-            DataStoreSettingsDataSourceRobolectricTest
+            DataStoreSettingsDataSourceRobolectricTest \
+            NewsScreenRobolectricTest \
+            SignupFormRobolectricTest \
+            StartupNavigationRobolectricTest
           do
             if ! grep -R --include='TEST-*.xml' -q "${test_class}" "${test_results_dir}"; then
               echo "::error::${test_class} did not run during testDebugUnitTest"
