@@ -12,9 +12,6 @@ import com.azure.android.communication.calling.VideoStreamResolution
 //  VideoStreamResolutionExtensions.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 /**
  * The width in pixels of the video resolution standard.

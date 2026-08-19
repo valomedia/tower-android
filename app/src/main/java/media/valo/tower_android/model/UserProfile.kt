@@ -13,9 +13,6 @@ import kotlinx.serialization.Serializable
 //  UserProfile.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 /**
  * The profile information of the user, as provided to the assistant.

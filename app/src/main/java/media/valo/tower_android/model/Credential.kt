@@ -10,9 +10,6 @@ package media.valo.tower_android.model
 //  Credential.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 /**
  * A username and password.

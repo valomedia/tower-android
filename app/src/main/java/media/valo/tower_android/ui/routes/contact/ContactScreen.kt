@@ -10,9 +10,6 @@ package media.valo.tower_android.ui.routes.contact
 //  AboutScreen.kt
 //  Tower_Android
 //
-//  Created by:
-//      * mvlexs
-//
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding

@@ -10,9 +10,6 @@ package media.valo.tower_android.ui.routes.login
 //  LoginViewModel.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

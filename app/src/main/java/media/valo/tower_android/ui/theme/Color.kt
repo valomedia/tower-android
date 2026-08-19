@@ -10,9 +10,6 @@ package media.valo.tower_android.ui.theme
 //  Color.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 import androidx.compose.ui.graphics.Color
 

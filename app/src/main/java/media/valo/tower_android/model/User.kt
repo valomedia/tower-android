@@ -12,9 +12,6 @@ import kotlinx.serialization.Serializable
 //  User.java
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 /**
  * A username associated with an ID for Azure Communication Services.

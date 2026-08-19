@@ -19,9 +19,6 @@ import javax.inject.Singleton
 //  FusedLocationClientModule.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 @Module
 @InstallIn(SingletonComponent::class)

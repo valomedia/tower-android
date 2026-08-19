@@ -74,10 +74,6 @@ import javax.inject.Inject
 //  CallViewModel.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//      * mvlexs
-//
 
 /**
  * The id for the data channel everything except photos is transmitted over

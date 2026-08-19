@@ -8,9 +8,6 @@
 //  settings.gradle.kts
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//
 
 pluginManagement {
     repositories {

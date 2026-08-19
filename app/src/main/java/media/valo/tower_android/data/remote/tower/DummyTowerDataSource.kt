@@ -14,10 +14,6 @@ import media.valo.tower_android.model.dummyRequestAssistanceResponse
 //  DummyTowerDataSource.kt
 //  Tower_Android
 //
-//  Created by:
-//      * Jean-Pierre Höhmann
-//      * mvlexs
-//
 
 /**
  * A dummy implementation of `TowerDataSource`.
