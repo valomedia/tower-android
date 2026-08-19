@@ -92,9 +92,12 @@ fun LoadingScreen(
             isAppUpdateNeeded == true -> navController.navigate(route = OutdatedAppVersionScreen) { popUpTo(navController.graph.id) }
             !isConnected || !viewModel.hasProfile() || isServiceOpen == null || schedule == null || isAppUpdateNeeded == null -> navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
             !isServiceOpen -> navController.navigate(route = ClosedScreen(currentSchedule = schedule)) { popUpTo(navController.graph.id) }
+            // The news are put on top of the home screen rather than replacing it, so that the
+            // back button on the news screen leads home instead of out of the app.
             hasNewFeatures -> {
                 viewModel.setLastLoginAppVersion(appVersion)
-                navController.navigate(route = NewsScreen) { popUpTo(navController.graph.id) }
+                navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
+                navController.navigate(route = NewsScreen)
             }
             else -> {
                 viewModel.setLastLoginAppVersion(appVersion)
