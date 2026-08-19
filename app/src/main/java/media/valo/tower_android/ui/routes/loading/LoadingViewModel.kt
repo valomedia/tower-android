@@ -16,9 +16,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import media.valo.tower_android.BuildConfig
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
+import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.IndexResponse
 import media.valo.tower_android.model.Status
+import media.valo.tower_android.ui.routes.news.latestNewsVersion
 import javax.inject.Inject
 
 /**
@@ -27,12 +29,14 @@ import javax.inject.Inject
  * @param towerRepository       `TowerRepository` dependency.
  * @param credentialRepository  `CredentialRepository` dependency.
  * @param profileRepository     `ProfileRepository` dependency.
+ * @param settingsRepository    `SettingsRepository` dependency.
  */
 @HiltViewModel
 class LoadingViewModel @Inject constructor(
     private val towerRepository: TowerRepository,
     private val credentialRepository: CredentialRepository,
-    private val profileRepository: ProfileRepository
+    private val profileRepository: ProfileRepository,
+    private val settingsRepository: SettingsRepository
 ) : ViewModel() {
 
     private var indexResponse: IndexResponse? = null
@@ -81,6 +85,25 @@ class LoadingViewModel @Inject constructor(
      * Check whether the user has provided all required profile information.
      */
     suspend fun hasProfile(): Boolean = profileRepository.hasProfile()
+
+    /**
+     * Whether there is news the user has not seen yet.
+     *
+     * This is the case when there is any news and its version differs from the version of the news
+     * the user has last seen.
+     *
+     * @return Whether there is unseen news to show.
+     */
+    suspend fun hasUnseenNews(): Boolean {
+        val latest = latestNewsVersion ?: return false
+        return latest != settingsRepository.getLastSeenNewsVersion()
+    }
+
+    /**
+     * Remember that the user has seen the latest news, so it is not shown to them again.
+     */
+    suspend fun markNewsSeen() =
+        settingsRepository.setLastSeenNewsVersion(latestNewsVersion)
 
     /**
      * Ensure the backend can be reached and register for an identity if necessary.

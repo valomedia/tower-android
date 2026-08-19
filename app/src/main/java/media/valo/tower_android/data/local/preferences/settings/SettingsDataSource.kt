@@ -36,4 +36,19 @@ interface SettingsDataSource {
      */
     suspend fun setApiEndpoint(apiEndpoint: String?)
 
+    /**
+     * A `Flow` that emits the version of the news the user has last seen every time it is updated.
+     *
+     * This is used to decide whether the "what's new" screen should be shown after an update. It
+     * will emit `null` when the user has not seen any news yet (such as on a fresh install).
+     */
+    val lastSeenNewsVersionFlow: Flow<String?>
+
+    /**
+     * Change the version of the news the user has last seen.
+     *
+     * @param version   The version of the news the user has last seen, or `null` to unset it.
+     */
+    suspend fun setLastSeenNewsVersion(version: String?)
+
 }

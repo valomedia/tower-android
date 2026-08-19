@@ -61,6 +61,7 @@ import media.valo.tower_android.ui.routes.closed.ClosedScreen
 import media.valo.tower_android.ui.routes.contact.ContactScreen
 import media.valo.tower_android.ui.routes.loading.LoadingScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
+import media.valo.tower_android.ui.routes.news.NewsScreen
 import media.valo.tower_android.ui.routes.outdated.OutdatedAppVersionScreen
 import media.valo.tower_android.ui.routes.settings.SettingsScreen
 import media.valo.tower_android.ui.theme.TowerTheme
@@ -126,6 +127,7 @@ fun AppBar(
                         if (currentDestination?.hasRoute<SettingsScreen>() != true
                             && currentDestination?.hasRoute<AboutScreen>() != true
                             && currentDestination?.hasRoute<ContactScreen>() != true
+                            && currentDestination?.hasRoute<NewsScreen>() != true
                         ) {
                             IconButton(
                                 onClick = {
@@ -184,6 +186,13 @@ fun AppBar(
                                 text = { Text("Über") },
                                 onClick = {
                                     navController.navigate(route = AboutScreen)
+                                    expanded = false
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Neuigkeiten") },
+                                onClick = {
+                                    navController.navigate(route = NewsScreen)
                                     expanded = false
                                 }
                             )

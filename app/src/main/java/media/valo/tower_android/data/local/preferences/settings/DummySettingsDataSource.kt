@@ -25,4 +25,8 @@ class DummySettingsDataSource : SettingsDataSource {
 
     override suspend fun setApiEndpoint(apiEndpoint: String?) = Unit
 
+    override val lastSeenNewsVersionFlow: Flow<String?> = flow { emit(null) }
+
+    override suspend fun setLastSeenNewsVersion(version: String?) = Unit
+
 }

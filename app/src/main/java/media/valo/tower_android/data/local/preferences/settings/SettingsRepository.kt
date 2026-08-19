@@ -55,4 +55,21 @@ class SettingsRepository @Inject constructor(
     suspend fun setApiEndpoint(apiEndpoint: String?) =
         settingsDataSource.setApiEndpoint(apiEndpoint)
 
+    /**
+     * Get the version of the news the user has last seen (if any).
+     *
+     * @return The version of the news the user has last seen, or `null` if they have not seen any
+     *         news yet (such as on a fresh install).
+     */
+    suspend fun getLastSeenNewsVersion(): String? =
+        settingsDataSource.lastSeenNewsVersionFlow.firstOrNull()
+
+    /**
+     * Change the version of the news the user has last seen.
+     *
+     * @param version   The version of the news the user has last seen, or `null` to unset it.
+     */
+    suspend fun setLastSeenNewsVersion(version: String?) =
+        settingsDataSource.setLastSeenNewsVersion(version)
+
 }

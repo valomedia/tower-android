@@ -31,6 +31,8 @@ import media.valo.tower_android.data.local.preferences.credentials.CredentialRep
 import media.valo.tower_android.data.local.preferences.credentials.DummyCredentialDataSource
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
+import media.valo.tower_android.data.local.preferences.settings.DummySettingsDataSource
+import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
 import media.valo.tower_android.data.remote.tower.DummyTowerDataSource
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.ui.elements.AppBarPreview
@@ -38,6 +40,7 @@ import media.valo.tower_android.ui.elements.Logo
 import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.ui.routes.closed.ClosedScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
+import media.valo.tower_android.ui.routes.news.NewsScreen
 import media.valo.tower_android.ui.routes.outdated.OutdatedAppVersionScreen
 
 /**
@@ -78,12 +81,30 @@ fun LoadingScreen(
             backendMajorVersion > appMajorVersion || backendMajorVersion == -1
         } else {null}
 
+        /**
+         * Whether there is news the user has not seen yet.
+         *
+         * This is resolved before navigating, so the news screen can be pushed on top of the home
+         * screen without suspending in between.
+         */
+        val hasUnseenNews = viewModel.hasUnseenNews()
 
         when {
             isAppUpdateNeeded == true -> navController.navigate(route = OutdatedAppVersionScreen) { popUpTo(navController.graph.id) }
             !isConnected || !viewModel.hasProfile() || isServiceOpen == null || schedule == null || isAppUpdateNeeded == null -> navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
             !isServiceOpen -> navController.navigate(route = ClosedScreen(currentSchedule = schedule)) { popUpTo(navController.graph.id) }
-            else -> navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
+            else -> {
+                navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
+
+                // When the app was updated with something new to announce, show the "what's new"
+                // screen once. It is pushed on top of the home screen, so going back returns there.
+                // The news is only marked as seen here, so it is still shown on the next start when
+                // the user did not get this far (such as when they were not logged in yet).
+                if (hasUnseenNews) {
+                    navController.navigate(route = NewsScreen)
+                    viewModel.markNewsSeen()
+                }
+            }
         }
     }
 
@@ -109,7 +130,8 @@ fun LoadingScreenPreview() {
             viewModel = LoadingViewModel(
                 towerRepository = TowerRepository(DummyTowerDataSource()),
                 credentialRepository = CredentialRepository(DummyCredentialDataSource()),
-                profileRepository = ProfileRepository(DummyProfileDataSource())
+                profileRepository = ProfileRepository(DummyProfileDataSource()),
+                settingsRepository = SettingsRepository(DummySettingsDataSource())
             ),
             modifier = Modifier
                 .padding(innerPadding)
