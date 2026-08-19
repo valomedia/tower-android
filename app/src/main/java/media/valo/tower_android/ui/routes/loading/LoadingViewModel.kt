@@ -20,6 +20,7 @@ import media.valo.tower_android.data.local.preferences.settings.SettingsReposito
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.model.IndexResponse
 import media.valo.tower_android.model.Status
+import media.valo.tower_android.ui.routes.news.newestNewsVersion
 import javax.inject.Inject
 
 /**
@@ -81,12 +82,6 @@ class LoadingViewModel @Inject constructor(
         get() = BuildConfig.VERSION_NAME.substringBefore(".").toInt()
 
     /**
-     * The version of the app.
-     */
-    val appVersion
-        get() = BuildConfig.VERSION_NAME
-
-    /**
      * Whether the app needs to be updated.
      *
      * The app needs to be updated if:
@@ -123,11 +118,8 @@ class LoadingViewModel @Inject constructor(
     /**
      * Run the startup checks and decide which screen to show next.
      *
-     * This connects to the backend and then applies the startup gates in order: the app has to be
-     * recent enough to talk to the backend, the backend has to be reachable, the user has to have
-     * provided a profile, and the service has to be open. Only once every gate has been passed is
-     * the news screen considered, and only then is the current version recorded, so that a start
-     * that is turned away at one of the gates does not suppress the news on a later start.
+     * The news are only considered once every gate has been passed, and the version is only
+     * recorded then, so that a start turned away at one of the gates still shows the news later.
      *
      * @return The `StartupDestination` to navigate to.
      */
@@ -145,15 +137,11 @@ class LoadingViewModel @Inject constructor(
                     || currentSchedule == null
                     || updateNeeded == null -> StartupDestination.Login
             !serviceOpen -> StartupDestination.Closed(schedule = currentSchedule)
-            else -> {
-                val lastSeenNewsVersion = settingsRepository.getLastSeenNewsVersion()
-                settingsRepository.setLastSeenNewsVersion(appVersion)
-                if (lastSeenNewsVersion != appVersion) {
-                    StartupDestination.News
-                } else {
-                    StartupDestination.Home
-                }
+            settingsRepository.getLastSeenNewsVersion() != newestNewsVersion -> {
+                settingsRepository.setLastSeenNewsVersion(newestNewsVersion)
+                StartupDestination.News
             }
+            else -> StartupDestination.Home
         }
     }
 }
