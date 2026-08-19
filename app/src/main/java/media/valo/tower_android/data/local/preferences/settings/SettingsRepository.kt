@@ -56,16 +56,19 @@ class SettingsRepository @Inject constructor(
         settingsDataSource.setApiEndpoint(apiEndpoint)
 
     /**
-     * Get the version on the last login (if any).
+     * Get the version whose news the user has seen (if any).
      *
-     * @return The version on the last login , or `null` if it is unset (first login).
+     * @return The recorded version, or `null` if the news have never been shown.
      */
-    suspend fun getLastLoginAppVersion(): String? = settingsDataSource.lastLoginAppVersionFlow.firstOrNull()
+    suspend fun getLastSeenNewsVersion(): String? =
+        settingsDataSource.lastSeenNewsVersionFlow.firstOrNull()
 
     /**
-     * Change the version of the last login.
+     * Change the version whose news the user has seen.
      *
-     * @param version  Current version.
+     * @param version   The version to record, or `null` to unset it.
      */
-    suspend fun setLastLoginAppVersion(version: String?) = settingsDataSource.setLastLoginAppVersion(version)
+    suspend fun setLastSeenNewsVersion(version: String?) =
+        settingsDataSource.setLastSeenNewsVersion(version)
+
 }

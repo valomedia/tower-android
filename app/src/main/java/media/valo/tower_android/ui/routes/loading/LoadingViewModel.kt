@@ -146,9 +146,9 @@ class LoadingViewModel @Inject constructor(
                     || updateNeeded == null -> StartupDestination.Login
             !serviceOpen -> StartupDestination.Closed(schedule = currentSchedule)
             else -> {
-                val lastLoginAppVersion = settingsRepository.getLastLoginAppVersion()
-                settingsRepository.setLastLoginAppVersion(appVersion)
-                if (lastLoginAppVersion != appVersion) {
+                val lastSeenNewsVersion = settingsRepository.getLastSeenNewsVersion()
+                settingsRepository.setLastSeenNewsVersion(appVersion)
+                if (lastSeenNewsVersion != appVersion) {
                     StartupDestination.News
                 } else {
                     StartupDestination.Home
