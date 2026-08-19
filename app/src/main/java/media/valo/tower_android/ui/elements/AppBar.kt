@@ -67,6 +67,33 @@ import media.valo.tower_android.ui.routes.settings.SettingsScreen
 import media.valo.tower_android.ui.theme.TowerTheme
 
 /**
+ * The destinations that show no navigation icon.
+ *
+ * These are destinations the user must not be able to navigate away from: the loading screen,
+ * the call screen, and the gates the rest of the app sits behind.
+ */
+internal val destinationsWithoutNavigationIcon = listOf(
+    LoadingScreen::class,
+    LoginScreen::class,
+    CallScreen::class,
+    ClosedScreen::class,
+    OutdatedAppVersionScreen::class
+)
+
+/**
+ * The destinations that show a back button rather than the drawer.
+ *
+ * These are reached from the overflow menu rather than from the drawer, so the drawer would offer
+ * no way back to where the user came from.
+ */
+internal val destinationsWithBackButton = listOf(
+    SettingsScreen::class,
+    AboutScreen::class,
+    ContactScreen::class,
+    NewsScreen::class
+)
+
+/**
  * The bar at the top of the app containing the buttons for back, menu and more.
  *
  * @param modifier          `Modifier` for this element.
@@ -117,43 +144,37 @@ fun AppBar(
                     )
                 },
                 navigationIcon = {
-                    if (currentDestination != null
-                        && currentDestination?.hasRoute<LoginScreen>() != true
-                        && currentDestination?.hasRoute<LoadingScreen>() != true
-                        && currentDestination?.hasRoute<CallScreen>() != true
-                        && currentDestination?.hasRoute<ClosedScreen>() != true
-                        && currentDestination?.hasRoute<OutdatedAppVersionScreen>() != true
-                    ) {
-                        if (currentDestination?.hasRoute<SettingsScreen>() != true
-                            && currentDestination?.hasRoute<AboutScreen>() != true
-                            && currentDestination?.hasRoute<ContactScreen>() != true
-                            && currentDestination?.hasRoute<NewsScreen>() != true
+                    val destination = currentDestination
+                    when {
+                        destination == null
+                                || destinationsWithoutNavigationIcon.any {
+                                    destination.hasRoute(it)
+                                } -> Unit
+                        destinationsWithBackButton.any { destination.hasRoute(it) } -> IconButton(
+                            onClick = { navController.popBackStack() }
                         ) {
-                            IconButton(
-                                onClick = {
-                                    scope.launch {
-                                        drawerState.apply {
-                                            if (isClosed) {
-                                                open()
-                                            } else {
-                                                close()
-                                            }
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Zurück"
+                            )
+                        }
+                        else -> IconButton(
+                            onClick = {
+                                scope.launch {
+                                    drawerState.apply {
+                                        if (isClosed) {
+                                            open()
+                                        } else {
+                                            close()
                                         }
                                     }
                                 }
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Filled.Menu,
-                                    contentDescription = "Menü"
-                                )
                             }
-                        } else {
-                            IconButton(onClick = { navController.popBackStack() }) {
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                    contentDescription = "Zurück"
-                                )
-                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Menu,
+                                contentDescription = "Menü"
+                            )
                         }
                     }
                 },
