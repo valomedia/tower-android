@@ -87,6 +87,18 @@ class LoadingViewModel @Inject constructor(
         get() = BuildConfig.VERSION_NAME
 
     /**
+     * Whether the app needs to be updated.
+     *
+     * The app needs to be updated if:
+     * - the backend major version is greater than the app major version
+     * - the backend major version could not be parsed
+     *
+     * This will be null until connect() is successfully called.
+     */
+    val isAppUpdateNeeded: Boolean?
+        get() = backendMajorVersion?.let { it > appMajorVersion || it == -1 }
+
+    /**
      * Check whether the user has provided all required profile information.
      */
     suspend fun hasProfile(): Boolean = profileRepository.hasProfile()
@@ -109,17 +121,39 @@ class LoadingViewModel @Inject constructor(
     }
 
     /**
-     * Get the version on the last login (if any).
+     * Run the startup checks and decide which screen to show next.
      *
-     * @return The version on the last login , or `null` if it is unset (first login).
+     * This connects to the backend and then applies the startup gates in order: the app has to be
+     * recent enough to talk to the backend, the backend has to be reachable, the user has to have
+     * provided a profile, and the service has to be open. Only once every gate has been passed is
+     * the news screen considered, and only then is the current version recorded, so that a start
+     * that is turned away at one of the gates does not suppress the news on a later start.
+     *
+     * @return The `StartupDestination` to navigate to.
      */
-    suspend fun getLastLoginAppVersion(): String? = settingsRepository.getLastLoginAppVersion()
+    suspend fun resolveStartupDestination(): StartupDestination {
+        val isConnected = connect()
+        val serviceOpen = isServiceOpen
+        val currentSchedule = schedule
+        val updateNeeded = isAppUpdateNeeded
 
-    /**
-     * Change the version on the last login.
-     *
-     * @param version Current version.
-     */
-    suspend fun setLastLoginAppVersion(version: String?) =
-        settingsRepository.setLastLoginAppVersion(version)
+        return when {
+            updateNeeded == true -> StartupDestination.Outdated
+            !isConnected
+                    || !hasProfile()
+                    || serviceOpen == null
+                    || currentSchedule == null
+                    || updateNeeded == null -> StartupDestination.Login
+            !serviceOpen -> StartupDestination.Closed(schedule = currentSchedule)
+            else -> {
+                val lastLoginAppVersion = settingsRepository.getLastLoginAppVersion()
+                settingsRepository.setLastLoginAppVersion(appVersion)
+                if (lastLoginAppVersion != appVersion) {
+                    StartupDestination.News
+                } else {
+                    StartupDestination.Home
+                }
+            }
+        }
+    }
 }

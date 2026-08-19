@@ -64,46 +64,7 @@ fun LoadingScreen(
 ) {
 
     LaunchedEffect(Unit) {
-        val isConnected = viewModel.connect()
-        val isServiceOpen = viewModel.isServiceOpen
-        val schedule = viewModel.schedule
-        val backendMajorVersion = viewModel.backendMajorVersion
-        val appMajorVersion = viewModel.appMajorVersion
-        val appVersion = viewModel.appVersion
-        val lastLoginAppVersion = viewModel.getLastLoginAppVersion()
-
-        /**
-         * Whether the app needs to be updated.
-         *
-         * The app needs to be updated if:
-         * - the backend major version is greater than the app major version
-         * - the backend major could not be parsed
-         */
-        val isAppUpdateNeeded = if (backendMajorVersion != null) {
-            backendMajorVersion > appMajorVersion || backendMajorVersion == -1
-        } else {null}
-
-        /**
-         * Whether the app is opened the first time after updating.
-         */
-        val hasNewFeatures = appVersion != lastLoginAppVersion
-
-        when {
-            isAppUpdateNeeded == true -> navController.navigate(route = OutdatedAppVersionScreen) { popUpTo(navController.graph.id) }
-            !isConnected || !viewModel.hasProfile() || isServiceOpen == null || schedule == null || isAppUpdateNeeded == null -> navController.navigate(route = LoginScreen) { popUpTo(navController.graph.id) }
-            !isServiceOpen -> navController.navigate(route = ClosedScreen(currentSchedule = schedule)) { popUpTo(navController.graph.id) }
-            // The news are put on top of the home screen rather than replacing it, so that the
-            // back button on the news screen leads home instead of out of the app.
-            hasNewFeatures -> {
-                viewModel.setLastLoginAppVersion(appVersion)
-                navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
-                navController.navigate(route = NewsScreen)
-            }
-            else -> {
-                viewModel.setLastLoginAppVersion(appVersion)
-                navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
-            }
-        }
+        navController.navigateToStartupDestination(viewModel.resolveStartupDestination())
     }
 
     Column(
@@ -113,6 +74,34 @@ fun LoadingScreen(
     ) {
         Logo(modifier = Modifier.padding(8.dp))
         CircularProgressIndicator(modifier = Modifier.padding(8.dp))
+    }
+}
+
+/**
+ * Navigate to where the startup checks have decided the user should go.
+ *
+ * Every destination replaces the loading screen rather than stacking on top of it, so that going
+ * back leaves the app instead of starting over. The news are the exception: they are pushed on top
+ * of the home screen, because the app bar gives them a back button rather than the drawer.
+ *
+ * @param destination   Where the startup checks decided the user should go.
+ */
+fun NavController.navigateToStartupDestination(destination: StartupDestination) {
+    when (destination) {
+        StartupDestination.Outdated ->
+            navigate(route = OutdatedAppVersionScreen) { popUpTo(graph.id) }
+        StartupDestination.Login ->
+            navigate(route = LoginScreen) { popUpTo(graph.id) }
+        is StartupDestination.Closed ->
+            navigate(route = ClosedScreen(currentSchedule = destination.schedule)) {
+                popUpTo(graph.id)
+            }
+        StartupDestination.Home ->
+            navigate(route = HomeScreen) { popUpTo(graph.id) }
+        StartupDestination.News -> {
+            navigate(route = HomeScreen) { popUpTo(graph.id) }
+            navigate(route = NewsScreen)
+        }
     }
 }
 
