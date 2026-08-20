@@ -49,9 +49,12 @@ These instructions apply to the whole repository.
   ```
 
   Then prefer `./gradlew` for follow-up commands.
-  Keep the task name qualified,
-  so it resolves to the root project's wrapper task instead of matching a `wrapper` task in every
-  project.
+  Keep the task name qualified.
+  `gradle.properties` enables configure-on-demand,
+  so a bare `gradle wrapper` makes Gradle configure every project while searching for a matching
+  task,
+  which applies the Android Gradle Plugin and ties the bootstrapping Gradle to AGP's supported
+  range.
 - Useful verification commands are:
 
   ```shell

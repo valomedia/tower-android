@@ -32,8 +32,9 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      # Keep the task name qualified so it resolves to the root project's wrapper task instead of
-      # matching a `wrapper` task in every project.
+      # The task name must stay qualified. gradle.properties enables configure-on-demand, so an
+      # unqualified `wrapper` makes Gradle configure every project to look for a matching task,
+      # which applies AGP and ties the bootstrap Gradle to AGP's supported range.
       - name: Generate Gradle wrapper
         run: gradle :wrapper --no-daemon
 
