@@ -36,4 +36,21 @@ interface SettingsDataSource {
      */
     suspend fun setApiEndpoint(apiEndpoint: String?)
 
+    /**
+     * A `Flow` that emits the version whose news the user has seen every time it is updated.
+     *
+     * This is the version the news screen was last shown for. It is recorded once a start has
+     * passed every startup gate, and is what the news screen is suppressed on for later starts.
+     * When it is unset, such as on a fresh install or after the app data has been cleared, this
+     * will emit `null`.
+     */
+    val lastSeenNewsVersionFlow: Flow<String?>
+
+    /**
+     * Change the version whose news the user has seen.
+     *
+     * @param version   The version to record, or `null` to unset it.
+     */
+    suspend fun setLastSeenNewsVersion(version: String?)
+
 }

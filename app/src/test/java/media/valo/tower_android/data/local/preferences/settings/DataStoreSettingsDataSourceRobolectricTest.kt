@@ -31,6 +31,7 @@ import org.robolectric.annotation.Config
 
 private const val DEFAULT_API_ENDPOINT = "https://api.tower-assist.de"
 private const val CUSTOM_API_ENDPOINT = "https://api.dev.tower-assist.de"
+private const val NEWS_VERSION = "1.2.0"
 
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class)
@@ -60,6 +61,25 @@ class DataStoreSettingsDataSourceRobolectricTest {
 
         dataSource.setApiEndpoint(null)
         assertNull(dataSource.apiEndpointFlow.first())
+    }
+
+    @Test
+    fun `persists last seen news version through android data store`() = runBlocking {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val dataStore = createTemporaryPreferencesDataStore(
+            context = context,
+            scope = dataStoreScope,
+            name = "robolectric_settings_news"
+        )
+        val dataSource = DataStoreSettingsDataSource(dataStore)
+
+        assertNull(dataSource.lastSeenNewsVersionFlow.first())
+
+        dataSource.setLastSeenNewsVersion(NEWS_VERSION)
+        assertEquals(NEWS_VERSION, dataSource.lastSeenNewsVersionFlow.first())
+
+        dataSource.setLastSeenNewsVersion(null)
+        assertNull(dataSource.lastSeenNewsVersionFlow.first())
     }
 
     @Test

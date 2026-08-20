@@ -10,7 +10,9 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
+import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
 import media.valo.tower_android.data.remote.newsletter.NewsletterRepository
+import media.valo.tower_android.ui.routes.news.newestNewsVersion
 import media.valo.tower_android.utils.AppScope
 import javax.inject.Inject
 
@@ -22,14 +24,26 @@ import javax.inject.Inject
 /**
  * ViewModel for SignupForm.
  *
- * @param profileRepository ProfileRepository dependency.
+ * @param profileRepository     ProfileRepository dependency.
+ * @param newsletterRepository  NewsletterRepository dependency.
+ * @param settingsRepository    SettingsRepository dependency.
+ * @param appScope              Scope for work that has to outlive this screen.
  */
 @HiltViewModel
 class SignupFormViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val newsletterRepository: NewsletterRepository,
+    private val settingsRepository: SettingsRepository,
     @AppScope val appScope: CoroutineScope
 ) : ViewModel() {
+
+    /**
+     * Record the current release notes as seen, without showing them.
+     *
+     * Anybody shown the signup form is installing the app rather than upgrading it, so the release
+     * notes cover releases they were never around for. They still get the news for later releases.
+     */
+    suspend fun markNewsAsSeen() = settingsRepository.setLastSeenNewsVersion(newestNewsVersion)
 
     /**
      * Get the first name (if any).
