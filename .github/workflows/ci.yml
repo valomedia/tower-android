@@ -27,13 +27,18 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
 
+      # No gradle-version: the runner's preinstalled Gradle only bootstraps the wrapper, and
+      # gradle/wrapper/gradle-wrapper.properties decides which Gradle the build itself runs on.
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
-        with:
-          gradle-version: 8.13
+
+      # Keep the task name qualified so it resolves to the root project's wrapper task instead of
+      # matching a `wrapper` task in every project.
+      - name: Generate Gradle wrapper
+        run: gradle :wrapper --no-daemon
 
       - name: Build debug app
-        run: gradle assembleDebug --no-daemon
+        run: ./gradlew assembleDebug --no-daemon
 
   lint:
     name: Run Android lint
@@ -52,13 +57,15 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
 
+      # No gradle-version, and the task name stays qualified; see the notes in the build job.
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
-        with:
-          gradle-version: 8.13
+
+      - name: Generate Gradle wrapper
+        run: gradle :wrapper --no-daemon
 
       - name: Run Android lint
-        run: gradle lintDebug --no-daemon
+        run: ./gradlew lintDebug --no-daemon
 
   unit-tests:
     name: Run unit tests
@@ -77,13 +84,15 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
 
+      # No gradle-version, and the task name stays qualified; see the notes in the build job.
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v6
-        with:
-          gradle-version: 8.13
+
+      - name: Generate Gradle wrapper
+        run: gradle :wrapper --no-daemon
 
       - name: Run unit tests
-        run: gradle testDebugUnitTest --no-daemon
+        run: ./gradlew testDebugUnitTest --no-daemon
 
       - name: Verify Robolectric tests ran
         shell: bash
