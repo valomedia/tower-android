@@ -1,12 +1,4 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["github>valomedia/renovate-config"],
-  "packageRules": [
-    {
-      "description": "AGP 8.x binds to Gradle's internal Problems API, which Gradle removed in 9.6.0, so com.android.application cannot be applied on Gradle 9.6 or newer, and 8.13.2 is the last AGP 8.x release. Keep the wrapper on 9.5.x patch updates until the project migrates to AGP 9, then drop this rule.",
-      "matchManagers": ["gradle-wrapper"],
-      "matchUpdateTypes": ["major", "minor"],
-      "enabled": false
-    }
-  ]
+  "extends": ["github>valomedia/renovate-config"]
 }
