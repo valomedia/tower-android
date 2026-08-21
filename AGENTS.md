@@ -71,17 +71,24 @@ These instructions apply to the whole repository.
   Renovate keeps the file current through its `gradle-wrapper` manager,
   so change the Gradle version by editing `distributionUrl` there,
   and do not reintroduce a `gradleVersion` literal in `build.gradle.kts`.
-- Gradle 9.5.x is the ceiling for that pin.
-  AGP 8.x binds to `org.gradle.api.problems.internal.InternalProblems`,
-  which Gradle removed in 9.6.0,
-  so `com.android.application` fails to apply on Gradle 9.6 and newer,
-  and 8.13.2 is the last AGP 8.x release.
-  Raising the ceiling therefore means migrating to AGP 9,
-  which replaces the separate `org.jetbrains.kotlin.android` plugin with AGP's built-in Kotlin
-  support.
-  `renovate.json` disables major and minor updates for the `gradle-wrapper` manager,
-  so Renovate keeps proposing 9.5.x patches without offering a Gradle the current AGP cannot run;
-  drop that rule with the migration.
+- Gradle 9.5.0 is the floor for that pin.
+  AGP 9.3 needs Gradle 9.5.0 or newer and JDK 17 or newer.
+  The project is past the AGP 8.x ceiling that used to cap the pin at Gradle 9.5.x,
+  so `renovate.json` no longer holds the `gradle-wrapper` manager to patch updates,
+  and Renovate proposes major and minor Gradle updates like any other dependency.
+- AGP 9 compiles Kotlin itself,
+  so the separate `org.jetbrains.kotlin.android` plugin is gone from the build files and from
+  `gradle/libs.versions.toml`.
+  Applying it again fails the build,
+  and the catalog's `kotlin` version now only feeds the Compose and serialization compiler
+  plugins.
+  Kotlin compiler options belong in a top-level `kotlin { compilerOptions { … } }` block,
+  because AGP 9 removed `android { kotlinOptions { … } }`.
+  `:app` sets none of them:
+  the Kotlin JVM target defaults to `android.compileOptions.targetCompatibility`,
+  which the module pins to 11.
+- Hilt's Gradle plugin needs 2.59 or newer under AGP 9.
+  Earlier versions look up AGP's removed `BaseExtension` DSL type and fail to apply.
 - `:app:preBuild` depends on `:wrapper`,
   so normal app builds regenerate the untracked wrapper files as needed.
   Regenerating with a Gradle newer than the pin can add default keys such as `retries` to the
