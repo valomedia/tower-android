@@ -6,6 +6,7 @@
 
 package media.valo.tower_android.data.remote.tower
 
+import media.valo.tower_android.model.dummyAwaitAssistanceResponse
 import media.valo.tower_android.model.dummyIndexResponse
 import media.valo.tower_android.model.dummyRegisterUserResponse
 import media.valo.tower_android.model.dummyRequestAssistanceResponse
@@ -28,7 +29,7 @@ class DummyTowerDataSource : TowerDataSource {
 
     override suspend fun requestAssistance() = dummyRequestAssistanceResponse
 
-    override suspend fun awaitAssistance() = Unit
+    override suspend fun awaitAssistance() = dummyAwaitAssistanceResponse
 
     override suspend fun cancelAssistance() = Unit
 
