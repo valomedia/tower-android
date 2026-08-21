@@ -31,7 +31,7 @@ coroutines = "1.10.2"
 azureCommunication = "2.16.0"
 kotlinxDatetime = "0.7.1"
 accompanist = "0.37.3"
-playServicesLocation = "21.3.0"
+playServicesLocation = "21.4.0"
 androidxTestCore = "1.7.0"
 robolectric = "4.16.1"
 
