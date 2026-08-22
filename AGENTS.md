@@ -30,26 +30,31 @@ These instructions apply to the whole repository.
 ## Build and verification
 
 - CI uses JDK 17,
-  Gradle 8.13,
   the Android SDK,
+  the Gradle version pinned in `gradle/wrapper/gradle-wrapper.properties`,
   and runs:
 
   ```shell
-  gradle testDebugUnitTest --no-daemon
+  ./gradlew testDebugUnitTest --no-daemon
   ```
 
-- The Gradle wrapper output is intentionally ignored by git:
-  `/gradle/wrapper`,
-  `/gradlew`,
-  and `/gradlew.bat` are in `.gitignore`.
+- Only `gradle/wrapper/gradle-wrapper.properties` is checked in.
+  The wrapper jar and the `gradlew` scripts are ignored by git,
+  so an opaque binary never enters the repository.
 - If `./gradlew` is missing locally,
-  bootstrap it with:
+  bootstrap it with any locally installed Gradle:
 
   ```shell
-  gradle wrapper
+  gradle :wrapper
   ```
 
   Then prefer `./gradlew` for follow-up commands.
+  Keep the task name qualified.
+  `gradle.properties` enables configure-on-demand,
+  so a bare `gradle wrapper` makes Gradle configure every project while searching for a matching
+  task,
+  which applies the Android Gradle Plugin and ties the bootstrapping Gradle to AGP's supported
+  range.
 - Useful verification commands are:
 
   ```shell
@@ -60,8 +65,39 @@ These instructions apply to the whole repository.
 
 - `./gradlew connectedDebugAndroidTest --no-daemon` requires a connected device or emulator.
   Do not treat it as a routine local check unless that dependency is available.
+- `gradle/wrapper/gradle-wrapper.properties` is the single source of truth for the Gradle version.
+  The root `wrapper` task reads the version from that file rather than hard-coding one,
+  so regenerating the wrapper with an older or newer local Gradle re-pins nothing.
+  Renovate keeps the file current through its `gradle-wrapper` manager,
+  so change the Gradle version by editing `distributionUrl` there,
+  and do not reintroduce a `gradleVersion` literal in `build.gradle.kts`.
+- Gradle 9.5.0 is the floor for that pin.
+  AGP 9.3 needs Gradle 9.5.0 or newer and JDK 17 or newer.
+  The project is past the AGP 8.x ceiling that used to cap the pin at Gradle 9.5.x,
+  so `renovate.json` no longer holds the `gradle-wrapper` manager to patch updates,
+  and Renovate proposes major and minor Gradle updates like any other dependency.
+- AGP 9 compiles Kotlin itself,
+  so the separate `org.jetbrains.kotlin.android` plugin is gone from the build files and from
+  `gradle/libs.versions.toml`.
+  Applying it again fails the build,
+  and the catalog's `kotlin` version now only feeds the Compose and serialization compiler
+  plugins.
+  Kotlin compiler options belong in a top-level `kotlin { compilerOptions { … } }` block,
+  because AGP 9 removed `android { kotlinOptions { … } }`.
+  `:app` sets none of them:
+  the Kotlin JVM target defaults to `android.compileOptions.targetCompatibility`,
+  which the module pins to 11.
+- Hilt's Gradle plugin needs 2.59 or newer under AGP 9.
+  Earlier versions look up AGP's removed `BaseExtension` DSL type and fail to apply.
 - `:app:preBuild` depends on `:wrapper`,
-  so normal app builds refresh the wrapper to the Gradle version configured in the root build file.
+  so normal app builds regenerate the untracked wrapper files as needed.
+  Regenerating with a Gradle newer than the pin can add default keys such as `retries` to the
+  properties file;
+  that is harmless,
+  and the pinned `distributionUrl` is left alone.
+- `gradle/wrapper/gradle-wrapper.properties` deliberately carries no copyright header.
+  The `wrapper` task rewrites the file wholesale,
+  so a header would not survive the next regeneration.
 
 ## Kotlin and Compose conventions
 

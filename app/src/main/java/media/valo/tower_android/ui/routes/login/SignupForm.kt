@@ -42,6 +42,8 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
+import media.valo.tower_android.data.local.preferences.settings.DummySettingsDataSource
+import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
 import media.valo.tower_android.data.remote.newsletter.DummyNewsletterDataSource
 import media.valo.tower_android.data.remote.newsletter.NewsletterRepository
 import media.valo.tower_android.ui.elements.Logo
@@ -79,6 +81,8 @@ fun SignupForm(
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
+
+        viewModel.markNewsAsSeen()
     }
 
     if (!isSigningUp) {
@@ -192,6 +196,7 @@ fun SignupFormPreview() {
         viewModel = SignupFormViewModel(
             ProfileRepository(DummyProfileDataSource()),
             NewsletterRepository(DummyNewsletterDataSource()),
+            SettingsRepository(DummySettingsDataSource()),
             previewScope
         )
     )

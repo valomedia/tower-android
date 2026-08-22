@@ -24,5 +24,4 @@ interface SettingsDataSourceModule {
     fun bindSettingsDataSource(
         dataStoreSettingsDataSource: DataStoreSettingsDataSource
     ): SettingsDataSource
-
 }

@@ -6,6 +6,7 @@
 
 package media.valo.tower_android.data.remote.tower
 
+import media.valo.tower_android.model.AwaitAssistanceResponse
 import media.valo.tower_android.model.IndexResponse
 import media.valo.tower_android.model.RegisterUserResponse
 import media.valo.tower_android.model.RequestAssistanceResponse
@@ -56,8 +57,10 @@ interface TowerDataSource {
      *
      * This will inform the backend, that the caller is still on the line, so the assistance request
      * doesn't time out.
+     *
+     * @return The current position in the assistance queue.
      */
-    suspend fun awaitAssistance()
+    suspend fun awaitAssistance(): AwaitAssistanceResponse
 
     /**
      * Signal to the backend, that the caller has given up on waiting.

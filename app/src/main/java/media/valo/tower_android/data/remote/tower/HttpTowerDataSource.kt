@@ -22,6 +22,7 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.contentType
 import media.valo.tower_android.data.local.preferences.credentials.CredentialRepository
 import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
+import media.valo.tower_android.model.AwaitAssistanceResponse
 import media.valo.tower_android.model.IndexResponse
 import media.valo.tower_android.model.RegisterUserResponse
 import media.valo.tower_android.model.RequestAssistanceResponse
@@ -49,9 +50,8 @@ class HttpTowerDataSource @Inject constructor(
     override suspend fun requestAssistance(): RequestAssistanceResponse =
         post("/requestAssistance", mapOf("userId" to credentialRepository.getUserId())).body()
 
-    override suspend fun awaitAssistance() {
-        post("/awaitAssistance", mapOf("userId" to credentialRepository.getUserId()))
-    }
+    override suspend fun awaitAssistance(): AwaitAssistanceResponse =
+        post("/awaitAssistance", mapOf("userId" to credentialRepository.getUserId())).body()
 
     override suspend fun cancelAssistance() {
         post("/cancelAssistance", mapOf("userId" to credentialRepository.getUserId()))
