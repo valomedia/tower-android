@@ -21,12 +21,12 @@ plugins {
 
 android {
     namespace = "media.valo.tower_android"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "media.valo.tower_android"
         minSdk = 30
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 16
         versionName = "1.2.0"
 
