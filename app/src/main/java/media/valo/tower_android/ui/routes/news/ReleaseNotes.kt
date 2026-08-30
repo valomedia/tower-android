@@ -31,6 +31,22 @@ data class ReleaseNotes(
  */
 val releaseNotes: List<ReleaseNotes> = listOf(
     ReleaseNotes(
+        version = "1.3.0",
+        changes = """
+            <b>Wir sind umgezogen!</b>
+            <br><br>
+            Bitte installiere die neue TOWER Assist App,
+            damit du unsere Assistenz weiterhin wie gewohnt nutzen kannst.
+            Die bisherige TOWER Fernassistenz App wird ab jetzt nicht mehr gepflegt
+            und demnächst abgeschaltet.
+            Die neue App gehört zur TOWER Assist GmbH
+            und ersetzt die bisherige App.
+            Alles andere bleibt wie gewohnt.
+            <br><br>
+            <u><a href="https://tower-assist.de/app">TOWER Assist App jetzt installieren</a></u>
+            """
+    ),
+    ReleaseNotes(
         version = "1.2.0",
         changes = "Unter „Neuigkeiten“ im Menü oben rechts kannst du jederzeit nachlesen, was "
                 + "sich in der App geändert hat. Nach einem Update zeigen wir dir die "
