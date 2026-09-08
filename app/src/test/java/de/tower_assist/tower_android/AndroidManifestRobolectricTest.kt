@@ -34,7 +34,7 @@ class AndroidManifestRobolectricTest {
             PackageManager.GET_ACTIVITIES or PackageManager.GET_PERMISSIONS
         )
 
-        assertEquals("Tower Fernassistenz", context.getString(R.string.app_name))
+        assertEquals("Tower Assist", context.getString(R.string.app_name))
         assertEquals(R.string.app_name, packageInfo.applicationInfo?.labelRes)
         assertTrue(
             packageInfo.activities.orEmpty().any { activityInfo ->

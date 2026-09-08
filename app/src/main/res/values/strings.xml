@@ -1,5 +1,5 @@
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2024-2025.                                                  ~
+  ~ Copyright (c) 2024-2026.                                                  ~
   ~ valo.media GmbH                                                           ~
   ~ All rights reserved.                                                      ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
@@ -10,5 +10,5 @@
   -->
 
 <resources>
-    <string name="app_name">Tower Fernassistenz</string>
+    <string name="app_name">Tower Assist</string>
 </resources>
