@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2025.                                                        *
+ * Copyright (c) 2025-2026.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -54,7 +54,7 @@ fun OutdatedAppVersionScreen(
             modifier = Modifier.padding(8.dp)
         )
         Text(
-            text = "Bitte aktualisiere TOWER Fernassistenz über den Play Store, bevor du einen Anruf startest",
+            text = "Bitte aktualisiere TOWER Assist über den Play Store, bevor du einen Anruf startest",
             style = MaterialTheme.typography.titleMedium,
             modifier = Modifier.padding(8.dp)
         )

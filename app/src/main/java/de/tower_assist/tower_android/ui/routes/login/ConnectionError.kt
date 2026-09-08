@@ -26,8 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.launch
 import de.tower_assist.tower_android.ui.routes.loading.LoadingScreen
+import kotlinx.coroutines.launch
 
 //
 //  ConnectionError.kt
@@ -60,7 +60,7 @@ fun ConnectionError(
             text = buildAnnotatedString {
                 append(
                     "Bitte überprüfe ob du mit dem Internet verbunden bist, und die aktuelle Version der " +
-                            "Tower-Fernassistenz-App installiert hast. Wenn das Problem weiterhin auftritt, " +
+                            "Tower-Assist-App installiert hast. Wenn das Problem weiterhin auftritt, " +
                             "versuche es später erneut, oder wende dich an unseren Support: "
                 )
                 withLink(

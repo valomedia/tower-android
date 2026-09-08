@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2025.                                                        *
+ * Copyright (c) 2025-2026.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -121,7 +121,7 @@ fun ContactScreen(
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             Text(
-                text = "Tower Fernassistanz ist ein Angebot von:",
+                text = "Tower Assist ist ein Angebot von:",
                 modifier = Modifier.padding(8.dp)
             )
             val mapsUrl =

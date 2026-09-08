@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024-2025.                                                   *
+ * Copyright (c) 2024-2026.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -50,7 +50,6 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.launch
 import de.tower_assist.tower_android.data.local.preferences.credentials.CredentialRepository
 import de.tower_assist.tower_android.data.local.preferences.credentials.DummyCredentialDataSource
 import de.tower_assist.tower_android.data.local.preferences.profile.DummyProfileDataSource
@@ -65,6 +64,7 @@ import de.tower_assist.tower_android.ui.routes.news.NewsScreen
 import de.tower_assist.tower_android.ui.routes.outdated.OutdatedAppVersionScreen
 import de.tower_assist.tower_android.ui.routes.settings.SettingsScreen
 import de.tower_assist.tower_android.ui.theme.TowerTheme
+import kotlinx.coroutines.launch
 
 /**
  * The destinations that show no navigation icon.
@@ -138,7 +138,7 @@ fun AppBar(
                 ),
                 title = {
                     Text(
-                        "Tower Fernassistenz",
+                        "Tower Assist",
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
