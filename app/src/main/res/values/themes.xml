@@ -13,7 +13,18 @@
 
 <resources>
 
-    <style name="Theme.Tower_Android" parent="android:Theme.Material.Light.NoActionBar" />
+    <!--
+      - The window TOWER runs in.
+      -
+      - `DeviceDefault.DayNight` follows the system's light and dark mode, so the frame behind the
+      - app no longer stays light on a dark device. The platform ships no `NoActionBar` variant of
+      - it, so the action bar is switched off by hand, the way core-splashscreen's own theme does
+      - it.
+      -->
+    <style name="Theme.Tower_Android" parent="android:Theme.DeviceDefault.DayNight">
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
 
     <!--
       - The window TOWER launches into.
