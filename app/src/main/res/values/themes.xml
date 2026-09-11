@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2024.                                                       ~
+  ~ Copyright (c) 2024-2026.                                                  ~
   ~ valo.media GmbH                                                           ~
   ~ All rights reserved.                                                      ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
@@ -14,4 +14,18 @@
 <resources>
 
     <style name="Theme.Tower_Android" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!--
+      - The window TOWER launches into.
+      -
+      - This is the launcher icon on Verdigris, held until the first Compose frame is drawn, after
+      - which `installSplashScreen` hands the activity over to `Theme.Tower_Android`. The icon keeps
+      - the background it has on the home screen, so the two read as the same mark.
+      -->
+    <style name="Theme.Tower_Android.Starting" parent="Theme.SplashScreen.IconBackground">
+        <item name="windowSplashScreenBackground">@color/verdigris</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/ic_launcher_background</item>
+        <item name="postSplashScreenTheme">@style/Theme.Tower_Android</item>
+    </style>
 </resources>

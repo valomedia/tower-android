@@ -44,7 +44,7 @@
             android:name="de.tower_assist.tower_android.MainActivity"
             android:exported="true"
             android:supportsPictureInPicture="true"
-            android:theme="@style/Theme.Tower_Android" >
+            android:theme="@style/Theme.Tower_Android.Starting" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
