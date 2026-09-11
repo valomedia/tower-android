@@ -25,7 +25,7 @@ android {
 
     defaultConfig {
         applicationId = "de.tower_assist.tower_android"
-        minSdk = 30
+        minSdk = 33
         targetSdk = 37
         versionCode = 17
         versionName = "1.3.0"
