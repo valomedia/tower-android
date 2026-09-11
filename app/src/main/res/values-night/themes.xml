@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  ~ Copyright (c) 2026.                                                       ~
+  ~ valo.media GmbH                                                           ~
+  ~ All rights reserved.                                                      ~
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+
+<!--
+  - themes.xml
+  - Tower_Android
+  -->
+
+<resources>
+
+    <!--
+      - The window TOWER runs in on a dark device.
+      -
+      - Only the parent differs from the default configuration. `Theme.Tower_Android.Starting`
+      - names its own parent, so it is unaffected by this and stays where it is declared.
+      -->
+    <style name="Theme.Tower_Android" parent="android:Theme.Material.NoActionBar" />
+</resources>

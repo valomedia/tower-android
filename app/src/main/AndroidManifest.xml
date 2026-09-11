@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2024-2025.                                                  ~
+  ~ Copyright (c) 2024-2026.                                                  ~
   ~ valo.media GmbH                                                           ~
   ~ All rights reserved.                                                      ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
@@ -35,7 +35,6 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:name="de.tower_assist.tower_android.TowerAndroidApplication"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Tower_Android">
         
@@ -45,7 +44,7 @@
             android:name="de.tower_assist.tower_android.MainActivity"
             android:exported="true"
             android:supportsPictureInPicture="true"
-            android:theme="@style/Theme.Tower_Android" >
+            android:theme="@style/Theme.Tower_Android.Starting" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

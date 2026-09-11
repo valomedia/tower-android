@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2024.                                                       ~
+  ~ Copyright (c) 2024-2026.                                                  ~
   ~ valo.media GmbH                                                           ~
   ~ All rights reserved.                                                      ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
@@ -25,7 +25,7 @@
             <clip-path android:pathData="M0,-0.46h283.46v283.46h-283.46z" />
             <path
                 android:pathData="M141.73,283C220.01,283 283.46,219.54 283.46,141.27C283.46,62.99 220.01,-0.46 141.73,-0.46C63.46,-0.46 0,62.99 0,141.27C0,219.54 63.46,283 141.73,283"
-                android:fillColor="#5CACAA"
+                android:fillColor="#12ACB1"
                 android:fillType="nonZero" />
         </group>
         <path

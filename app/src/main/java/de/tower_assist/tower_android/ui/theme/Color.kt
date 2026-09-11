@@ -1,5 +1,5 @@
 /******************************************************************************
- * Copyright (c) 2024.                                                        *
+ * Copyright (c) 2024-2026.                                                   *
  * valo.media GmbH                                                            *
  * All rights reserved.                                                       *
  ******************************************************************************/
@@ -14,6 +14,6 @@ package de.tower_assist.tower_android.ui.theme
 import androidx.compose.ui.graphics.Color
 
 /**
- * The hue of cyan used in by TOWER.
+ * The hue of cyan used by TOWER.
  */
-val Cyan60 = Color(0xFF4EACA7)
+val Verdigris = Color(0xFF12ACB1)
