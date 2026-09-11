@@ -27,8 +27,8 @@ android {
         applicationId = "de.tower_assist.tower_android"
         minSdk = 33
         targetSdk = 37
-        versionCode = 17
-        versionName = "1.3.0"
+        versionCode = 18
+        versionName = "1.4.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
