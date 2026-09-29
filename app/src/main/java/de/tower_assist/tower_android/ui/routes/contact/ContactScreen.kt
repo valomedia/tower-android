@@ -146,6 +146,23 @@ fun ContactScreen(
                 },
                 modifier = Modifier.padding(8.dp)
             )
+            Text(
+                text = buildAnnotatedString {
+                    append("Quellcode: ")
+                    withLink(
+                        LinkAnnotation.Url(
+                            "https://github.com/valomedia/tower-android/",
+                            TextLinkStyles(
+                                style = SpanStyle(
+                                    color = Color.Blue,
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            )
+                        )
+                    ) { append("github.com/valomedia/tower-android") }
+                },
+                modifier = Modifier.padding(8.dp)
+            )
         }
     }
 }
