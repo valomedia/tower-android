@@ -32,11 +32,11 @@ plugins {
 }
 
 android {
-    namespace = "de.tower_assist.tower_android"
+    namespace = "media.valo.tower_android"
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "de.tower_assist.tower_android"
+        applicationId = "media.valo.tower_android"
         minSdk = 33
         targetSdk = 37
         versionCode = 18
