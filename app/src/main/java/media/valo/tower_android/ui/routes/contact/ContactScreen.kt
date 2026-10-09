@@ -136,13 +136,11 @@ fun ContactScreen(
                 text = "Tower Assist ist ein Angebot von:",
                 modifier = Modifier.padding(8.dp)
             )
-            val mapsUrl =
-                "https://maps.google.com/?q=Bathildisheim%20e.V.%20Bathildisstraße%207,%2034454%20Bad%20Arolsen"
             Text(
                 text = buildAnnotatedString {
                     withLink(
                         LinkAnnotation.Url(
-                            mapsUrl,
+                            "https://maps.app.goo.gl/YS8c7hXJcEtqueTu5",
                             TextLinkStyles(
                                 style = SpanStyle(
                                     color = Color.Blue,
@@ -151,9 +149,9 @@ fun ContactScreen(
                             )
                         )
                     ) {
-                        append("Bathildisheim e.V.\n")
-                        append("Bathildisstraße 7\n")
-                        append("34454 Bad Arolsen")
+                        append("Tower Assist GmbH\n")
+                        append("Universitätsplatz 12\n")
+                        append("34127 Kassel")
                     }
                 },
                 modifier = Modifier.padding(8.dp)
