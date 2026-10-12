@@ -114,6 +114,8 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     implementation(libs.accompanist.permissions)
     implementation(libs.play.services.location)
+    implementation(libs.billing)
+    implementation(libs.billing.ktx)
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.robolectric)
