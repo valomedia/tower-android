@@ -1,7 +1,19 @@
 /******************************************************************************
- * Copyright (c) 2026.                                                        *
- * valo.media GmbH                                                            *
+ * Copyright (c) 2026 valo.media GmbH                                         *
  * All rights reserved.                                                       *
+ *                                                                            *
+ * This program is free software: you can redistribute it and/or modify       *
+ * it under the terms of the GNU Affero General Public License as             *
+ * published by the Free Software Foundation, either version 3 of the         *
+ * License, or (at your option) any later version.                            *
+ *                                                                            *
+ * This program is distributed in the hope that it will be useful,            *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU Affero General Public License for more details.                        *
+ *                                                                            *
+ * You should have received a copy of the GNU Affero General Public License   *
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.     *
  ******************************************************************************/
 
 package media.valo.tower_android.ui.routes.news
@@ -30,6 +42,42 @@ data class ReleaseNotes(
  * of every release lives in the GitHub releases instead.
  */
 val releaseNotes: List<ReleaseNotes> = listOf(
+    ReleaseNotes(
+        version = "1.4.0",
+        changes = """
+            <b>Herzlich willkommen in der TOWER Assist App</b>
+            <br><br>
+            Wenn du diesen Text lesen oder hören kannst,
+            hat alles geklappt:
+            Du bist in der richtigen App.
+            Hier findest du TOWER Assist genauso wie bisher.
+            Die neue TOWER Assist App sieht fast genauso aus
+            wie die bisherige TOWER Fernassistenz App.
+            Das ist so gewollt.
+            Auch mit TalkBack fühlt sie sich vertraut an.
+            Du kannst die TOWER Fernassistenz App jetzt von deinem Handy löschen.
+            Für TOWER brauchst du ab jetzt nur noch die TOWER Assist App.
+            Wenn du unsicher bist oder Fragen hast,
+            ruf uns einfach an.
+            Wir helfen dir gern.
+            """
+    ),
+    ReleaseNotes(
+        version = "1.3.0",
+        changes = """
+            <b>Wir sind umgezogen!</b>
+            <br><br>
+            Bitte installiere die neue TOWER Assist App,
+            damit du unsere Assistenz weiterhin wie gewohnt nutzen kannst.
+            Die bisherige TOWER Fernassistenz App wird ab jetzt nicht mehr gepflegt
+            und demnächst abgeschaltet.
+            Die neue App gehört zur TOWER Assist GmbH
+            und ersetzt die bisherige App.
+            Alles andere bleibt wie gewohnt.
+            <br><br>
+            <u><a href="https://tower-assist.de/app">TOWER Assist App jetzt installieren</a></u>
+            """
+    ),
     ReleaseNotes(
         version = "1.2.0",
         changes = "Unter „Neuigkeiten“ im Menü oben rechts kannst du jederzeit nachlesen, was "

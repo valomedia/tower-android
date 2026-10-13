@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2024.                                                       ~
-  ~ valo.media GmbH                                                           ~
+  ~ Copyright (c) 2024-2026 valo.media GmbH                                   ~
   ~ All rights reserved.                                                      ~
+  ~                                                                           ~
+  ~ This program is free software: you can redistribute it and/or modify      ~
+  ~ it under the terms of the GNU Affero General Public License as            ~
+  ~ published by the Free Software Foundation, either version 3 of the        ~
+  ~ License, or (at your option) any later version.                           ~
+  ~                                                                           ~
+  ~ This program is distributed in the hope that it will be useful,           ~
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of            ~
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             ~
+  ~ GNU Affero General Public License for more details.                       ~
+  ~                                                                           ~
+  ~ You should have received a copy of the GNU Affero General Public License  ~
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.    ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <!--
@@ -13,5 +25,27 @@
 
 <resources>
 
+    <!--
+      - The window TOWER runs in.
+      -
+      - `Theme.Material` has no day/night variant, so the dark one is declared under a `night`
+      - qualifier next to this. `DeviceDefault.DayNight` would switch on its own, but resolves its
+      - background through the wallpaper-derived neutral palette, and following the wallpaper is
+      - what this app moved away from.
+      -->
     <style name="Theme.Tower_Android" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!--
+      - The window TOWER launches into.
+      -
+      - This is the launcher icon on Verdigris, held until the first Compose frame is drawn, after
+      - which `installSplashScreen` hands the activity over to `Theme.Tower_Android`. The icon keeps
+      - the background it has on the home screen, so the two read as the same mark.
+      -->
+    <style name="Theme.Tower_Android.Starting" parent="Theme.SplashScreen.IconBackground">
+        <item name="windowSplashScreenBackground">@color/verdigris</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/ic_launcher_background</item>
+        <item name="postSplashScreenTheme">@style/Theme.Tower_Android</item>
+    </style>
 </resources>

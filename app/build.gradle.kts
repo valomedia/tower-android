@@ -1,7 +1,19 @@
 /******************************************************************************
- * Copyright (c) 2024-2026.                                                   *
- * valo.media GmbH                                                            *
+ * Copyright (c) 2024-2026 valo.media GmbH                                    *
  * All rights reserved.                                                       *
+ *                                                                            *
+ * This program is free software: you can redistribute it and/or modify       *
+ * it under the terms of the GNU Affero General Public License as             *
+ * published by the Free Software Foundation, either version 3 of the         *
+ * License, or (at your option) any later version.                            *
+ *                                                                            *
+ * This program is distributed in the hope that it will be useful,            *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU Affero General Public License for more details.                        *
+ *                                                                            *
+ * You should have received a copy of the GNU Affero General Public License   *
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.     *
  ******************************************************************************/
 
 //
@@ -21,14 +33,14 @@ plugins {
 
 android {
     namespace = "media.valo.tower_android"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "media.valo.tower_android"
-        minSdk = 30
-        targetSdk = 36
-        versionCode = 16
-        versionName = "1.2.0"
+        minSdk = 33
+        targetSdk = 37
+        versionCode = 18
+        versionName = "1.4.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -72,6 +84,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.lifecycle.common)
     implementation(libs.androidx.lifecycle.process)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -82,6 +95,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.material.color.utilities)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.datastore.preferences)
@@ -100,6 +114,8 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     implementation(libs.accompanist.permissions)
     implementation(libs.play.services.location)
+    implementation(libs.billing)
+    implementation(libs.billing.ktx)
     testImplementation(libs.junit)
     testImplementation(libs.androidx.test.core)
     testImplementation(libs.robolectric)

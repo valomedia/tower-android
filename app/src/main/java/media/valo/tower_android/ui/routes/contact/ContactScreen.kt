@@ -1,7 +1,19 @@
 /******************************************************************************
- * Copyright (c) 2025.                                                        *
- * valo.media GmbH                                                            *
+ * Copyright (c) 2025-2026 valo.media GmbH                                    *
  * All rights reserved.                                                       *
+ *                                                                            *
+ * This program is free software: you can redistribute it and/or modify       *
+ * it under the terms of the GNU Affero General Public License as             *
+ * published by the Free Software Foundation, either version 3 of the         *
+ * License, or (at your option) any later version.                            *
+ *                                                                            *
+ * This program is distributed in the hope that it will be useful,            *
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
+ * GNU Affero General Public License for more details.                        *
+ *                                                                            *
+ * You should have received a copy of the GNU Affero General Public License   *
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.     *
  ******************************************************************************/
 
 package media.valo.tower_android.ui.routes.contact
@@ -121,16 +133,14 @@ fun ContactScreen(
             )
             HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
             Text(
-                text = "Tower Fernassistanz ist ein Angebot von:",
+                text = "Tower Assist ist ein Angebot von:",
                 modifier = Modifier.padding(8.dp)
             )
-            val mapsUrl =
-                "https://maps.google.com/?q=Bathildisheim%20e.V.%20Bathildisstraße%207,%2034454%20Bad%20Arolsen"
             Text(
                 text = buildAnnotatedString {
                     withLink(
                         LinkAnnotation.Url(
-                            mapsUrl,
+                            "https://maps.app.goo.gl/YS8c7hXJcEtqueTu5",
                             TextLinkStyles(
                                 style = SpanStyle(
                                     color = Color.Blue,
@@ -139,10 +149,27 @@ fun ContactScreen(
                             )
                         )
                     ) {
-                        append("Bathildisheim e.V.\n")
-                        append("Bathildisstraße 7\n")
-                        append("34454 Bad Arolsen")
+                        append("Tower Assist GmbH\n")
+                        append("Universitätsplatz 12\n")
+                        append("34127 Kassel")
                     }
+                },
+                modifier = Modifier.padding(8.dp)
+            )
+            Text(
+                text = buildAnnotatedString {
+                    append("Quellcode: ")
+                    withLink(
+                        LinkAnnotation.Url(
+                            "https://github.com/valomedia/tower-android/",
+                            TextLinkStyles(
+                                style = SpanStyle(
+                                    color = Color.Blue,
+                                    textDecoration = TextDecoration.Underline
+                                )
+                            )
+                        )
+                    ) { append("github.com/valomedia/tower-android") }
                 },
                 modifier = Modifier.padding(8.dp)
             )

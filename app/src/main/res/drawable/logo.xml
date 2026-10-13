@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (c) 2024.                                                       ~
-  ~ valo.media GmbH                                                           ~
+  ~ Copyright (c) 2024-2026 valo.media GmbH                                   ~
   ~ All rights reserved.                                                      ~
+  ~                                                                           ~
+  ~ This program is free software: you can redistribute it and/or modify      ~
+  ~ it under the terms of the GNU Affero General Public License as            ~
+  ~ published by the Free Software Foundation, either version 3 of the        ~
+  ~ License, or (at your option) any later version.                           ~
+  ~                                                                           ~
+  ~ This program is distributed in the hope that it will be useful,           ~
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of            ~
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             ~
+  ~ GNU Affero General Public License for more details.                       ~
+  ~                                                                           ~
+  ~ You should have received a copy of the GNU Affero General Public License  ~
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.    ~
   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
 
 <!--
@@ -20,7 +32,7 @@
         <clip-path android:pathData="M0,-0.46h283.46v283.46h-283.46z" />
         <path
             android:pathData="M141.73,283C220.01,283 283.46,219.54 283.46,141.27C283.46,62.99 220.01,-0.46 141.73,-0.46C63.46,-0.46 0,62.99 0,141.27C0,219.54 63.46,283 141.73,283"
-            android:fillColor="#5CACAA"
+            android:fillColor="#12ACB1"
             android:fillType="nonZero" />
     </group>
     <path
