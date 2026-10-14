@@ -39,8 +39,8 @@ android {
         applicationId = "media.valo.tower_android"
         minSdk = 33
         targetSdk = 37
-        versionCode = 18
-        versionName = "1.4.0"
+        versionCode = 19
+        versionName = "1.4.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
