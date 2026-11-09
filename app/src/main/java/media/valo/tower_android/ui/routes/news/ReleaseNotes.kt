@@ -43,6 +43,29 @@ data class ReleaseNotes(
  */
 val releaseNotes: List<ReleaseNotes> = listOf(
     ReleaseNotes(
+        version = "1.4.1",
+        changes = """
+            <b>Neu: Minutenpakete und Open Source</b>
+            <br><br>
+            Ab sofort gibt es Minutenpakete.
+            Damit kaufst du Zeit mit unserer Assistenz.
+            Du wählst das Paket,
+            das zu dir passt,
+            und buchst es direkt hier in der App.
+ 
+            Außerdem ist die TOWER Assist App jetzt Open Source.
+            Das heißt,
+            ihr Bauplan ist öffentlich
+            und alle können nachprüfen,
+            wie sie funktioniert.
+            An der Bedienung ändert sich nichts.
+ 
+            Wenn du Fragen hast,
+            ruf uns einfach an.
+            Wir helfen dir gern.
+            """
+    ),
+    ReleaseNotes(
         version = "1.4.0",
         changes = """
             <b>Herzlich willkommen in der TOWER Assist App</b>
