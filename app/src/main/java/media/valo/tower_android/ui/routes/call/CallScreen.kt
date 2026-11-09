@@ -55,7 +55,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.invisibleToUser
+import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -256,7 +256,7 @@ private fun NormalUi(
                 viewModel.sessionStatusMessage,
                 modifier = Modifier
                     .padding(8.dp)
-                    .semantics { invisibleToUser() })
+                    .semantics { hideFromAccessibility() })
             ExtendedFloatingActionButton(
                 onClick = { viewModel.endSession() },
                 icon = { Icon(Icons.Filled.Phone, "Auflegen") },
