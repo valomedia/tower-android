@@ -35,7 +35,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.serialization.Serializable
@@ -49,8 +50,8 @@ import media.valo.tower_android.data.remote.tower.DummyTowerDataSource
 import media.valo.tower_android.data.remote.tower.TowerRepository
 import media.valo.tower_android.ui.elements.AppBarPreview
 import media.valo.tower_android.ui.elements.Logo
-import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.ui.routes.closed.ClosedScreen
+import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
 import media.valo.tower_android.ui.routes.news.NewsScreen
 import media.valo.tower_android.ui.routes.outdated.OutdatedAppVersionScreen
@@ -71,7 +72,9 @@ object LoadingScreen
  */
 @Composable
 fun LoadingScreen(
-    viewModel: LoadingViewModel = hiltViewModel(),
+    viewModel: LoadingViewModel = hiltViewModel(checkNotNull(LocalViewModelStoreOwner.current) {
+                "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+            }, null),
     navController: NavController,
     modifier: Modifier
 ) {

@@ -48,7 +48,8 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
@@ -78,7 +79,9 @@ import media.valo.tower_android.utils.CoroutineScopeModule
 fun SignupForm(
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel: SignupFormViewModel = hiltViewModel()
+    viewModel: SignupFormViewModel = hiltViewModel(checkNotNull(LocalViewModelStoreOwner.current) {
+                "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+            }, null)
 ) {
     val scope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }

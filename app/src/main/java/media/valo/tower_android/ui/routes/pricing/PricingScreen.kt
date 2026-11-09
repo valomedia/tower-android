@@ -40,7 +40,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavController
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.data.local.preferences.settings.DummySettingsDataSource
@@ -73,7 +74,10 @@ data class PricingScreen(val isTrialJustStarted: Boolean = false)
 fun PricingScreen(
     isTrialJustStarted: Boolean,
     modifier: Modifier = Modifier,
-    viewModel: PricingViewModel = hiltViewModel()
+    viewModel: PricingViewModel = hiltViewModel(
+        checkNotNull(LocalViewModelStoreOwner.current) {
+                "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+            }, null)
 ) {
     val scrollState = rememberScrollState()
 

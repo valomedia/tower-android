@@ -60,7 +60,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -109,7 +110,9 @@ object CallScreen
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun CallScreen(
-    viewModel: CallViewModel = hiltViewModel(),
+    viewModel: CallViewModel = hiltViewModel(checkNotNull(LocalViewModelStoreOwner.current) {
+                "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+            }, null),
     navController: NavController,
     snackbarHostState: SnackbarHostState,
     drawerState: DrawerState,
