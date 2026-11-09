@@ -139,6 +139,7 @@ fun CallScreen(
     // returning from PiP. Since it should never be open when on this screen, we'll just hold it
     // shut as a workaround.
     LaunchedEffect(drawerState.isOpen) {
+        @Suppress("RunBlockingInSuspendFunction")
         runBlocking {
             drawerState.snapTo(DrawerValue.Closed)
         }
@@ -360,6 +361,7 @@ private fun announceStateChange(
     accessibilityManager?.let {
         if (it.isEnabled) {
             it.sendAccessibilityEvent(AccessibilityEvent().apply {
+                @Suppress("DEPRECATION")
                 eventType = AccessibilityEvent.TYPE_ANNOUNCEMENT
                 className = context.javaClass.name
                 packageName = context.packageName
