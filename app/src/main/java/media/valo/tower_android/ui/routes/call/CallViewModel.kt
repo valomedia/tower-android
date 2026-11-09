@@ -26,7 +26,6 @@ import android.media.AudioAttributes
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.os.Build
 import android.os.Looper
 import android.util.Log
 import android.view.ViewGroup
@@ -82,6 +81,8 @@ import media.valo.tower_android.model.Message
 import media.valo.tower_android.utils.AppScope
 import media.valo.tower_android.utils.sendMessage
 import javax.inject.Inject
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 //
 //  CallViewModel.kt
@@ -89,33 +90,23 @@ import javax.inject.Inject
 //
 
 /**
- * The id for the data channel everything except photos is transmitted over
+ * The id for the data channel all data messages are transmitted over
  */
 private const val DURABLE_DATA_CHANNEL_ID = 1000
 
 /**
- * The bandwidth for the data channel everything except photos is transmitted over.
+ * The bandwidth for the data channel all data messages are transmitted over.
  */
 private const val DURABLE_DATA_CHANNEL_BANDWIDTH_KBPS = 32
 
 /**
- * How long to wait before resending a message that failed to send.
- *
- * We will only retry sending messages on the durable data channel. Those will be resent on a loop
- * until it finally works. Since the messages are small, it's unlikely the resends would ever
- * accumulate to the point where that becomes a problem, and if they do, other issues will have
- * rendered the call unrecoverably broken before then anyways.
- */
-private const val DATA_CHANNEL_RETRY_SEND_DELAY_MILLIS = 2000L
-
-/**
- * How many seconds to wait before establishing the data channel after the call connects.
+ * How long to wait before establishing the data channel after the call connects.
  *
  * Data channels are a new feature in Azure Communication Services and are still quite brittle. To
  * reduce the likelihood of data channel establishment failing, we add a little bit of a delay
  * between the call connecting and the data channel being established.
  */
-private const val DATA_CHANNEL_ESTABLISH_DELAY_MILLIS = 1000L
+private val DATA_CHANNEL_ESTABLISH_DELAY = 1.seconds
 
 /**
  * How long to wait between messages when sending multiple messages through the durable channel.
@@ -126,23 +117,23 @@ private const val DATA_CHANNEL_ESTABLISH_DELAY_MILLIS = 1000L
  * messages (and before the first message send after establishing the data channel), to reduce the
  * likelihood of ACS freaking out and starting to hurl exceptions our way.
  */
-private const val DATA_CHANNEL_MESSAGE_BURST_DELAY_MILLIS = 1000L
+private val DATA_CHANNEL_MESSAGE_BURST_DELAY = 1.seconds
 
 /**
- * How often to update the user's location, in milliseconds.
+ * How often to update the user's location.
  *
  * The system will do its best to provide an update on the location of the user at least this often.
  */
-private const val LOCATION_UPDATE_INTERVAL_MILLIS = 20000L
+private val LOCATION_UPDATE_INTERVAL = 20.seconds
 
 /**
- * How often to update the user's location at most, in milliseconds.
+ * How often to update the user's location at most.
  *
  * This is the fastest rate at which the system will update the user's location, if it is deciding
  * to provide more updates than absolutely necessary, because the system is in a state where the
  * additional updates will not greatly impact battery life.
  */
-private const val LOCATION_UPDATE_MIN_INTERVAL_MILLIS = 10000L
+private val LOCATION_UPDATE_MIN_INTERVAL = 10.seconds
 
 /**
  * Tag added to log messages related to the CallViewModel.
@@ -178,8 +169,8 @@ class CallViewModel @Inject constructor(
 ): ViewModel() {
 
     private val locationRequest = LocationRequest
-        .Builder(LOCATION_UPDATE_INTERVAL_MILLIS)
-        .setMinUpdateIntervalMillis(LOCATION_UPDATE_MIN_INTERVAL_MILLIS)
+        .Builder(LOCATION_UPDATE_INTERVAL.inWholeMilliseconds)
+        .setMinUpdateIntervalMillis(LOCATION_UPDATE_MIN_INTERVAL.inWholeMilliseconds)
         .setPriority(PRIORITY_HIGH_ACCURACY)
         .build()
 
@@ -353,8 +344,7 @@ class CallViewModel @Inject constructor(
      * @param previewContainer  The ViewGroup to render the preview into.
      */
     fun enableVideoFrameSender(activity: Activity, previewContainer: ViewGroup) {
-        val videoFrameSender = videoFrameSender
-        if (videoFrameSender == null) { return }
+        val videoFrameSender = videoFrameSender ?: return
         val preview = videoFrameSender.enable(activity)
         activity.runOnUiThread { previewContainer.addView(preview) }
     }
@@ -433,7 +423,7 @@ class CallViewModel @Inject constructor(
             keepaliveJob?.cancel()
             keepaliveJob = this.appScope.launch {
                 sendKeepalives(
-                    requestAssistanceResponse.keepaliveInterval,
+                    requestAssistanceResponse.keepaliveInterval.seconds,
                     sessionGeneration
                 )
             }
@@ -441,9 +431,8 @@ class CallViewModel @Inject constructor(
         return CommunicationTokenCredential(requestAssistanceResponse.userToken.token)
     }
 
-    private suspend fun sendKeepalives(keepAliveInterval: Int, sessionGeneration: Long) {
-        val keepAliveIntervalMillis = keepAliveInterval * 1000L
-        delay(keepAliveIntervalMillis)
+    private suspend fun sendKeepalives(keepAliveInterval: Duration, sessionGeneration: Long) {
+        delay(keepAliveInterval)
         while (isSessionActive(sessionGeneration)
             && this.sessionState == AssistanceSessionState.WAITING) {
             try {
@@ -457,7 +446,7 @@ class CallViewModel @Inject constructor(
                 // Got an error updating the request. This might be because this assistant has
                 // already accepted the request and is still in the process of picking up though, so
                 // give it a little time.
-                delay(keepAliveIntervalMillis)
+                delay(keepAliveInterval)
                 if (!isSessionActive(sessionGeneration)
                     || this.sessionState != AssistanceSessionState.WAITING) {
                     return
@@ -469,7 +458,7 @@ class CallViewModel @Inject constructor(
                 this.ringbackSound?.pause()
                 this.errorSound?.start()
             }
-            delay(keepAliveIntervalMillis)
+            delay(keepAliveInterval)
         }
     }
 
@@ -521,7 +510,7 @@ class CallViewModel @Inject constructor(
         val speakerDevice = audioManager
             ?.getDevices(AudioManager.GET_DEVICES_OUTPUTS)
             ?.find { it.type == AudioDeviceInfo.TYPE_BUILTIN_SPEAKER }
-        if (speakerDevice != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        if (speakerDevice != null) {
             audioManager?.setCommunicationDevice(speakerDevice)
         }
 
@@ -605,9 +594,8 @@ class CallViewModel @Inject constructor(
     }
 
     private suspend fun establishDataChannel() {
-        val call = call
-        if (call == null) { return }
-        delay(DATA_CHANNEL_ESTABLISH_DELAY_MILLIS)
+        val call = call ?: return
+        delay(DATA_CHANNEL_ESTABLISH_DELAY)
 
         val dataChannelCallFeature = call.feature(Features.DATA_CHANNEL)
         this.dataChannelCallFeature = dataChannelCallFeature
@@ -615,10 +603,7 @@ class CallViewModel @Inject constructor(
         val dataChannelReceiverCreatedListener = DataChannelReceiverCreatedListener {
             this.dataChannelReceiver = it.receiver
             it.receiver.addOnMessageReceivedListener(PropertyChangedListener {
-                val data = dataChannelReceiver?.receiveMessage()?.data
-                if (data == null) {
-                    return@PropertyChangedListener
-                }
+                val data = dataChannelReceiver?.receiveMessage()?.data ?: return@PropertyChangedListener
 
                 val message = try {
                     json.decodeFromString<Message>(String(data))
@@ -637,7 +622,6 @@ class CallViewModel @Inject constructor(
                         cameraSwitchSound?.start()
                         videoFrameSender?.handleSwitchCameraRequest()
                     }
-                    is DataMessage.CapturePhotoRequest -> videoFrameSender?.handleCapturePhotoRequest(message)
                     is DataMessage.ToggleTorchRequest -> videoFrameSender?.handleToggleTorchRequest()
                     else -> {}
                 }
@@ -654,10 +638,10 @@ class CallViewModel @Inject constructor(
         val dataChannelSender = dataChannelCallFeature.getDataChannelSender(dataChannelSenderOptions)
         this.dataChannelSender = dataChannelSender
 
-        delay(DATA_CHANNEL_MESSAGE_BURST_DELAY_MILLIS)
+        delay(DATA_CHANNEL_MESSAGE_BURST_DELAY)
         videoFrameSender?.startSendingOrientationEvents(dataChannelSender)
 
-        delay(DATA_CHANNEL_MESSAGE_BURST_DELAY_MILLIS)
+        delay(DATA_CHANNEL_MESSAGE_BURST_DELAY)
         dataChannelSender?.sendMessage(DataMessage.UserHelloEvent(profileRepository.getUserProfile()))
     }
 
