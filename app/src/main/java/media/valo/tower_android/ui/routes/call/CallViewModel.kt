@@ -629,7 +629,6 @@ class CallViewModel @Inject constructor(
 
                 when (message) {
                     is DataMessage.LocationRequest -> handleLocationRequest()
-                    is DataMessage.SwitchCameraRequest -> videoFrameSender?.handleSwitchCameraRequest()
                     is DataMessage.CapturePhotoRequest -> {
                         shutterSound?.start()
                         videoFrameSender?.handleCapturePhotoRequest(message)
