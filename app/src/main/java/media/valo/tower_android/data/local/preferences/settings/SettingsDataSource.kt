@@ -65,4 +65,38 @@ interface SettingsDataSource {
      */
     suspend fun setLastSeenNewsVersion(version: String?)
 
+    /**
+     * A `Flow` that emits when the free trial started every time it is updated.
+     *
+     * The trial starts with the first call that reaches the assistant, and this records that moment
+     * as milliseconds since the epoch. Until then, such as on a fresh install or for a user who has
+     * not called since updating to a version with subscriptions, this will emit `null`.
+     */
+    val trialStartedAtFlow: Flow<Long?>
+
+    /**
+     * Change when the free trial started.
+     *
+     * @param trialStartedAt    The start as milliseconds since the epoch, or `null` to unset it.
+     */
+    suspend fun setTrialStartedAt(trialStartedAt: Long?)
+
+    /**
+     * A `Flow` that emits whether the user has been told about the free trial every time it is
+     * updated.
+     *
+     * The notice goes out on the pricing screen after the first call, and this records that it has
+     * been shown. It is kept apart from the start of the trial, because the first call can end out
+     * of sight (in picture-in-picture, say), in which case the notice has to wait for the next
+     * start. When it is unset, this will emit `null`, which counts as not seen.
+     */
+    val trialNoticeSeenFlow: Flow<Boolean?>
+
+    /**
+     * Change whether the user has been told about the free trial.
+     *
+     * @param seen  Whether the notice has been shown, or `null` to unset it.
+     */
+    suspend fun setTrialNoticeSeen(seen: Boolean?)
+
 }

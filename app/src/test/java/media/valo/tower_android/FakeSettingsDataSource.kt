@@ -53,4 +53,20 @@ class FakeSettingsDataSource : SettingsDataSource {
         this.lastSeenNewsVersion.value = version
     }
 
+    private val trialStartedAt = MutableStateFlow<Long?>(null)
+
+    override val trialStartedAtFlow: Flow<Long?> = trialStartedAt
+
+    override suspend fun setTrialStartedAt(trialStartedAt: Long?) {
+        this.trialStartedAt.value = trialStartedAt
+    }
+
+    private val trialNoticeSeen = MutableStateFlow<Boolean?>(null)
+
+    override val trialNoticeSeenFlow: Flow<Boolean?> = trialNoticeSeen
+
+    override suspend fun setTrialNoticeSeen(seen: Boolean?) {
+        this.trialNoticeSeen.value = seen
+    }
+
 }

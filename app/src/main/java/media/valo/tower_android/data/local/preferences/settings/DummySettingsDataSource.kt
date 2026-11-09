@@ -40,4 +40,13 @@ class DummySettingsDataSource : SettingsDataSource {
     override val lastSeenNewsVersionFlow: Flow<String?> = flow { emit(null) }
 
     override suspend fun setLastSeenNewsVersion(version: String?) = Unit
+
+    override val trialStartedAtFlow: Flow<Long?> = flow { emit(null) }
+
+    override suspend fun setTrialStartedAt(trialStartedAt: Long?) = Unit
+
+    override val trialNoticeSeenFlow: Flow<Boolean?> = flow { emit(null) }
+
+    override suspend fun setTrialNoticeSeen(seen: Boolean?) = Unit
+
 }

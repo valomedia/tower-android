@@ -26,6 +26,7 @@ package media.valo.tower_android.data.local.preferences.settings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import media.valo.tower_android.model.SubscriptionStatus
 import javax.inject.Inject
 
 private const val DEFAULT_API_ENDPOINT = "https://api.tower-assist.de"
@@ -82,5 +83,56 @@ class SettingsRepository @Inject constructor(
      */
     suspend fun setLastSeenNewsVersion(version: String?) =
         settingsDataSource.setLastSeenNewsVersion(version)
+
+    /**
+     * A `Flow` that emits where the user stands with regard to a subscription every time it
+     * changes.
+     *
+     * Purchasing is not implemented yet, so this is `SubscriptionStatus.TRIAL` once the free trial
+     * has started and `SubscriptionStatus.NONE` before that.
+     */
+    val subscriptionStatusFlow: Flow<SubscriptionStatus> =
+        settingsDataSource.trialStartedAtFlow.map { trialStartedAt ->
+            if (trialStartedAt == null) SubscriptionStatus.NONE else SubscriptionStatus.TRIAL
+        }
+
+    /**
+     * Get when the free trial started (if it has).
+     *
+     * @return The start as milliseconds since the epoch, or `null` if the trial has not started.
+     */
+    suspend fun getTrialStartedAt(): Long? = settingsDataSource.trialStartedAtFlow.firstOrNull()
+
+    /**
+     * Start the free trial, unless it has started already.
+     *
+     * The trial starts with the user's first call that reaches the assistant, and only with that
+     * one: later calls leave the recorded start alone, so that the trial is never restarted.
+     *
+     * @param now   The current time as milliseconds since the epoch, recorded as the start if the
+     *              trial has not started yet.
+     */
+    suspend fun startTrialIfNeeded(now: Long) {
+        if (getTrialStartedAt() != null) { return }
+        settingsDataSource.setTrialStartedAt(now)
+    }
+
+    /**
+     * Whether the user has yet to be told that their first call started the free trial.
+     *
+     * This is `true` from the moment the trial starts until the notice has been marked as seen,
+     * so a first call that ends out of sight still gets its notice on the next start.
+     *
+     * @return Whether the notice is still owed to the user.
+     */
+    suspend fun isTrialNoticePending(): Boolean =
+        getTrialStartedAt() != null && settingsDataSource.trialNoticeSeenFlow.firstOrNull() != true
+
+    /**
+     * Record that the user has been told that their first call started the free trial.
+     *
+     * Once recorded, the notice is no longer owed, and the pricing screen is left to the menu.
+     */
+    suspend fun markTrialNoticeSeen() = settingsDataSource.setTrialNoticeSeen(true)
 
 }

@@ -130,8 +130,10 @@ class LoadingViewModel @Inject constructor(
     /**
      * Run the startup checks and decide which screen to show next.
      *
-     * The news are only considered once every gate has been passed, and the version is only
-     * recorded then, so that a start turned away at one of the gates still shows the news later.
+     * The pricing and the news are only considered once every gate has been passed, and the news
+     * version is only recorded then, so that a start turned away at one of the gates still shows
+     * the news later. The pricing comes first, because it picks up where the user's own call left
+     * off, and the news keep until the start after.
      *
      * @return The `StartupDestination` to navigate to.
      */
@@ -149,6 +151,7 @@ class LoadingViewModel @Inject constructor(
                     || currentSchedule == null
                     || updateNeeded == null -> StartupDestination.Login
             !serviceOpen -> StartupDestination.Closed(schedule = currentSchedule)
+            settingsRepository.isTrialNoticePending() -> StartupDestination.Pricing
             settingsRepository.getLastSeenNewsVersion() != newestNewsVersion -> {
                 settingsRepository.setLastSeenNewsVersion(newestNewsVersion)
                 StartupDestination.News

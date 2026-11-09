@@ -154,6 +154,8 @@ private const val TAG = "CallViewModel"
  *
  * @param towerRepository                   `TowerRepository` dependency.
  * @param profileRepository                 `ProfileRepository` dependency.
+ * @param trialStarter                      `TrialStarter` dependency.
+ * @param videoRepository                   `VideoRepository` dependency.
  * @param json                              `Json` dependency.
  * @param context                           `Context` dependency.
  * @param fusedLocationClient               `FusedLocationProviderClient` dependency.
@@ -165,6 +167,7 @@ private const val TAG = "CallViewModel"
 class CallViewModel @Inject constructor(
     private val towerRepository: TowerRepository,
     private val profileRepository: ProfileRepository,
+    private val trialStarter: TrialStarter,
     private val videoRepository: VideoRepository,
     private val json: Json,
     @ApplicationContext private val context: Context,
@@ -329,6 +332,16 @@ class CallViewModel @Inject constructor(
             ringbackSound?.pause()
         }
     }
+
+    /**
+     * Whether the user has yet to be told that their first call started the free trial.
+     *
+     * This is asked on the way out of the call. See `TrialStarter.isTrialNoticePending` for how
+     * settings trouble is kept from holding the user on the call screen.
+     *
+     * @return Whether the notice is still owed to the user.
+     */
+    suspend fun isTrialNoticePending(): Boolean = trialStarter.isTrialNoticePending()
 
     /**
      * Start sending video frames.
@@ -526,6 +539,7 @@ class CallViewModel @Inject constructor(
     private fun handleCallConnected() {
         sessionStatus = AssistanceSessionStatus.of(AssistanceSessionState.CONNECTED)
         this.startSound?.start()
+        trialStarter.onCallConnected()
         this.appScope.launch { establishDataChannel() }
     }
 

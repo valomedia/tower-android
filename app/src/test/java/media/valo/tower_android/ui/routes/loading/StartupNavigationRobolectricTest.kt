@@ -25,11 +25,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import media.valo.tower_android.ui.routes.closed.ClosedScreen
 import media.valo.tower_android.ui.routes.home.HomeScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
 import media.valo.tower_android.ui.routes.news.NewsScreen
 import media.valo.tower_android.ui.routes.outdated.OutdatedAppVersionScreen
+import media.valo.tower_android.ui.routes.pricing.PricingScreen
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -69,6 +71,7 @@ class StartupNavigationRobolectricTest {
                 composable<LoginScreen> { }
                 composable<HomeScreen> { }
                 composable<NewsScreen> { }
+                composable<PricingScreen> { }
                 composable<ClosedScreen> { }
                 composable<OutdatedAppVersionScreen> { }
             }
@@ -102,6 +105,26 @@ class StartupNavigationRobolectricTest {
         goBack()
 
         assertTrue(navController.currentDestination?.hasRoute<HomeScreen>() == true)
+    }
+
+    @Test
+    fun `leaves the home screen under the pricing screen so back leads home`() {
+        navigateTo(StartupDestination.Pricing)
+        assertTrue(navController.currentDestination?.hasRoute<PricingScreen>() == true)
+
+        goBack()
+
+        assertTrue(navController.currentDestination?.hasRoute<HomeScreen>() == true)
+    }
+
+    @Test
+    fun `tells the pricing screen that the trial has just started`() {
+        navigateTo(StartupDestination.Pricing)
+
+        // Without this the pricing screen would never record the notice as seen, and startup
+        // would keep coming back here.
+        val route = navController.currentBackStackEntry?.toRoute<PricingScreen>()
+        assertTrue(route?.isTrialJustStarted == true)
     }
 
     @Test

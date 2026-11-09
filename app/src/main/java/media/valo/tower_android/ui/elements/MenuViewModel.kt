@@ -27,6 +27,7 @@ import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import media.valo.tower_android.data.local.preferences.PreferencesManager
+import media.valo.tower_android.model.SubscriptionStatus
 import javax.inject.Inject
 
 /**
@@ -60,5 +61,12 @@ class MenuViewModel @Inject constructor(
      * This will emit the new name each time it is set. When the name is unset, it will emit `null`.
      */
     val lastNameFlow: Flow<String?> = preferencesManager.profileRepository.lastNameFlow
+
+    /**
+     * A `Flow` that emits where the user stands with regard to a subscription every time it
+     * changes.
+     */
+    val subscriptionStatusFlow: Flow<SubscriptionStatus> =
+        preferencesManager.settingsRepository.subscriptionStatusFlow
 
 }

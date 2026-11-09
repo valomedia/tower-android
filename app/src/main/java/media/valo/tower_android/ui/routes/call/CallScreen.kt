@@ -72,6 +72,8 @@ import kotlinx.serialization.Serializable
 import media.valo.tower_android.R
 import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataSource
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
+import media.valo.tower_android.data.local.preferences.settings.DummySettingsDataSource
+import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
 import media.valo.tower_android.data.local.video.RandomVideoDataSource
 import media.valo.tower_android.data.local.video.VideoRepository
 import media.valo.tower_android.data.remote.tower.DummyTowerDataSource
@@ -80,6 +82,7 @@ import media.valo.tower_android.model.AssistanceSessionState
 import media.valo.tower_android.ui.elements.AppBarPreview
 import media.valo.tower_android.ui.elements.Logo
 import media.valo.tower_android.ui.routes.home.HomeScreen
+import media.valo.tower_android.ui.routes.pricing.PricingScreen
 import media.valo.tower_android.utils.CoroutineScopeModule
 import media.valo.tower_android.utils.JsonModule
 
@@ -150,7 +153,12 @@ fun CallScreen(
 
     LaunchedEffect(sessionState) {
         if (viewModel.sessionState == AssistanceSessionState.DISCONNECTED) {
-            navController.navigate(route = HomeScreen) { popUpTo(navController.graph.id) }
+            // Decided before leaving, because leaving ends this effect.
+            val isTrialNoticePending = viewModel.isTrialNoticePending()
+            navController.navigateAfterCall(
+                isTrialNoticePending = isTrialNoticePending,
+                isActivityFinishing = activity?.isFinishing == true
+            )
         }
     }
 
@@ -311,6 +319,30 @@ private fun CameraFeed(
 }
 
 /**
+ * Navigate to where the user should go once the call has ended.
+ *
+ * The call screen is replaced by the home screen rather than left on the back stack, so that
+ * going back does not start another call. When the first call has just started the trial, the
+ * pricing goes on top of the home screen, so that the user is shown what comes after the trial and
+ * back leads home.
+ *
+ * The exception is a call that ends in picture-in-picture: `PiPUi` has already finished the
+ * activity then, and pushing the pricing screen anyway would let it record the trial notice as
+ * seen on a frame nobody gets to look at. The notice is left owed in that case, for the next start
+ * to show instead.
+ *
+ * @param isTrialNoticePending  Whether the user has yet to be told that their first call started
+ *                              the free trial.
+ * @param isActivityFinishing   Whether the activity is already on its way out.
+ */
+fun NavController.navigateAfterCall(isTrialNoticePending: Boolean, isActivityFinishing: Boolean) {
+    navigate(route = HomeScreen) { popUpTo(graph.id) }
+    if (isTrialNoticePending && !isActivityFinishing) {
+        navigate(route = PricingScreen(isTrialJustStarted = true))
+    }
+}
+
+/**
  * Announce a change of the Assistance Sessions State to the user, using the accessibility manager.
  *
  * @param context               The application context.
@@ -349,6 +381,10 @@ fun CallScreenPreview() {
             viewModel = CallViewModel(
                 towerRepository = TowerRepository(DummyTowerDataSource()),
                 profileRepository = ProfileRepository(DummyProfileDataSource()),
+                trialStarter = TrialStarter(
+                    settingsRepository = SettingsRepository(DummySettingsDataSource()),
+                    appScope = appScope
+                ),
                 json = JsonModule().provideJson(),
                 context = LocalContext.current,
                 fusedLocationClient = LocationServices.getFusedLocationProviderClient(LocalContext.current),

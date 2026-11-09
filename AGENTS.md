@@ -63,6 +63,22 @@ These instructions apply to the whole repository.
   ./gradlew build --no-daemon
   ```
 
+- Without a local Android SDK,
+  one can be bootstrapped into a scratch directory with the command line tools from
+  `https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip`:
+
+  ```shell
+  sdkmanager --sdk_root="$ANDROID_HOME" "platforms;android-37.0" "build-tools;37.0.0" "platform-tools"
+  ```
+
+  The platform package for `compileSdk = 37` is `platforms;android-37.0`,
+  not `platforms;android-37`.
+  If the `:wrapper` task fails to validate the distribution url,
+  run the Gradle version pinned in `gradle/wrapper/gradle-wrapper.properties` directly
+  and exclude the task with `-x :wrapper`.
+  Expect `--no-daemon` runs of `testDebugUnitTest` and `lintDebug` to take a minute or two each
+  on a small machine;
+  do not treat that as a hang.
 - `./gradlew connectedDebugAndroidTest --no-daemon` requires a connected device or emulator.
   Do not treat it as a routine local check unless that dependency is available.
 - `gradle/wrapper/gradle-wrapper.properties` is the single source of truth for the Gradle version.
@@ -146,3 +162,18 @@ These instructions apply to the whole repository.
   camera hardware,
   location services,
   or Azure Communication Calling unless the test is explicitly instrumented for that dependency.
+- Google Play Billing cannot be reached from tests.
+  `ProductDetails` can only be built from the Play Store's JSON through a package-private
+  constructor,
+  so the test factory for it lives under `app/src/test/java/com/android/billingclient/api`.
+  Tests that map billing types need Robolectric,
+  because the library uses `org.json` and `TextUtils`.
+- `android.util.Log` is not stubbed for plain unit tests
+  (`unitTests.isReturnDefaultValues` is off),
+  so any code path that logs needs a Robolectric test (`*RobolectricTest`),
+  even when nothing else in it touches Android.
+- `CallViewModel` cannot be built in a unit test,
+  because it drags in Azure Communication Calling and location services.
+  Logic that has to be tested lives in small injectable collaborators next to it
+  (`TrialStarter` is one),
+  and the `ViewModel` only forwards to them.
