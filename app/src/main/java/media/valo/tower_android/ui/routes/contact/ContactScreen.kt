@@ -102,7 +102,7 @@ fun ContactScreen(
                     append("Telefon: ")
                     withLink(
                         LinkAnnotation.Url(
-                            "tel:+491738406203",
+                            "tel:+491735331781",
                             TextLinkStyles(
                                 style = SpanStyle(
                                     color = Color.Blue,
@@ -110,7 +110,7 @@ fun ContactScreen(
                                 )
                             )
                         )
-                    ) { append("+49 173 8406203") }
+                    ) { append("+49 173 5331781") }
                 },
                 modifier = Modifier.padding(8.dp)
             )
