@@ -54,6 +54,7 @@ import media.valo.tower_android.ui.routes.closed.ClosedScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
 import media.valo.tower_android.ui.routes.news.NewsScreen
 import media.valo.tower_android.ui.routes.outdated.OutdatedAppVersionScreen
+import media.valo.tower_android.ui.routes.pricing.PricingScreen
 
 /**
  * Object for the navigation destination for the loading screen.
@@ -93,8 +94,9 @@ fun LoadingScreen(
  * Navigate to where the startup checks have decided the user should go.
  *
  * Every destination replaces the loading screen rather than stacking on top of it, so that going
- * back leaves the app instead of starting over. The news are the exception: they are pushed on top
- * of the home screen, because the app bar gives them a back button rather than the drawer.
+ * back leaves the app instead of starting over. The news and the pricing are the exceptions: they
+ * are pushed on top of the home screen, so that back leads home. Only the news get a back button
+ * in the app bar for it; the pricing keeps the drawer, like it does when opened from the menu.
  *
  * @param destination   Where the startup checks decided the user should go.
  */
@@ -113,6 +115,10 @@ fun NavController.navigateToStartupDestination(destination: StartupDestination) 
         StartupDestination.News -> {
             navigate(route = HomeScreen) { popUpTo(graph.id) }
             navigate(route = NewsScreen)
+        }
+        StartupDestination.Pricing -> {
+            navigate(route = HomeScreen) { popUpTo(graph.id) }
+            navigate(route = PricingScreen(isTrialJustStarted = true))
         }
     }
 }

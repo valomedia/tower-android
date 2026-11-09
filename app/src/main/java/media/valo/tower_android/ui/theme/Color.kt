@@ -27,5 +27,17 @@ import androidx.compose.ui.graphics.Color
 
 /**
  * The hue of cyan used by TOWER.
+ *
+ * This is also the color of the Power subscription.
  */
 val Verdigris = Color(0xFF12ACB1)
+
+/**
+ * The hue of yellow used for the Mini subscription.
+ */
+val Saffron = Color(0xFFE3B505)
+
+/**
+ * The hue of purple used for the Basic subscription.
+ */
+val Lilac = Color(0xFFC3ACCE)

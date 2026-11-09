@@ -56,7 +56,10 @@ import media.valo.tower_android.data.local.preferences.profile.DummyProfileDataS
 import media.valo.tower_android.data.local.preferences.profile.ProfileRepository
 import media.valo.tower_android.data.local.preferences.settings.DummySettingsDataSource
 import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
+import media.valo.tower_android.model.SubscriptionStatus
 import media.valo.tower_android.ui.routes.home.HomeScreen
+import media.valo.tower_android.ui.routes.pricing.PricingScreen
+import media.valo.tower_android.ui.routes.pricing.navigateToPricing
 import media.valo.tower_android.ui.routes.profile.ProfileScreen
 import media.valo.tower_android.ui.theme.TowerTheme
 
@@ -81,6 +84,12 @@ fun Menu(
     var userId by remember { mutableStateOf("") }
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
+    var subscriptionStatus by remember { mutableStateOf(SubscriptionStatus.NONE) }
+
+    // Before the first call there is no status to show, and an empty badge would still take up
+    // its slot next to the label.
+    val subscriptionBadge: (@Composable () -> Unit)? =
+        subscriptionStatus.label?.let { label -> ({ Text(text = label) }) }
 
     LaunchedEffect(Unit) {
         scope.launch {
@@ -91,6 +100,9 @@ fun Menu(
         }
         scope.launch {
             viewModel.lastNameFlow.collect { lastName = it ?: "" }
+        }
+        scope.launch {
+            viewModel.subscriptionStatusFlow.collect { subscriptionStatus = it }
         }
     }
 
@@ -122,6 +134,17 @@ fun Menu(
                     scope.launch {
                         drawerState.close()
                         navController.navigate(route = ProfileScreen)
+                    }
+                }
+            )
+            NavigationDrawerItem(
+                label = { Text(text = "Abo") },
+                badge = subscriptionBadge,
+                selected = currentBackStackEntry?.destination?.hasRoute<PricingScreen>() == true,
+                onClick = {
+                    scope.launch {
+                        drawerState.close()
+                        navController.navigateToPricing()
                     }
                 }
             )

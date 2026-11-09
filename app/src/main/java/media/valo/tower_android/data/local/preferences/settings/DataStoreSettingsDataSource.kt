@@ -25,6 +25,8 @@ package media.valo.tower_android.data.local.preferences.settings
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import media.valo.tower_android.utils.SettingsDataStore
@@ -55,5 +57,20 @@ class DataStoreSettingsDataSource @Inject constructor(
 
     override suspend fun setLastSeenNewsVersion(version: String?) =
         dataStore.set(lastSeenNewsVersionKey, version)
+
+    private val trialStartedAtKey: Preferences.Key<Long> = longPreferencesKey("trial_started_at")
+
+    override val trialStartedAtFlow: Flow<Long?> = dataStore.get(trialStartedAtKey)
+
+    override suspend fun setTrialStartedAt(trialStartedAt: Long?) =
+        dataStore.set(trialStartedAtKey, trialStartedAt)
+
+    private val trialNoticeSeenKey: Preferences.Key<Boolean> =
+        booleanPreferencesKey("trial_notice_seen")
+
+    override val trialNoticeSeenFlow: Flow<Boolean?> = dataStore.get(trialNoticeSeenKey)
+
+    override suspend fun setTrialNoticeSeen(seen: Boolean?) =
+        dataStore.set(trialNoticeSeenKey, seen)
 
 }

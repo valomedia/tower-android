@@ -42,6 +42,7 @@ import org.junit.Test
 
 private const val SCHEDULE = "Montag bis Freitag von 8 bis 12 und von 13 bis 17 Uhr."
 private const val OLDER_VERSION = "0.0.1"
+private const val TRIAL_STARTED_AT = 1_700_000_000_000L
 
 /**
  * Tests for the startup checks in `LoadingViewModel`.
@@ -89,6 +90,48 @@ class LoadingViewModelTest {
         assertEquals(newestNewsVersion, settingsRepository.getLastSeenNewsVersion())
 
         assertEquals(StartupDestination.Home, viewModel().resolveStartupDestination())
+    }
+
+    @Test
+    fun `goes to the pricing when the user has not been told about the trial yet`() = runBlocking {
+        settingsRepository.setLastSeenNewsVersion(newestNewsVersion)
+        settingsRepository.startTrialIfNeeded(now = TRIAL_STARTED_AT)
+
+        assertEquals(StartupDestination.Pricing, viewModel().resolveStartupDestination())
+    }
+
+    @Test
+    fun `goes home once the user has been told about the trial`() = runBlocking {
+        settingsRepository.setLastSeenNewsVersion(newestNewsVersion)
+        settingsRepository.startTrialIfNeeded(now = TRIAL_STARTED_AT)
+        settingsRepository.markTrialNoticeSeen()
+
+        assertEquals(StartupDestination.Home, viewModel().resolveStartupDestination())
+    }
+
+    @Test
+    fun `shows the pricing before the news and keeps the news for the start after`() =
+        runBlocking {
+            settingsRepository.startTrialIfNeeded(now = TRIAL_STARTED_AT)
+
+            assertEquals(StartupDestination.Pricing, viewModel().resolveStartupDestination())
+            assertNull(settingsRepository.getLastSeenNewsVersion())
+
+            settingsRepository.markTrialNoticeSeen()
+            assertEquals(StartupDestination.News, viewModel().resolveStartupDestination())
+        }
+
+    @Test
+    fun `holds the pricing at the gates like everything else`() = runBlocking {
+        settingsRepository.startTrialIfNeeded(now = TRIAL_STARTED_AT)
+        towerDataSource.indexResponse = dummyIndexResponse.copy(
+            openingHours = OpeningHours(status = Status.CLOSED, description = SCHEDULE)
+        )
+
+        assertEquals(
+            StartupDestination.Closed(schedule = SCHEDULE),
+            viewModel().resolveStartupDestination()
+        )
     }
 
     @Test

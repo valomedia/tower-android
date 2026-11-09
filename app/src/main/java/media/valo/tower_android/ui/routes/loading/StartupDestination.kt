@@ -51,6 +51,12 @@ sealed interface StartupDestination {
     data object News : StartupDestination
 
     /**
+     * The user's first call has started the free trial, but ended before they could be told, so
+     * the pricing is shown with a word about the trial.
+     */
+    data object Pricing : StartupDestination
+
+    /**
      * Everything is in order and the user can place a call.
      */
     data object Home : StartupDestination

@@ -57,6 +57,7 @@ import media.valo.tower_android.ui.routes.closed.ClosedScreen
 import media.valo.tower_android.ui.routes.login.LoginScreen
 import media.valo.tower_android.ui.routes.news.NewsScreen
 import media.valo.tower_android.ui.routes.outdated.OutdatedAppVersionScreen
+import media.valo.tower_android.ui.routes.pricing.PricingScreen
 import media.valo.tower_android.ui.routes.profile.ProfileScreen
 import media.valo.tower_android.ui.routes.settings.SettingsScreen
 
@@ -172,6 +173,13 @@ fun TowerApp(navController: NavHostController) {
                 }
                 composable<OutdatedAppVersionScreen> {
                     OutdatedAppVersionScreen(
+                        modifier = modifier
+                    )
+                }
+                composable<PricingScreen> { backStackEntry ->
+                    val pricingScreen: PricingScreen = backStackEntry.toRoute()
+                    PricingScreen(
+                        isTrialJustStarted = pricingScreen.isTrialJustStarted,
                         modifier = modifier
                     )
                 }

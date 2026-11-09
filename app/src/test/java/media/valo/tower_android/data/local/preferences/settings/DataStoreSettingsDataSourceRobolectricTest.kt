@@ -44,6 +44,7 @@ import org.robolectric.annotation.Config
 private const val DEFAULT_API_ENDPOINT = "https://api.tower-assist.de"
 private const val CUSTOM_API_ENDPOINT = "https://api.dev.tower-assist.de"
 private const val NEWS_VERSION = "1.2.0"
+private const val TRIAL_STARTED_AT = 1_700_000_000_000L
 
 @RunWith(RobolectricTestRunner::class)
 @Config(application = Application::class)
@@ -92,6 +93,44 @@ class DataStoreSettingsDataSourceRobolectricTest {
 
         dataSource.setLastSeenNewsVersion(null)
         assertNull(dataSource.lastSeenNewsVersionFlow.first())
+    }
+
+    @Test
+    fun `persists trial start through android data store`() = runBlocking {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val dataStore = createTemporaryPreferencesDataStore(
+            context = context,
+            scope = dataStoreScope,
+            name = "robolectric_settings_trial"
+        )
+        val dataSource = DataStoreSettingsDataSource(dataStore)
+
+        assertNull(dataSource.trialStartedAtFlow.first())
+
+        dataSource.setTrialStartedAt(TRIAL_STARTED_AT)
+        assertEquals(TRIAL_STARTED_AT, dataSource.trialStartedAtFlow.first())
+
+        dataSource.setTrialStartedAt(null)
+        assertNull(dataSource.trialStartedAtFlow.first())
+    }
+
+    @Test
+    fun `persists trial notice seen through android data store`() = runBlocking {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val dataStore = createTemporaryPreferencesDataStore(
+            context = context,
+            scope = dataStoreScope,
+            name = "robolectric_settings_trial_notice"
+        )
+        val dataSource = DataStoreSettingsDataSource(dataStore)
+
+        assertNull(dataSource.trialNoticeSeenFlow.first())
+
+        dataSource.setTrialNoticeSeen(true)
+        assertEquals(true, dataSource.trialNoticeSeenFlow.first())
+
+        dataSource.setTrialNoticeSeen(null)
+        assertNull(dataSource.trialNoticeSeenFlow.first())
     }
 
     @Test
