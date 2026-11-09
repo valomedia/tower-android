@@ -42,7 +42,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
@@ -76,7 +77,9 @@ fun ClosedScreen(
     currentSchedule: String,
     userFirstName: String? = null,
     userEmail: String? = null,
-    viewModel: ClosedScreenViewModel = hiltViewModel()
+    viewModel: ClosedScreenViewModel = hiltViewModel(checkNotNull(LocalViewModelStoreOwner.current) {
+                "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+            }, null)
 ) {
     val scope = rememberCoroutineScope()
     val scrollState = rememberScrollState()

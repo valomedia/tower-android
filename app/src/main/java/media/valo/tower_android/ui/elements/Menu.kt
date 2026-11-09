@@ -43,7 +43,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -74,7 +75,9 @@ import media.valo.tower_android.ui.theme.TowerTheme
 @Composable
 fun Menu(
     modifier: Modifier = Modifier,
-    viewModel: MenuViewModel = hiltViewModel(),
+    viewModel: MenuViewModel = hiltViewModel(checkNotNull(LocalViewModelStoreOwner.current) {
+                "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+            }, null),
     navController: NavController,
     drawerState: DrawerState
 ) {

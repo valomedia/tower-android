@@ -44,7 +44,8 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import kotlinx.serialization.Serializable
 import media.valo.tower_android.data.local.preferences.settings.DummySettingsDataSource
 import media.valo.tower_android.data.local.preferences.settings.SettingsRepository
@@ -64,7 +65,9 @@ object SettingsScreen
  */
 @Composable
 fun SettingsScreen(
-    viewModel: SettingsViewModel = hiltViewModel(),
+    viewModel: SettingsViewModel = hiltViewModel(checkNotNull(LocalViewModelStoreOwner.current) {
+                "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+            }, null),
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
