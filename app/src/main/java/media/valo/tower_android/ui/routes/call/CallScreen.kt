@@ -55,7 +55,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.invisibleToUser
+import androidx.compose.ui.semantics.hideFromAccessibility
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -139,6 +139,7 @@ fun CallScreen(
     // returning from PiP. Since it should never be open when on this screen, we'll just hold it
     // shut as a workaround.
     LaunchedEffect(drawerState.isOpen) {
+        @Suppress("RunBlockingInSuspendFunction")
         runBlocking {
             drawerState.snapTo(DrawerValue.Closed)
         }
@@ -256,7 +257,7 @@ private fun NormalUi(
                 viewModel.sessionStatusMessage,
                 modifier = Modifier
                     .padding(8.dp)
-                    .semantics { invisibleToUser() })
+                    .semantics { hideFromAccessibility() })
             ExtendedFloatingActionButton(
                 onClick = { viewModel.endSession() },
                 icon = { Icon(Icons.Filled.Phone, "Auflegen") },
@@ -360,6 +361,7 @@ private fun announceStateChange(
     accessibilityManager?.let {
         if (it.isEnabled) {
             it.sendAccessibilityEvent(AccessibilityEvent().apply {
+                @Suppress("DEPRECATION")
                 eventType = AccessibilityEvent.TYPE_ANNOUNCEMENT
                 className = context.javaClass.name
                 packageName = context.packageName
