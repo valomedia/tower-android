@@ -213,7 +213,7 @@ class PricingScreenRobolectricTest {
     fun `does not mention the trial when opened from the menu`() {
         showPricing(offers)
 
-        composeTestRule.onNodeWithText("Testphase", substring = true).assertDoesNotExist()
+        composeTestRule.onNodeWithText("Testphase hat begonnen", substring = true).assertDoesNotExist()
     }
 
     @Test

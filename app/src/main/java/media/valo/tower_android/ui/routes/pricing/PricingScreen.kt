@@ -99,8 +99,10 @@ fun PricingScreen(
         // pick one of the cards below.
         Text(
             "Jeden Monat bekommst du $FREE_MINUTES_PER_MONTH Minuten Fernassistenz geschenkt, "
-                    + "mit oder ohne Abo. Wenn du mehr brauchst, kannst du bald hier eines "
-                    + "unserer Abos wählen.",
+                    + "mit oder ohne Abo. "
+                    + "Wenn deine kostenlose Testphase vorbei ist, "
+                    + "und du mehr Minuten brauchst "
+                    + "kannst du hier eines unserer Abos wählen.",
             modifier = Modifier.padding(8.dp)
         )
         for (tier in SubscriptionTier.entries) {
