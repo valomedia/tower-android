@@ -36,6 +36,7 @@ import media.valo.tower_android.data.local.preferences.settings.SettingsReposito
 import media.valo.tower_android.data.remote.billing.BillingRepository
 import media.valo.tower_android.model.SubscriptionOffer
 import media.valo.tower_android.model.SubscriptionTier
+import media.valo.tower_android.model.TRIAL_DURATION_DAYS
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -204,7 +205,7 @@ class PricingScreenRobolectricTest {
         showPricing(offers, isTrialJustStarted = true)
 
         composeTestRule
-            .onNodeWithText("Deine kostenlose Testphase hat begonnen und läuft 7 Tage.")
+            .onNodeWithText("Deine kostenlose Testphase hat begonnen und läuft $TRIAL_DURATION_DAYS Tage.")
             .performScrollTo()
             .assertIsDisplayed()
     }
