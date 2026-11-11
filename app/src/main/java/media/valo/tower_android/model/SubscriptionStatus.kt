@@ -30,7 +30,7 @@ package media.valo.tower_android.model
  * purchasing lands, a trial that has started is a trial that runs on, so `SubscriptionStatus`
  * never leaves `TRIAL` on its own.
  */
-const val TRIAL_DURATION_DAYS = 7
+const val TRIAL_DURATION_DAYS = 10
 
 /**
  * Where the user stands with regard to a subscription.
