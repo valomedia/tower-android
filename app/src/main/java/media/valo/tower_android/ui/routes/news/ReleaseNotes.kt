@@ -43,6 +43,20 @@ data class ReleaseNotes(
  */
 val releaseNotes: List<ReleaseNotes> = listOf(
     ReleaseNotes(
+        version = "1.5.0",
+        changes = """
+            Kurz nach dem letzten Update folgt der nächste Schritt:
+            Unter „Abo“ findest du jetzt alle Minutenpakete mit ihren Preisen.
+            Hast du Fragen dazu?
+            Ruf uns gern an,
+            wir erklären dir alles in Ruhe.
+            Außerdem haben wir
+            wie bei jedem Update
+            kleine Fehler behoben
+            und die App etwas schneller gemacht.
+            """
+    ),
+    ReleaseNotes(
         version = "1.4.1",
         changes = """
             <b>Neu: Minutenpakete und Open Source</b>
